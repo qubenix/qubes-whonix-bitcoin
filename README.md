@@ -9,10 +9,9 @@ Start with [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blo
   - Build a [Bitcoin Core](https://github.com/bitcoin/bitcoin) full node configured to:
     - Allow other VMs to connect when given permission from `dom0`.
     - Communicate only over Tor.
-    - Easily plugin other applications which require a `bitcoind` backend.
     - Index all transactions.
-    - Prefer hidden services, use them exclusively if possible.
-    - Use ephemeral hidden services when serving peers.
+    - Prefer Tor onion endpoints, use them exclusively if possible.
+    - Use an ephemeral Tor onion address for serving peers.
     - Utilize Tor stream isolation.
 - [`1_electrum-personal-server.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md)
   - Install an [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server) configured to:
@@ -22,18 +21,20 @@ Start with [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blo
 - [`1_electrumx.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md)
   - Install an [Electrumx](https://github.com/kyuupichan/electrumx) server configured to:
     - Allow a local Electrum wallet to connect from an offline VM.
-    - Allow a remote Electrum wallet to connect via a Tor onion service.
+    - Allow a remote Electrum wallet to connect via a Tor onion address.
+    - Deny peer discovery.
+    - Keep Tor onion address private.
     - Use the [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md) VM as its backend.
 - [`1_joinmarket.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_joinmarket.md)
   - Install [JoinMarket](https://github.com/JoinMarket-Org/joinmarket-clientserver) configured to:
-    - All daemon traffic over Tor.
-    - Daemon runs on the [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md) VM.
-    - Use only Tor onion endpoints.
-    - Use Tor stream isolation.
-    - Wallet is on an offline VM, yet loses no features.
+    - Communicate only over Tor.
+    - Connnect to only Tor onion endpoints.
+    - Run the daemon on the [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md) VM.
+    - Utilize Tor stream isolation.
+    - Provide full functionality from an offline VM.
 - [`2_electrum.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/2_electrum.md)
   - Install the [Electrum](https://electrum.org) wallet configured to:
-    - Connect to either a [`1_electrum-personal-server.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md) or a [`1_electrumx.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md) VM.
+    - Connect to either the [`1_electrum-personal-server.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md) or the [`1_electrumx.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md) VM.
     - Provide full functionality from an offline VM.
 
 ## Guides To Come
@@ -47,3 +48,7 @@ Start with [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blo
 - `1`: Requires a `0` guide.
 - `2`: Requires a `1` and a `0` guide.
 - ... so on.
+
+## Git Mirrors
+- https://github.com/qubenix/qubes-whonix-bitcoin
+- http://qubenixibxoyldm3l3a5fobreaydmvdweqqojllutyyi4vgtbmugvhad.onion/qubenix/qubes-whonix-bitcoin

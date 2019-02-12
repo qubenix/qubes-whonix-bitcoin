@@ -1,19 +1,21 @@
 # Qubes 4 & Whonix 14: Electrum Personal Server
 Create a VM for running an [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server) (EPS) which will connect to your `bitcoind` VM. The `eps` VM will be accessible from an Electrum Bitcoin wallet in an offline VM on the same host or remotely via a Tor onion service.
 ## What is Electrum Personal Server?
-EPS is one of the two possible server backends for the Electrum Bitcoin wallet. The other implementation is [Electrumx](https://github.com/qubenix/guides/blob/master/qubes-r4/whonix-14/bitcoin/indexed/1_electrumx.md).
+EPS is one of the possible server backends for the Electrum Bitcoin wallet. The other implementation covered in these guides is [Electrumx](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md).
 
-There are some differences between EPS and Electrumx:
-- EPS requires that you configure each wallet that will connect to it ahead of time. Electrumx can provide information on any wallet once it is fully sync'd.
-- EPS can work with a pruned blockchain (this guide only covers indexed). Electrumx requires an indexed `bitcoind` node.
+Here are some of the differences between EPS and Electrumx:
+- EPS is less versatile.
+  - EPS requires that each wallet's [MPK](https://bitcoin.stackexchange.com/a/50031) is in its config file.
+  - Electrumx can serve any wallet once fully sync'd.
 - An EPS VM requires less disk space.
   - EPS VM disk space: 1G
   - Electrumx VM disk space: 40G.
 - EPS sync time is shorter.
   - Initial EPS Sync: 10-20 min.
   - Initial Electrumx Sync: 1 or more days.
-- EPS only compiles itself without pulling in any dependencies. Electrumx downloads, and installs to the virtual envrionment, dependencies without any verification.
-- The EPS project is more concerned with user privacy and security than Electrumx.
+- EPS has a safe install process.
+  - EPS only compiles itself.
+  - Electrumx pulls in dependencies without verification.
 
 For more information see the
 [mailing list email](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-February/015707.html)
@@ -26,7 +28,7 @@ There have already been multiple waves of attacks on Electrum users perpetrated 
 This setup also preserves your privacy. When connecting to any server your wallet will leak information which can be used to tie your addresses together. There are definitely servers on the network which are using this information to build profiles on addresses and their interactions.
 ## Prerequisites
 - To complete this guide you must have first completed:
-  - [`0_bitcoind.md`](https://github.com/qubenix/guides/blob/master/qubes-r4/whonix-14/bitcoin/indexed/0_bitcoind.md)
+  - [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md)
 
 ## I. Set Up Dom0
 ### A. In a `dom0` terminal, create a gateway.
@@ -478,4 +480,4 @@ user@host:~$ sudo tail -f /home/eps/.eps/debug.log
 ## VIII. Final Notes
 - Initial sync will take about 10-20 minutes for each wallet pubkey in your EPS config file.
 - Once the sync is finished you may connect your Electrum wallet via the Tor onion address.
-- To connect an offline Electrum wallet from a separate VM (split-electrum) use the guide: [`2_electrum.md`](https://github.com/qubenix/guides/blob/master/qubes-r4/whonix-14/bitcoin/indexed/2_electrum.md).
+- To connect an offline Electrum wallet from a separate VM (split-electrum) use the guide: [`2_electrum.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/2_electrum.md).

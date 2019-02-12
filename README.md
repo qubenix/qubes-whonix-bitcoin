@@ -26,14 +26,23 @@ Start with [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blo
     - Use the [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md) VM as its backend.
 - [`1_joinmarket.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_joinmarket.md)
   - Install [JoinMarket](https://github.com/JoinMarket-Org/joinmarket-clientserver) configured to:
-    - The JoinMarket client runs in offline VM.
-    - The `joinmarketd` server daemon runs on the [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md) VM.
-- [2_electrum.md](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/2_electrum.md)
+    - All daemon traffic over Tor.
+    - Daemon runs on the [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md) VM.
+    - Use only Tor onion endpoints.
+    - Use Tor stream isolation.
+    - Wallet is on an offline VM, yet loses no features.
+- [`2_electrum.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/2_electrum.md)
   - Install the [Electrum](https://electrum.org) wallet configured to:
     - Connect to either a [`1_electrum-personal-server.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md) or a [`1_electrumx.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md) VM.
     - Provide full functionality from an offline VM.
 
-### Numbering Legend
+## Guides To Come
+- [BTCPay Server](https://github.com/btcpayserver/btcpayserver)
+- [c-Lightning](https://github.com/ElementsProject/lightning)
+- [Electrs](https://github.com/romanz/electrs)
+- [LND](https://github.com/LightningNetwork/lnd)
+
+## Guide Numbering Legend
 - `0`: No prerequisites.
 - `1`: Requires a `0` guide.
 - `2`: Requires a `1` and a `0` guide.

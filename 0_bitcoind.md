@@ -17,11 +17,11 @@ An indexed node can be used as a backend for other software which needs access t
 - [BTCPay Server](https://github.com/btcpayserver/btcpayserver)
 - [c-Lightning](https://github.com/ElementsProject/lightning)
 - [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server)
-  - Guide: [`1_electrum-personal-server.md`](https://github.com/qubenix/guides/blob/master/qubes-r4/whonix-14/bitcoin/indexed/1_electrum-personal-server.md)
+  - Guide: [`1_electrum-personal-server.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md)
 - [Electrumx](https://github.com/kyuupichan/electrumx)
-  - Guide: [`1_electrumx.md`](https://github.com/qubenix/guides/blob/master/qubes-r4/whonix-14/bitcoin/indexed/1_electrumx.md)
+  - Guide: [`1_electrumx.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md)
 - [JoinMarket](https://github.com/JoinMarket-Org/joinmarket-clientserver)
-  - Guide: [`1_joinmarket.md`](https://github.com/qubenix/guides/blob/master/qubes-r4/whonix-14/bitcoin/indexed/1_joinmarket.md)
+  - Guide: [`1_joinmarket.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_joinmarket.md)
 - [LND](https://github.com/LightningNetwork/lnd)
 
 Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM, making use of the Qubes security by isolation model.

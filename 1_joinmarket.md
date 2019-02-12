@@ -10,7 +10,7 @@ There is a detailed explanation of the concept by the creator [here](https://bit
 This increases the security of your JoinMarket wallet while still maintaining full functionality. The only way a remote attacker can compromise this system is to successfully exploit one of your internet connected VMs and then use a Qubes/Xen 0-day to escape that VM.
 ## Prerequisites
 - To complete this guide you must have first completed:
-  - [`0_bitcoind.md`](https://github.com/qubenix/guides/blob/master/qubes-r4/whonix-14/bitcoin/indexed/0_bitcoind.md)
+  - [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md)
 
 ## I. Set Up Dom0
 ### A. In a `dom0` terminal, create an AppVM.

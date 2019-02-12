@@ -6,10 +6,10 @@ Electrum is a popular lightweight Bitcoin wallet based on a client-server protoc
 This increases the security and privacy of your Electrum wallet while still maintaining full functionality. Privacy is enhanced by preventing data leakage to server operators, and security is improved by removing the need for an internet connection on the wallet.
 ## Prerequisites
 - To complete this guide you must have first completed:
-  - [`0_bitcoind.md`](https://github.com/qubenix/guides/blob/master/qubes-r4/whonix-14/bitcoin/indexed/0_bitcoind.md)
+  - [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md)
   - You will also need either one of these, but not both:
-    - [`1_electrum-personal-server.md`](https://github.com/qubenix/guides/blob/master/qubes-r4/whonix-14/bitcoin/indexed/1_electrum-personal-server.md)
-    - [`1_electrumx.md`](https://github.com/qubenix/guides/blob/master/qubes-r4/whonix-14/bitcoin/indexed/1_electrumx.md)
+    - [`1_electrum-personal-server.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md)
+    - [`1_electrumx.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md)
 
 ## I. Set Up Dom0
 ### A. In a `dom0` terminal, create AppVM.

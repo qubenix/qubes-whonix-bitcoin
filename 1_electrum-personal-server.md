@@ -478,6 +478,6 @@ user@host:~$ sudo journalctl -fu eps
 user@host:~$ sudo tail -f /home/eps/.eps/debug.log
 ```
 ## VIII. Final Notes
-- Initial sync will take about 10-20 minutes for each wallet pubkey in your EPS config file.
+- Initial sync will take about 10-20 minutes for each MPK in your EPS config file.
 - Once the sync is finished you may connect your Electrum wallet via the Tor onion address.
-- To connect an offline Electrum wallet from a separate VM (split-electrum) use the guide: [`2_electrum.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/2_electrum.md).
+- To connect an offline Electrum wallet from a separate VM ("split-electrum") use the guide: [`2_electrum.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/2_electrum.md).

@@ -42,6 +42,7 @@ Start with [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blo
 - [c-Lightning](https://github.com/ElementsProject/lightning)
 - [Electrs](https://github.com/romanz/electrs)
 - [LND](https://github.com/LightningNetwork/lnd)
+- [Wasabi Wallet](https://wasabiwallet.io/)
 
 ## Guide Numbering Legend
 - `0`: No prerequisites.

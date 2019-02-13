@@ -20,9 +20,9 @@ This increases the security and privacy of your Electrum wallet while still main
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label black --prop netvm='' --template whonix-ws-14-bitcoin electrum
+[user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-14-bitcoin electrum
 ```
-### B. Create rpc policy to allow comms from `electrum` to `eps` or `electrumx`.
+### B. Create rpc policy to allow comms from `electrum` to `eps` or `electrumx` VM.
 1. Allow `electrum` to communicate with `eps`.
 
 **Note:**
@@ -45,7 +45,7 @@ This increases the security and privacy of your Electrum wallet while still main
 
 **Notes:**
 - These instructions are taken from an older version of the [Whonix wiki](https://www.whonix.org/wiki/Electrum).
-- You should use the unstable repo since it has a newer version of Electrum (`3.2.3`) than backports (`3.1.3`) with substantial [improvements](https://github.com/spesmilo/electrum/blob/master/RELEASE-NOTES).
+- The unstable repo is used since it has a newer version of Electrum (`3.2.3`) than backports (`3.1.3`) with substantial [improvements](https://github.com/spesmilo/electrum/blob/master/RELEASE-NOTES).
 
 ```
 user@host:~$ sudo sh -c "echo 'deb tor+http://vwakviie2ienjx6t.onion/debian sid main' > /etc/apt/sources.list.d/unstable.list"
@@ -53,7 +53,7 @@ user@host:~$ sudo sh -c "echo 'deb tor+http://vwakviie2ienjx6t.onion/debian sid 
 2. Make `stretch` the default repo.
 
 ```
-user@host:~$ sudo sh -c "echo 'APT::Default-Release \"stretch\";' > /etc/apt/apt.conf.d/70defaultrelease"
+user@host:~$ sudo sh -c 'echo "APT::Default-Release \"stretch\";" > /etc/apt/apt.conf.d/70defaultrelease'
 ```
 ### B. Update.
 ```

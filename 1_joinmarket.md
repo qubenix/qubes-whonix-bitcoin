@@ -29,7 +29,7 @@ This increases the security of your JoinMarket wallet while still maintaining fu
 ```
 ### C. Create rpc policies to allow comms from `joinmarket` to `bitcoind` VM.
 ```
-[user@dom0 ~]$ echo 'joinmarket bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.{bitcoind,joinmarketd-2718{3,4}} > /dev/null
+[user@dom0 ~]$ echo 'joinmarket bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.{bitcoind,joinmarketd-2718{3,4}}
 ```
 ## II. Set Up TemplateVM
 ### A. In a `whonix-ws-14-bitcoin` terminal, update and install dependencies.
@@ -37,9 +37,6 @@ This increases the security of your JoinMarket wallet while still maintaining fu
 user@host:~$ sudo apt update && sudo apt install -y libffi-dev libgmp-dev libsecp256k1-dev libsodium-dev \
 python-virtualenv python3-dev python3-pip
 ```
-<!--
-TODO NOTES: Try to limit package installs through pip
--->
 ### B. Create system user.
 ```
 user@host:~$ sudo adduser --system joinmarket
@@ -67,8 +64,8 @@ WorkingDirectory=/home/joinmarket/joinmarket-clientserver
 ExecStart=/bin/sh -c 'jmvenv/bin/python scripts/joinmarketd.py'
 
 User=joinmarket
-Restart=on-failure
 Type=idle
+Restart=on-failure
 
 PrivateTmp=true
 ProtectSystem=full
@@ -85,7 +82,7 @@ WantedBy=multi-user.target
 ```
 user@host:~$ sudo chmod 0644 /lib/systemd/system/joinmarketd.service
 ```
-4. Enable the service.
+5. Enable the service.
 
 ```
 user@host:~$ sudo systemctl enable joinmarketd.service
@@ -290,37 +287,27 @@ user@host:~$ sudo /rw/config/rc.local
 ```
 user@host:~$ mv ~/QubesIncoming/bitcoind/joinmarket-clientserver/ ~
 ```
-### C. Source the virtual environment and enter the JoinMarket directory on boot.
-**Note:**
-- You should not be using the `joinmarket` VM for anything other than your JoinMarket wallet, therefore these changes should be helpful.
-1. Edit the file `~/.bashrc`.
+### C. In a `joinmarket` terminal, configure JoinMarket.
+1. Source the virtual environment and change to the JoinMarket `scripts/` directory.
 
 ```
-user@host:~$ kwrite ~/.bashrc & exit
+user@host:~$ source ~/joinmarket-clientserver/jmvenv/bin/activate
+(jmvenv) user@host:~$ cd ~/joinmarket-clientserver/scripts/
 ```
-2. Paste the following at the bottom of the file.
-
-```
-source /home/user/joinmarket-clientserver/jmvenv/bin/activate
-cd /home/user/joinmarket-clientserver/scripts/
-```
-3. Save the file and open a new `joinmarket` terminal.
-
-### D. In a `joinmarket` terminal, configure JoinMarket.
-1. Generate a JoinMarket configuration file.
+2. Generate a configuration file.
 
 ```
 (jmvenv) user@host:~/joinmarket-clientserver/scripts$ python wallet-tool.py
 Created a new `joinmarket.cfg`. Please review and adopt the settings and restart joinmarket.
 ```
-2. Make a backup and edit the file `joinmarket.cfg`.
+3. Make a backup and edit the file `joinmarket.cfg`.
 
 ```
 (jmvenv) user@host:~/joinmarket-clientserver/scripts$ cp joinmarket.cfg joinmarket.cfg.orig
 (jmvenv) user@host:~/joinmarket-clientserver/scripts$ echo > joinmarket.cfg
 (jmvenv) user@host:~/joinmarket-clientserver/scripts$ kwrite joinmarket.cfg
 ```
-3. Paste the following.
+4. Paste the following.
 
 **Notes:**
 - Be sure to replace `<gateway-ip>`, `<rpc-user>`, and `<rpc-pass>` with the information noted earlier.
@@ -394,4 +381,23 @@ accept_commitment_broadcasts = 1
 4. Save the file.
 
 ## VI. Final Notes
-- Once `bitcoind` has finished syncing in the `bitcoind` VM you will be able to use JoinMarket's wallet from the `joinmarket` VM. To learn more about using JoinMarket's wallet please see their [wiki](https://github.com/JoinMarket-Org/joinmarket/wiki).
+- Once `bitcoind` has finished syncing in the `bitcoind` VM you will be able to use JoinMarket's wallet from the `joinmarket` VM.
+
+## VII. Optional Steps
+### A. Source virtual envrionment and change to JoinMarket `scripts/` directory on boot.
+**Note:**
+- You can safely skip this section if it doesn't seem helpful.
+- You should not be using the `joinmarket` VM for anything other than your JoinMarket wallet, so these changes should be helpful.
+
+1. Edit the file `~/.bashrc`.
+
+```
+user@host:~$ kwrite ~/.bashrc & exit
+```
+2. Paste the following at the bottom of the file.
+
+```
+source /home/user/joinmarket-clientserver/jmvenv/bin/activate
+cd /home/user/joinmarket-clientserver/scripts/
+```
+3. Save the file.

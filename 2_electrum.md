@@ -114,3 +114,4 @@ user@host:~$ chmod 0600 ~/.electrum/config
 ```
 ## IV. Final Notes
 - Once your `eps` or `electrumx` server has sync'd you will be able to use your `electrum` wallet.
+- For more information on using the Electrum wallet see the [official documentation](http://docs.electrum.org/en/latest/).

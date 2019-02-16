@@ -20,7 +20,7 @@ This increases the security and privacy of your Electrum wallet while still main
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-14-bitcoin electrum
+[user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-14 electrum
 ```
 ### B. Create rpc policy to allow comms from `electrum` to `eps` or `electrumx` VM.
 1. Allow `electrum` to communicate with `eps`.
@@ -39,29 +39,58 @@ This increases the security and privacy of your Electrum wallet while still main
 ```
 [user@dom0 ~]$ echo 'electrum electrumx allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrumx
 ```
-## II. Set Up Template
-### A. In a `whonix-ws-14-bitcoin` terminal, modify Debian sources.
-1. Add unstable source.
+## II. Install Electrum
+### A. In a `bitcoind` terminal, download and verify the Electrum appimage.
+1. Download the latest Electrum [appimage and signature](https://electrum.org/#download).
 
-**Notes:**
-- These instructions are taken from an older version of the [Whonix wiki](https://www.whonix.org/wiki/Electrum).
-- The unstable repo is used since it has a newer version of Electrum (`3.2.3`) than backports (`3.1.3`) with substantial [improvements](https://github.com/spesmilo/electrum/blob/master/RELEASE-NOTES).
-
-```
-user@host:~$ sudo sh -c "echo 'deb tor+http://vwakviie2ienjx6t.onion/debian sid main' > /etc/apt/sources.list.d/unstable.list"
-```
-2. Make `stretch` the default repo.
+**Note:**
+- At the time of writing the most recent version of Electrum is `3.3.4`, modify the following steps accordingly if the version has changed.
 
 ```
-user@host:~$ sudo sh -c 'echo "APT::Default-Release \"stretch\";" > /etc/apt/apt.conf.d/70defaultrelease'
+user@host:~$ curl -O "https://download.electrum.org/3.3.4/electrum-3.3.4-x86_64.AppImage" -O "https://download.electrum.org/3.3.4/electrum-3.3.4-x86_64.AppImage.asc"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 85.1M  100 85.1M    0     0   320k      0  0:04:31  0:04:31 --:--:--  249k
+100   833  100   833    0     0    332      0  0:00:02  0:00:02 --:--:--   519
 ```
-### B. Update.
+2. Receive signing key.
+
+**Note:**
+- You can verify the Thomas Voegtlin's key fingerprint on the Electrum [about page](https://electrum.org/#about).
+
 ```
-user@host:~$ sudo apt update
+user@host:~$ gpg --recv-keys 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
+key 0x2BD5824B7F9470E6:
+166 signatures not checked due to missing keys
+gpg: key 0x2BD5824B7F9470E6: public key "Thomas Voegtlin (https://electrum.org) <thomasv@electrum.org>" imported
+gpg: no ultimately trusted keys found
+gpg: Total number processed: 1
+gpg:               imported: 1
 ```
-### C. Install `electrum`.
+3. Verify the appimage.
+
 ```
-user@host:~$ sudo apt install -y electrum/sid
+user@host:~$ gpg --verify electrum-3.3.4-x86_64.AppImage.asc electrum-3.3.4-x86_64.AppImage
+gpg: Signature made Wed 13 Feb 2019 10:08:30 PM UTC
+gpg:                using RSA key 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
+gpg: Good signature from "Thomas Voegtlin (https://electrum.org) <thomasv@electrum.org>" [unknown]
+gpg:                 aka "ThomasV <thomasv1@gmx.de>" [unknown]
+gpg:                 aka "Thomas Voegtlin <thomasv1@gmx.de>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 6694 D8DE 7BE8 EE56 31BE  D950 2BD5 824B 7F94 70E6
+```
+4. Make the appimage executable.
+
+```
+user@host:~$ chmod a+x electrum-3.3.4-x86_64.AppImage
+```
+### B. Move appimage to the `electrum` VM.
+**Note:**
+- Select `electrum` from the `dom0` pop-up.
+
+```
+user@host:~$ qvm-move electrum-3.3.4-x86_64.AppImage
 ```
 ## III. Set Up Electrum
 ### A. In an `electrum` terminal, open communication with `eps` or `electrumx` on boot.
@@ -101,7 +130,8 @@ user@host:~$ kwrite ~/.electrum/config
 
 ```
 {
-    "auto_connect": true,
+    "auto_connect": false,
+    "check_updates": false,
     "oneserver": true,
     "server": "127.0.0.1:50002:s",
 }
@@ -112,6 +142,33 @@ user@host:~$ kwrite ~/.electrum/config
 ```
 user@host:~$ chmod 0600 ~/.electrum/config
 ```
+### C. Add executable to `$PATH`.
+1. Make `bin/` directory.
+
+```
+user@host:~$ mkdir -m 0700 ~/.local/bin
+```
+2. Add `bin/` directory to `$PATH` and source.
+
+```
+user@host:~$ echo 'PATH=~/.local/bin:$PATH' >> ~/.bashrc
+user@host:~$ source ~/.bashrc
+```
+3. Copy executable to `bin/` directory.
+
+```
+user@host:~$ cp electrum-3.3.4-x86_64.AppImage ~/.local/bin/electrum
+```
 ## IV. Final Notes
-- Once your `eps` or `electrumx` server has sync'd you will be able to use your `electrum` wallet.
+- Once your `eps` or `electrumx` server has sync'd you will be able to use your Electrum wallet.
+- To launch the wallet:
+
+```
+user@host:~$ electrum
+```
+- To get help on usage:
+
+```
+user@host:~$ electrum --help
+```
 - For more information on using the Electrum wallet see the [official documentation](http://docs.electrum.org/en/latest/).

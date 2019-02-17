@@ -193,9 +193,9 @@ user@host:~$ qvm-copy ~/joinmarket-clientserver/
 user@host:~$ sudo systemctl start joinmarketd.service
 ```
 ## IV. Configure `bitcoind` and `joinmarketd`
-### A. In a `sys-bitcoind` terminal, find out the gateway IP.
+### A. In a `sys-bitcoin` terminal, find out the gateway IP.
 **Note:**
-- Save your gateway IP (`10.137.0.50` in this example) for later to replace `<gateway-ip>` in examples.
+- Save your gateway IP (`10.137.0.50` in this example) to replace `<gateway-ip>` in later examples.
 
 ```
 user@host:~$ qubesdb-read /qubes-ip
@@ -205,7 +205,7 @@ user@host:~$ qubesdb-read /qubes-ip
 1. Create a random RPC username. Do not use the one shown.
 
 **Note:**
-- Save your username (`uJDzc07zxn5riJDx7N5m` in this example) for later to replace `<rpc-user>` in examples.
+- Save your username (`uJDzc07zxn5riJDx7N5m` in this example) to replace `<rpc-user>` in later examples.
 
 ```
 user@host:~$ head -c 15 /dev/urandom | base64
@@ -214,8 +214,8 @@ uJDzc07zxn5riJDx7N5m
 2. Use Bitcoin's tool to create a random RPC password and config entry. Do not use the one shown.
 
 **Notes:** 
-- Save the hased password (`838c4dd74606918f1f27a5a2a52b168$9634018b87451bca05082f51b0b5b876fc72ef877bad98298e97e277abd5f90c` in this example) for later to replace `<hashed-pass>` in examples.
-- Save your password (`IuziNnTsOUkonsDD3jn5WatPnFrFOMSnGUsRSUaq5Qg=` in this example) for later to replace `<rpc-pass>` in examples.
+- Save the hased password (`838c4dd74606918f1f27a5a2a52b168$9634018b87451bca05082f51b0b5b876fc72ef877bad98298e97e277abd5f90c` in this example) to replace `<hashed-pass>` in later examples.
+- Save your password (`IuziNnTsOUkonsDD3jn5WatPnFrFOMSnGUsRSUaq5Qg=` in this example) to replace `<rpc-pass>` in later examples.
 - Replace `<rpc-user>` with the information noted earlier.
 
 ```

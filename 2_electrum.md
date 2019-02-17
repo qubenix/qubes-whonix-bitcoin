@@ -130,7 +130,7 @@ user@host:~$ kwrite ~/.electrum/config
 
 ```
 {
-    "auto_connect": false,
+    "auto_connect": true,
     "check_updates": false,
     "oneserver": true,
     "server": "127.0.0.1:50002:s",

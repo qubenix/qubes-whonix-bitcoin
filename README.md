@@ -3,8 +3,17 @@ A series of guides that use the Qubes [security by isolation](https://www.qubes-
 
 Each application will run in its own Whonix VM, and in the case of Electrum and JoinMarket, the wallets will have full functionality without any network connection. This is accomplished using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).
 
-Start with [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md), every other guide depends on it. Each guide will list its own prerequisites.
+There are some things to consider before following the guides in this series. The first one is that these guides are not fast or necessarily easy to follow. Instead, they strive to thoroughly address security and privacy concerns where practically possible.
+
+The next possible issue is that these guides are very narrow. Each of these services are only set up for Bitcoin's mainnet, and they provide very specific features. There are also sacrifices made of computer resources (memory, processing, etc.) in order to provide more security.
+
+The last shortcoming that should be made obvious is the fact that there is no update method described for any of these guides. For now the user is responsible for figuring out how to upgrade based on the install steps.
 ## Guides
+|   | Guide Numbering Legend                         |
+|---|------------------------------------------------|
+|`0`| No prerequisites, required by all other guides.|
+|`1`| Requires the `0` guide.                        |
+|`2`| Requires a `1` and the `0` guide.              |
 - [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md)
   - Build a [Bitcoin Core](https://github.com/bitcoin/bitcoin) full node configured to:
     - Allow other VMs to connect when given permission from `dom0`.
@@ -43,12 +52,6 @@ Start with [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blo
 - [Electrs](https://github.com/romanz/electrs)
 - [LND](https://github.com/LightningNetwork/lnd)
 - [Wasabi Wallet](https://github.com/zkSNACKs/WalletWasabi)
-
-## Guide Numbering Legend
-- `0`: No prerequisites.
-- `1`: Requires a `0` guide.
-- `2`: Requires a `1` and a `0` guide.
-- ... so on.
 
 ## Git Mirrors
 - https://github.com/qubenix/qubes-whonix-bitcoin

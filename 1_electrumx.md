@@ -400,18 +400,22 @@ user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/e
 user@host:~$ sudo chmod 0644 /rw/usrlocal/etc/qubes-rpc/qubes.electrumx
 ```
 ### C. Open firewall for Tor onion service.
-1. Make persistent directory.
+1. Make persistent directory for new firewall rules.
 
 ```
 user@host:~$ sudo mkdir -m 0755 /rw/config/whonix_firewall.d
 ```
-2. Configure firewall, and fix permissions.
+2. Configure firewall.
 
 ```
 user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50002 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
+```
+3. Fix permissions.
+
+```
 user@host:~$ sudo chmod 0644 /rw/config/whonix_firewall.d/50_user.conf
 ```
-3. Restart firewall service.
+4. Restart firewall service.
 
 ```
 user@host:~$ sudo systemctl restart whonix-firewall.service

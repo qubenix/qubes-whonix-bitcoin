@@ -146,18 +146,17 @@ user@host:~$ chmod 0600 ~/.electrum/config
 1. Make `bin/` directory.
 
 ```
-user@host:~$ mkdir -m 0700 ~/.local/bin
+user@host:~$ mkdir -m 0700 ~/bin
 ```
-2. Add `bin/` directory to `$PATH` and source.
+2. Copy executable to `bin/` directory.
 
 ```
-user@host:~$ echo 'PATH=~/.local/bin:$PATH' >> ~/.bashrc
-user@host:~$ source ~/.bashrc
+user@host:~$ cp electrum-3.3.4-x86_64.AppImage ~/bin/electrum
 ```
-3. Copy executable to `bin/` directory.
+3. Source profile to fix `$PATH`.
 
 ```
-user@host:~$ cp electrum-3.3.4-x86_64.AppImage ~/.local/bin/electrum
+user@host:~$ source ~/.profile
 ```
 ## IV. Final Notes
 - Once your `eps` or `electrumx` server has sync'd you will be able to use your Electrum wallet.

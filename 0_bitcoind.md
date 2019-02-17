@@ -261,15 +261,23 @@ bitcoin@host:~$ chmod 0600 ~/.bitcoin/bitcoin.conf
 ```
 bitcoin@host:~$ exit
 ```
-### C. Open p2p ports.
-1. Make persistent directory, configure firewall, and fix permissions.
+### C. Open firewall for Tor onion service.
+1. Make persistent directory for new firewall rules.
 
 ```
 user@host:~$ sudo mkdir -m 0755 /rw/config/whonix_firewall.d
+```
+2. Configure firewall.
+
+```
 user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 8333 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
+```
+3. Fix permissions.
+
+```
 user@host:~$ sudo chmod 0644 /rw/config/whonix_firewall.d/50_user.conf
 ```
-2. Restart firewall service.
+4. Restart firewall service.
 
 ```
 user@host:~$ sudo systemctl restart whonix-firewall.service
@@ -294,7 +302,18 @@ user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:8332" > /rw/usrlocal/et
 ```
 user@host:~$ sudo chmod 0644 /rw/usrlocal/etc/qubes-rpc/qubes.bitcoind
 ```
-## VII. Initial Blockchain Download
+## VII. Create Alias
+1. Make an alias in order to control `bitcoind` easier.
+
+```
+user@host:~$ echo 'alias bitcoin-cli="sudo -u bitcoin /home/bitcoin/bin/bitcoin-cli"' >> ~/.bashrc
+```
+2. Source the file.
+
+```
+user@host:~$ source ~/.bashrc
+```
+## VIII. Initial Blockchain Download
 **Note:**
 - Initial block download can take anywhere from a day to a week (or even more) depending on a number of factors including your hardware and internet connection.
 
@@ -304,4 +323,5 @@ user@host:~$ sudo systemctl start bitcoind
 ```
 ## VIII. Final Notes
 - Once the initial synchronization has finished you may begin using your Bitcoin node as a backend for other services.
-- To check a `DEBUG` level server log: `sudo tail -f /home/bitcoin/.bitcoin/debug.log`
+- To check the status of the server: `sudo tail -f /home/bitcoin/.bitcoin/debug.log`
+- To interact with the server: `bitcoin-cli --help`

@@ -1,5 +1,5 @@
 # Qubes 4 & Whonix 14: JoinMarket
-Create a VM without networking to [JoinMarket](https://github.com/JoinMarket-Org/joinmarket-clientserver) wallet. The `joinmarketd` daemon will run on the `bitcoind` VM, communicate only over Tor onion services, and use stream isolation.
+Create a VM without networking to host a [JoinMarket](https://github.com/JoinMarket-Org/joinmarket-clientserver) wallet. The `joinmarketd` daemon will run on the `bitcoind` VM, communicate only over Tor onion services, and use stream isolation.
 
 The offline `joinmarket` VM will communicate with your `bitcoind` VM using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).
 ## What is JoinMarket?
@@ -90,7 +90,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/joinmarketd.service 
 ```
 ### C. Shutdown TemplateVM.
 ```
-user@host:~$ sudo shutdown now
+user@host:~$ sudo poweroff
 ```
 ## III. Install JoinMarket
 ### A. In a `bitcoind` terminal, download and verify JoinMarket source code.
@@ -385,14 +385,10 @@ accept_commitment_broadcasts = 1
 
 ## VII. Optional Steps
 ### A. Source virtual envrionment and change to JoinMarket `scripts/` directory on boot.
-**Note:**
-- You can safely skip this section if it doesn't seem helpful.
-- You should not be using the `joinmarket` VM for anything other than your JoinMarket wallet, so these changes should be helpful.
-
 1. Edit the file `~/.bashrc`.
 
 ```
-user@host:~$ kwrite ~/.bashrc & exit
+user@host:~$ kwrite ~/.bashrc
 ```
 2. Paste the following at the bottom of the file.
 
@@ -401,3 +397,8 @@ source /home/user/joinmarket-clientserver/jmvenv/bin/activate
 cd /home/user/joinmarket-clientserver/scripts/
 ```
 3. Save the file.
+4. Source the file to take effect.
+
+```
+user@host:~$ source ~/.bashrc
+```

@@ -126,7 +126,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/eps.service → /lib
 ```
 ### D. Shutdown TemplateVM.
 ```
-user@host:~$ sudo shutdown now
+user@host:~$ sudo poweroff
 ```
 ## III. Set up Bitcoin.
 ### A. In a `bitcoind` terminal, create RPC credentials for `eps` to communicate with `bitcoind`.

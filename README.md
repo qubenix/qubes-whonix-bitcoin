@@ -3,13 +3,13 @@ A series of guides that use the Qubes [security by isolation](https://www.qubes-
 
 Each application will run in its own Whonix VM, and in the case of Electrum and JoinMarket, the wallets will have full functionality without any network connection. This is accomplished using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).
 
-There are some things to consider before following the guides in this series. The first one is that these guides are not fast or necessarily easy to follow. Instead, they strive to thoroughly address security and privacy concerns where practically possible.
+There are some things to consider before following the guides in this series. The first one is that these guides are not fast or necessarily easy to follow (copy/paste if possible to limit errors). Instead, they strive to thoroughly address security and privacy concerns where practically possible.
 
-The next possible issue is that these guides are very narrow. Each of these services are only set up for Bitcoin's mainnet, and they provide very specific features. There are also sacrifices made of computer resources (memory, processing, etc.) in order to provide more security.
+The next potential issue is that these guides are very narrow in scope. Each of the services are only set up for Bitcoin's mainnet, and provide only very specific features. There are also sacrifices made of computer resources (memory, processing, etc.) in order to provide more security.
 
-The last shortcoming that should be made obvious is the fact that there is no update method described for any of these guides. For now the user is responsible for figuring out how to upgrade based on the install steps.
+The last shortcoming that should be made obvious is the fact that there is no update method described for any of these guides. For now the user is responsible to know if there are new versions (release pages are linked to) and figuring out how to upgrade. An effort is made to keep the guides up to date with current versions, but that fact can't always be relied on.
 ## Guides
-|   | Guide Numbering Legend                         |
+|   | Numbering Legend                               |
 |---|------------------------------------------------|
 |`0`| No prerequisites, required by all other guides.|
 |`1`| Requires the `0` guide.                        |

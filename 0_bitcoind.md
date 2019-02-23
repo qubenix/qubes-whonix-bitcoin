@@ -114,7 +114,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/bitcoind.service →
 ```
 ### D. Shutdown TemplateVM.
 ```
-user@host:~$ sudo shutdown now
+user@host:~$ sudo poweroff
 ```
 ## III. Set Up Gateway.
 ### A. In a `sys-bitcoin` terminal, find out the gateway IP.

@@ -117,7 +117,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/electrumx.service â†
 ```
 ### D. Shutdown TemplateVM.
 ```
-user@host:~$ sudo shutdown now
+user@host:~$ sudo poweroff
 ```
 ## III. Set up Bitcoin.
 ### A. In a `bitcoind` terminal, create RPC credentials for `electrumx` to communicate with `bitcoind`.

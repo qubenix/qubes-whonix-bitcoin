@@ -57,8 +57,8 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 ```
 user@host:~$ sudo apt update && sudo apt install -y automake autotools-dev build-essential git \
 libboost-chrono-dev libboost-filesystem-dev libboost-system-dev libboost-test-dev libboost-thread-dev \
-libevent-dev libprotobuf-dev libqrencode-dev libqt5core5a libqt5dbus5 libqt5gui5 libssl-dev libtool \
-libzmq3-dev pkg-config protobuf-compiler qttools5-dev qttools5-dev-tools
+libevent-dev libprotobuf-dev libqrencode-dev libssl-dev libtool libzmq3-dev pkg-config \
+protobuf-compiler qttools5-dev qttools5-dev-tools
 ```
 ### B. Create system user.
 ```

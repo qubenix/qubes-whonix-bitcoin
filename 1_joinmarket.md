@@ -3,11 +3,11 @@ Create a VM without networking to host a [JoinMarket](https://github.com/JoinMar
 
 The offline `joinmarket` VM will communicate with your `bitcoind` VM using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).
 ## What is JoinMarket?
-Joinmarket is a decentralized, open source, and trustless market for Bitcoin privacy using [coinjoin](https://en.bitcoin.it/wiki/CoinJoin). Anyone holding Bitcoin can offer coinjoins for a fee, and anyone can pay a fee to have their transactions obfuscated.
+Joinmarket is an open source, decentralized, and trustless market for [coinjoins](https://en.bitcoin.it/wiki/CoinJoin). Anyone holding Bitcoin can offer coinjoins for a fee, and anyone can pay a fee to have their transactions obfuscated.
 
-There is a detailed explanation of the concept by the creator [here](https://bitcointalk.org/index.php?topic=919116.0), and a descriptive infographic [here](https://imgur.com/C6w0Pgf).
+See the [Bitcoin wiki](https://en.bitcoin.it/wiki/JoinMarket) for a more detailed explanation of JoinMarket.
 ## Why Do This?
-This increases the security of your JoinMarket wallet while still maintaining full functionality. The only way a remote attacker can compromise this system is to successfully exploit one of your internet connected VMs and then use a Qubes/Xen 0-day to escape that VM.
+This increases the privacy and security of your JoinMarket wallet while still maintaining full functionality. Enhanced privacy is achieved by using only Tor onion endpoints, and security is improved by removing the need for a network connection on the wallet VM.
 ## Prerequisites
 - To complete this guide you must have first completed:
   - [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md)

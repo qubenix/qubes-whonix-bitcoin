@@ -1,9 +1,9 @@
 # Qubes 4 & Whonix 14: Electrum
-Create a VM without networking to host an [Electrum](https://electrum.org) Bitcoin wallet. The offline `electrum` VM will communicate with either an `electrumx` or `eps` VM using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).
+Create a VM without networking to host an [Electrum](https://electrum.org) Bitcoin wallet. The offline `electrum` VM will communicate with either an `electrum-personal-server` or `electrumx` VM using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).
 ## What is Electrum?
-Electrum is a popular lightweight Bitcoin wallet based on a client-server protocol. More info [here](https://en.bitcoin.it/wiki/Electrum).
+Electrum is a popular lightweight Bitcoin wallet based on a client-server protocol. See the [Bitcoin wiki](https://en.bitcoin.it/wiki/Electrum) for a more detailed explanation of Electrum.
 ## Why Do This?
-This increases the security and privacy of your Electrum wallet while still maintaining full functionality. Privacy is enhanced by preventing data leakage to server operators, and security is improved by removing the need for an internet connection on the wallet.
+This increases the privacy and security of your Electrum wallet while still maintaining full functionality. Enhanced privacy is achieved by preventing data leakage to server operators, and security is improved by removing the need for a network connection on the wallet VM.
 ## Prerequisites
 - To complete this guide you must have first completed:
   - [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md)
@@ -22,14 +22,14 @@ This increases the security and privacy of your Electrum wallet while still main
 ```
 [user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-14 electrum
 ```
-### B. Create rpc policy to allow comms from `electrum` to `eps` or `electrumx` VM.
-1. Allow `electrum` to communicate with `eps`.
+### B. Create rpc policy to allow comms from `electrum` to `electrum-personal-server` or `electrumx` VM.
+1. Allow `electrum` to communicate with `electrum-personal-server`.
 
 **Note:**
-- Skip this step if you did not install `eps` as your server VM.
+- Skip this step if you did not install `electrum-personal-server` as your server VM.
 
 ```
-[user@dom0 ~]$ echo 'electrum eps allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.eps
+[user@dom0 ~]$ echo 'electrum electrum-personal-server allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum-personal-server
 ```
 2. Allow `electrum` to communicate with `electrumx`.
 
@@ -93,14 +93,14 @@ user@host:~$ chmod a+x electrum-3.3.4-x86_64.AppImage
 user@host:~$ qvm-move electrum-3.3.4-x86_64.AppImage
 ```
 ## III. Set Up Electrum
-### A. In an `electrum` terminal, open communication with `eps` or `electrumx` on boot.
-1. Edit the file `/rw/config/local` for `eps`.
+### A. In an `electrum` terminal, open communication with `electrum-personal-server` or `electrumx` on boot.
+1. Edit the file `/rw/config/local` for `electrum-personal-server`.
 
 **Note:**
-- Skip this step if you did not install `eps` as your server VM.
+- Skip this step if you did not install `electrum-personal-server` as your server VM.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm eps qubes.eps\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrum-personal-server qubes.electrum-personal-server\" &" >> /rw/config/rc.local'
 ```
 2. Edit the file `/rw/config/local` for `electrumx`.
 
@@ -159,7 +159,7 @@ user@host:~$ cp electrum-3.3.4-x86_64.AppImage ~/bin/electrum
 user@host:~$ source ~/.profile
 ```
 ## IV. Final Notes
-- Once your `eps` or `electrumx` server has sync'd you will be able to use your Electrum wallet.
+- Once your `electrum-personal-server` or `electrumx` server has sync'd you will be able to use your Electrum wallet.
 - To launch the wallet:
 
 ```

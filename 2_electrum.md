@@ -13,7 +13,7 @@ This increases the privacy and security of your Electrum wallet while still main
 
 ## I. Set Up Dom0
 ### A. In a `dom0` terminal, create AppVM.
-1. Create an AppVM for Electrum with no networking, using the `whonix-ws-14-bitcoin` TemplateVM.
+1. Create an AppVM for Electrum with no networking, using the `whonix-ws-14` TemplateVM.
 
 **Notes:**
 - You must choose a label color, but it does not have to match this example.
@@ -170,4 +170,4 @@ user@host:~$ electrum
 ```
 user@host:~$ electrum --help
 ```
-- For more information on using the Electrum wallet see the [official documentation](http://docs.electrum.org/en/latest/).
+- For more information on using the Electrum wallet see the [official documentation](https://electrum.readthedocs.io/).

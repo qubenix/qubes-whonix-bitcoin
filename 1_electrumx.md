@@ -62,7 +62,7 @@ In addition to preventing certain types of attacks, this setup also increases yo
 ## II. Set Up TemplateVM
 ### A. In a `whonix-ws-14-bitcoin` terminal, update and install dependency.
 ```
-user@host:~$ sudo apt update && sudo apt install -y python-virtualenv
+user@host:~$ sudo apt update && sudo apt install -y python-virtualenv zlib1g-dev
 ```
 ### B. Create a system user.
 ```
@@ -249,29 +249,29 @@ electrumx@host:~/Python-3.6.8$ cd
 1. Clone the repository.
 
 **Note:**
-- The current version of Electrumx is `1.9.5`, modify the following steps accordingly if the version has changed.
+- The current version of Electrumx is `1.10.0`, modify the following steps accordingly if the version has changed.
 
 ```
-electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.9.5.tar.gz"
+electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.10.0.tar.gz"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   127    0   127    0     0     47      0 --:--:--  0:00:02 --:--:--    47
-100  292k    0  292k    0     0  57103      0 --:--:--  0:00:05 --:--:--  172k
+100   128    0   128    0     0     20      0 --:--:--  0:00:06 --:--:--    35
+100  300k    0  300k    0     0  18930      0 --:--:--  0:00:16 --:--:-- 81897
 ```
 2. Verify download.
 
 **Note:**
 - The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
-- While it doesn't offer the same security, I have included the SHA256 sum of my `1.9.5` download for your verification.
+- While it doesn't offer the same security, I have included the SHA256 sum of my `1.10.0` download for your verification.
 
 ```
-electrumx@host:~$ echo 'cb327e99bf20db364299012b0c85ff0a697f6fdae60f8f198743640333989e31  1.9.5.tar.gz' | LC_ALL=C shasum -c
-1.9.5.tar.gz: OK
+electrumx@host:~$ echo '580d3b6318f537a6fde7eb9342bd90f95017b93fd3ccf7c1aa0b4ac7a31d9111  1.10.0.tar.gz' | shasum -c
+1.10.0.tar.gz: OK
 ```
 3. Extract.
 
 ```
-electrumx@host:~$ tar -C ~ -xf 1.9.5.tar.gz
+electrumx@host:~$ tar -C ~ -xf 1.10.0.tar.gz
 ```
 ### B. Create virtual environment.
 1. Fix `$PATH`.
@@ -282,12 +282,12 @@ electrumx@host:~$ source ~/.profile
 2. Change directory.
 
 ```
-electrumx@host:~$ cd ~/electrumx-1.9.5/
+electrumx@host:~$ cd ~/electrumx-1.10.0/
 ```
 3. Create virtual environment.
 
 ```
-electrumx@host:~/electrumx-1.9.5$ virtualenv -p python3.6 ~/exvenv
+electrumx@host:~/electrumx-1.10.0$ virtualenv -p python3.6 ~/exvenv
 Running virtualenv with interpreter /home/electrumx/bin/python3.6
 Using base prefix '/home/electrumx'
 New python executable in /home/electrumx/exvenv/bin/python3.6
@@ -298,17 +298,17 @@ Installing setuptools, pkg_resources, pip, wheel...done.
 1. Source virtual environment.
 
 ```
-electrumx@host:~/electrumx-1.9.5$ source ~/exvenv/bin/activate
+electrumx@host:~/electrumx-1.10.0$ source ~/exvenv/bin/activate
 ```
 2. Install Electrumx.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.9.5$ python setup.py install
+(exvenv) electrumx@host:~/electrumx-1.10.0$ python setup.py install
 ```
 3. Deactivate virtual environment and return to home dir.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.9.5$ deactivate; cd
+(exvenv) electrumx@host:~/electrumx-1.10.0$ deactivate; cd
 ```
 ## IV. Set Up Electrumx
 ### A. Remain in an `electrumx` terminal, configure Electrumx data directory.

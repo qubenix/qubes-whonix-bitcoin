@@ -87,7 +87,7 @@ After=qubes-sysinit.service
 
 [Service]
 EnvironmentFile=/home/electrumx/.electrumx/electrumx.conf
-ExecStart=/home/electrumx/exvenv/bin/python3.6 /home/electrumx/exvenv/bin/electrumx_server
+ExecStart=/home/electrumx/exvenv/bin/python3.7 /home/electrumx/exvenv/bin/electrumx_server
 
 User=electrumx
 Restart=on-failure
@@ -174,17 +174,17 @@ user@host:~$ sudo systemctl restart bitcoind.service
 user@host:~$ sudo -H -u electrumx bash
 electrumx@host:/home/user$ cd
 ```
-### B. Download and verify Python3.6.
-1. Download Python3.6.
+### B. Download and verify Python3.7.
+1. Download Python3.7.
 
 **Note:**
-- At the time of writing the most recent stable version of Python3.6 is `3.6.8`, modify the following steps accordingly if the version has changed.
+- At the time of writing the most recent stable version of Python3.7 is `3.7.3`, modify the following steps accordingly if the version has changed.
 
 ```
-electrumx@host:~$ curl -O "https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz" -O "https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz.asc"
+electrumx@host:~$ curl -O "https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz" -O "https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz.asc"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 16.4M  100 16.4M    0     0   325k      0  0:00:51  0:00:51 --:--:--  345k
+100 16.3M  100 16.3M    0     0   325k      0  0:00:51  0:00:51 --:--:--  345k
 100   833  100   833    0     0    958      0 --:--:-- --:--:-- --:--:--     0
 ```
 2. Receive signing key.
@@ -205,8 +205,8 @@ gpg:               imported: 1
 3. Verify.
 
 ```
-electrumx@host:~$ gpg --verify Python-3.6.8.tar.xz.asc Python-3.6.8.tar.xz
-gpg: Signature made Mon 24 Dec 2018 03:07:36 AM UTC
+electrumx@host:~$ gpg --verify Python-3.7.3.tar.xz.asc Python-3.7.3.tar.xz
+gpg: Signature made Mon Mar 25 21:00:43 2019 UTC
 gpg:                using RSA key 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
 gpg: Good signature from "Ned Deily (Python release signing key) <nad@python.org>" [unknown]
 gpg:                 aka "Ned Deily <nad@baybryj.net>" [unknown]
@@ -216,12 +216,12 @@ gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
 Primary key fingerprint: 0D96 DF4D 4110 E5C4 3FBF  B17F 2D34 7EA6 AA65 421D
 ```
-### C. Build and install Python3.6.
+### C. Build and install Python3.7.
 1. Extract and enter directory.
 
 ```
-electrumx@host:~$ tar -C ~ -xf Python-3.6.8.tar.xz
-electrumx@host:~$ cd ~/Python-3.6.8/
+electrumx@host:~$ tar -C ~ -xf Python-3.7.3.tar.xz
+electrumx@host:~$ cd ~/Python-3.7.3/
 ```
 2. Configure.
 
@@ -229,7 +229,7 @@ electrumx@host:~$ cd ~/Python-3.6.8/
 - This step will take some time and produce a lot of output. This is normal, be patient.
 
 ```
-electrumx@host:~/Python-3.6.8$ ./configure --enable-optimizations --prefix=/home/electrumx --with-ensurepip=install
+electrumx@host:~/Python-3.7.3$ ./configure --enable-optimizations --prefix=/home/electrumx --with-ensurepip=install
 ```
 3. Make and install.
 
@@ -237,22 +237,22 @@ electrumx@host:~/Python-3.6.8$ ./configure --enable-optimizations --prefix=/home
 - This step will take some time and produce a lot of output. This is normal, be patient.
 
 ```
-electrumx@host:~/Python-3.6.8$ make && make install
+electrumx@host:~/Python-3.7.3$ make && make install
 ```
 4. Return to home directory.
 
 ```
-electrumx@host:~/Python-3.6.8$ cd
+electrumx@host:~/Python-3.7.3$ cd
 ```
 ## IV. Install Electrumx
 ### A. Download and verify the Electrumx source code.
 1. Clone the repository.
 
 **Note:**
-- The current version of Electrumx is `1.10.0`, modify the following steps accordingly if the version has changed.
+- The current version of Electrumx is `1.10.1`, modify the following steps accordingly if the version has changed.
 
 ```
-electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.10.0.tar.gz"
+electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.10.1.tar.gz"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100   128    0   128    0     0     20      0 --:--:--  0:00:06 --:--:--    35
@@ -262,16 +262,16 @@ electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.10
 
 **Note:**
 - The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
-- While it doesn't offer the same security, I have included the SHA256 sum of my `1.10.0` download for your verification.
+- While it doesn't offer the same security, I have included the SHA256 sum of my `1.10.1.tar.gz` download for your verification.
 
 ```
-electrumx@host:~$ echo '580d3b6318f537a6fde7eb9342bd90f95017b93fd3ccf7c1aa0b4ac7a31d9111  1.10.0.tar.gz' | shasum -c
-1.10.0.tar.gz: OK
+electrumx@host:~$ echo 'e6a234785951dd833a245b3e6e6e528a084869bd034e5a7067bb7b7ab608d739  1.10.1.tar.gz' | shasum -c
+1.10.1.tar.gz: OK
 ```
 3. Extract.
 
 ```
-electrumx@host:~$ tar -C ~ -xf 1.10.0.tar.gz
+electrumx@host:~$ tar -C ~ -xf 1.10.1.tar.gz
 ```
 ### B. Create virtual environment.
 1. Fix `$PATH`.
@@ -282,33 +282,28 @@ electrumx@host:~$ source ~/.profile
 2. Change directory.
 
 ```
-electrumx@host:~$ cd ~/electrumx-1.10.0/
+electrumx@host:~$ cd ~/electrumx-1.10.1/
 ```
 3. Create virtual environment.
 
 ```
-electrumx@host:~/electrumx-1.10.0$ virtualenv -p python3.6 ~/exvenv
-Running virtualenv with interpreter /home/electrumx/bin/python3.6
-Using base prefix '/home/electrumx'
-New python executable in /home/electrumx/exvenv/bin/python3.6
-Also creating executable in /home/electrumx/exvenv/bin/python
-Installing setuptools, pkg_resources, pip, wheel...done.
+electrumx@host:~/electrumx-1.10.1$ ~/bin/python3.7 -m venv ~/exvenv
 ```
 ### C. Install inside virtual environment.
 1. Source virtual environment.
 
 ```
-electrumx@host:~/electrumx-1.10.0$ source ~/exvenv/bin/activate
+electrumx@host:~/electrumx-1.10.1$ source ~/exvenv/bin/activate
 ```
 2. Install Electrumx.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.10.0$ python setup.py install
+(exvenv) electrumx@host:~/electrumx-1.10.1$ python setup.py install
 ```
 3. Deactivate virtual environment and return to home dir.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.10.0$ deactivate; cd
+(exvenv) electrumx@host:~/electrumx-1.10.1$ deactivate; cd
 ```
 ## IV. Set Up Electrumx
 ### A. Remain in an `electrumx` terminal, configure Electrumx data directory.
@@ -350,7 +345,7 @@ REPORT_TCP_PORT = 0
 REPORT_SSL_PORT = 0
 ## Cache
 CACHE_MB = 400
-## Python3.6
+## Python3.7
 PYTHONHOME = /home/electrumx/exvenv
 ```
 4. Save the file and switch back to the terminal.

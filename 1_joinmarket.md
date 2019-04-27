@@ -96,15 +96,19 @@ user@host:~$ sudo poweroff
 ### A. In a `bitcoind` terminal, download and verify JoinMarket source code.
 1. Clone the JoinMarket [repository](https://github.com/JoinMarket-Org/joinmarket-clientserver).
 
+**Note:**
+- At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.5.4`, modify the following steps accordingly if the version has changed.
+
 ```
-user@host:~$ git clone https://github.com/JoinMarket-Org/joinmarket-clientserver ~/joinmarket-clientserver
+user@host:~$ git --branch v0.5.4 clone https://github.com/JoinMarket-Org/joinmarket-clientserver ~/joinmarket-clientserver
 Cloning into '/home/user/joinmarket-clientserver'...
-remote: Enumerating objects: 44, done.
-remote: Counting objects: 100% (44/44), done.
-remote: Compressing objects: 100% (35/35), done.
-remote: Total 4356 (delta 14), reused 26 (delta 9), pack-reused 4312
-Receiving objects: 100% (4356/4356), 3.37 MiB | 243.00 KiB/s, done.
-Resolving deltas: 100% (2830/2830), done.
+remote: Enumerating objects: 74, done.
+remote: Counting objects: 100% (74/74), done.
+remote: Compressing objects: 100% (52/52), done.
+remote: Total 4461 (delta 35), reused 50 (delta 22), pack-reused 4387
+Receiving objects: 100% (4461/4461), 3.44 MiB | 337.00 KiB/s, done.
+Resolving deltas: 100% (2897/2897), done.
+Note: checking out 'dcde815bcb06de198b0826023def9b41af7cd507'.
 ```
 2. Receive signing key.
 
@@ -128,7 +132,7 @@ gpg:               imported: 1
 ```
 user@host:~$ cd ~/joinmarket-clientserver/
 user@host:~/joinmarket-clientserver$ git verify-commit HEAD
-gpg: Signature made Sun 03 Feb 2019 02:12:58 PM UTC
+gpg: Signature made Mon Apr  1 13:15:50 2019 UTC
 gpg:                using RSA key 141001A1AF77F20B
 gpg: Good signature from "Adam Gibson (CODE SIGNING KEY) <ekaggata@gmail.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!

@@ -95,8 +95,7 @@ ConditionPathExists=/var/run/qubes-service/electrum-personal-server
 After=qubes-sysinit.service
 
 [Service]
-ExecStart=/home/electrum-personal-server/epsvenv/bin/electrum-personal-server \
--l /home/electrum-personal-server/.eps/debug.log --loglevel DEBUG /home/electrum-personal-server/.eps/config.cfg
+ExecStart=/home/electrum-personal-server/epsvenv/bin/electrum-personal-server /home/electrum-personal-server/.eps/config.cfg
 
 User=electrum-personal-server
 Restart=on-failure
@@ -192,13 +191,13 @@ electrum-personal-server@host:/home/user$ cd
 - At the time of writing the most recent version of Electrum Personal Server is `v0.1.6`, modify the following steps accordingly if the version has changed.
 
 ```
-electrum-personal-server@host:~$ curl -LO "https://github.com/chris-belcher/electrum-personal-server/archive/eps-v0.1.6.tar.gz" -O "https://github.com/chris-belcher/electrum-personal-server/releases/download/eps-v0.1.6/eps-v0.1.6.tar.gz.asc"
+electrum-personal-server@host:~$ curl -LO "https://github.com/chris-belcher/electrum-personal-server/archive/electrum-personal-server-v0.1.7.tar.gz" -O "https://github.com/chris-belcher/electrum-personal-server/releases/download/electrum-personal-server-v0.1.7/electrum-personal-server-v0.1.7.tar.gz.asc"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   150    0   150    0     0     50      0 --:--:--  0:00:02 --:--:--    50
-100 69510    0 69510    0     0  11483      0 --:--:--  0:00:06 --:--:-- 58608
-100   612    0   612    0     0    998      0 --:--:-- --:--:-- --:--:--   998
-100   819  100   819    0     0    250      0  0:00:03  0:00:03 --:--:--   460
+100   171    0   171    0     0     16      0 --:--:--  0:00:10 --:--:--    36
+100 68723    0 68723    0     0   4376      0 --:--:--  0:00:15 --:--:-- 20489
+100   633    0   633    0     0    489      0 --:--:--  0:00:01 --:--:--  2175
+100   819  100   819    0     0     72      0  0:00:11  0:00:11 --:--:--   181
 ```
 2. Receive signing key.
 
@@ -218,20 +217,25 @@ gpg:               imported: 1
 3. Verify source code.
 
 ```
-electrum-personal-server@host:~$ gpg --verify eps-v0.1.6.tar.gz.asc eps-v0.1.6.tar.gz
-gpg: Signature made Thu 15 Nov 2018 10:31:06 PM UTC
+electrum-personal-server@host:~$ gpg --verify electrum-personal-server-v0.1.7.tar.gz.asc electrum-personal-server-v0.1.7.tar.gz
+gpg: Signature made Fri 26 Apr 2019 04:08:13 PM UTC
 gpg:                using RSA key 0xEF734EA677F31129
 gpg: Good signature from "Chris Belcher <false@email.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
 Primary key fingerprint: 0A8B 038F 5E10 CC27 89BF  CFFF EF73 4EA6 77F3 1129
 ```
-4. Extract and enter directory.
+### C. Install Electrum Personal Server.
+1. Make `eps` directory.
 
 ```
-electrum-personal-server@host:~$ tar -C ~ -xf eps-v0.1.6.tar.gz
+electrum-personal-server@host:~$ mkdir ~/eps
 ```
-### C. Install Electrum Personal Server.
+2. Extract and enter directory.
+
+```
+electrum-personal-server@host:~$ tar -C ~/eps/ -xf electrum-personal-server-v0.1.7.tar.gz --strip-components=1
+```
 1. Create virtual environment.
 
 ```
@@ -247,11 +251,17 @@ Installing setuptools, pkg_resources, pip, wheel...done.
 ```
 electrum-personal-server@host:~$ source ~/epsvenv/bin/activate
 ```
-3. Enter the EPS directory and install.
+3. Enter the EPS directory, install EPS, and deactivate virtual environment.
 
 ```
-(epsvenv) electrum-personal-server@host:~$ cd ~/electrum-personal-server-eps-v0.1.6/
-(epsvenv) electrum-personal-server@host:~/electrum-personal-server-eps-v0.1.6$ python setup.py install
+(epsvenv) electrum-personal-server@host:~$ cd ~/eps/
+(epsvenv) electrum-personal-server@host:~/eps$ python setup.py install
+(epsvenv) electrum-personal-server@host:~/eps$ deactivate
+```
+4. Return to home directory.
+
+```
+(epsvenv) electrum-personal-server@host:~/eps$ cd
 ```
 ## IV. Set Up EPS
 ### A. Remain in an `electrum-personal-server` terminal, configure EPS data directory.
@@ -309,6 +319,13 @@ port = 50002
 ip_whitelist = *
 certfile = /home/electrum-personal-server/.eps/certs/server.crt
 keyfile = /home/electrum-personal-server/.eps/certs/server.key
+broadcast_method = own-node
+
+[logging]
+log_level_stdout = DEBUG
+log_file_location = /home/electrum-personal-server/.eps/debug.log
+append_log = false
+log_format = %(levelname)s:%(asctime)s: %(message)s
 ```
 4. Save the file and switch back to the terminal.
 5. Fix permissions.

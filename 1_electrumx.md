@@ -245,8 +245,8 @@ electrumx@host:~/Python-3.7.3$ make && make install
 electrumx@host:~/Python-3.7.3$ cd
 ```
 ## IV. Install Electrumx
-### A. Download and verify the Electrumx source code.
-1. Clone the repository.
+### A. Download and verify Electrumx.
+1. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
 
 **Note:**
 - The current version of Electrumx is `1.10.1`, modify the following steps accordingly if the version has changed.

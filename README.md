@@ -51,7 +51,6 @@ The last shortcoming that should be made obvious is the fact that there is no up
 - [c-Lightning](https://github.com/ElementsProject/lightning)
 - [Electrs](https://github.com/romanz/electrs)
 - [LND](https://github.com/LightningNetwork/lnd)
-- [Wasabi Wallet](https://github.com/zkSNACKs/WalletWasabi)
 
 ## Git Mirrors
 - https://github.com/qubenix/qubes-whonix-bitcoin

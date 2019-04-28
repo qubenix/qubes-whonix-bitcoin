@@ -130,10 +130,10 @@ user@host:~$ kwrite ~/.electrum/config
 
 ```
 {
-    "auto_connect": true,
+    "auto_connect": false,
     "check_updates": false,
     "oneserver": true,
-    "server": "127.0.0.1:50002:s",
+    "server": "127.0.0.1:50002:s"
 }
 ```
 4. Save the file and switch back to the terminal.

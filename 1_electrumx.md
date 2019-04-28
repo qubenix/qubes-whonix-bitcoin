@@ -87,7 +87,7 @@ After=qubes-sysinit.service
 
 [Service]
 EnvironmentFile=/home/electrumx/.electrumx/electrumx.conf
-ExecStart=/home/electrumx/exvenv/bin/python3.7 /home/electrumx/exvenv/bin/electrumx_server
+ExecStart=/home/electrumx/exvenv/bin/python /home/electrumx/exvenv/bin/electrumx_server
 
 User=electrumx
 Restart=on-failure
@@ -249,10 +249,10 @@ electrumx@host:~/Python-3.7.3$ cd
 1. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
 
 **Note:**
-- The current version of Electrumx is `1.10.1`, modify the following steps accordingly if the version has changed.
+- The current version of Electrumx is `1.11.0`, modify the following steps accordingly if the version has changed.
 
 ```
-electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.10.1.tar.gz"
+electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.11.0.tar.gz"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100   128    0   128    0     0     20      0 --:--:--  0:00:06 --:--:--    35
@@ -262,48 +262,53 @@ electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.10
 
 **Note:**
 - The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
-- While it doesn't offer the same security, I have included the SHA256 sum of my `1.10.1.tar.gz` download for your verification.
+- While it doesn't offer the same security, I have included the SHA256 sum of my `1.11.0.tar.gz` download for your verification.
 
 ```
-electrumx@host:~$ echo 'e6a234785951dd833a245b3e6e6e528a084869bd034e5a7067bb7b7ab608d739  1.10.1.tar.gz' | shasum -c
-1.10.1.tar.gz: OK
+electrumx@host:~$ echo '1fdcd39edbd4317aa13ffa56c1119f22312aaabdb5afa329da76b765cdaa6d88  1.11.0.tar.gz' | shasum -c
+1.11.0.tar.gz: OK
 ```
 3. Extract.
 
 ```
-electrumx@host:~$ tar -C ~ -xf 1.10.1.tar.gz
+electrumx@host:~$ tar -C ~ -xf 1.11.0.tar.gz
 ```
 ### B. Create virtual environment.
-1. Fix `$PATH`.
+1. Create virtual environment.
 
 ```
-electrumx@host:~$ source ~/.profile
-```
-2. Change directory.
-
-```
-electrumx@host:~$ cd ~/electrumx-1.10.1/
-```
-3. Create virtual environment.
-
-```
-electrumx@host:~/electrumx-1.10.1$ ~/bin/python3.7 -m venv ~/exvenv
+electrumx@host:~$ virtualenv -p ~/bin/python3.7 ~/exvenv
+Running virtualenv with interpreter /home/electrumx/bin/python3.7
+Using base prefix '/home/electrumx'
+/usr/lib/python3/dist-packages/virtualenv.py:1086: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
+  import imp
+New python executable in /home/electrumx/exvenv/bin/python3.7
+Also creating executable in /home/electrumx/exvenv/bin/python
+Installing setuptools, pkg_resources, pip, wheel...done.
 ```
 ### C. Install inside virtual environment.
 1. Source virtual environment.
 
 ```
-electrumx@host:~/electrumx-1.10.1$ source ~/exvenv/bin/activate
+electrumx@host:~$ source ~/exvenv/bin/activate
 ```
-2. Install Electrumx.
+2. Change directory.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.10.1$ python setup.py install
+(exvenv) electrumx@host:~$ cd ~/electrumx-1.11.0/
 ```
-3. Deactivate virtual environment and return to home dir.
+3. Install Electrumx.
+
+**Note:**
+- This step will take some time and produce a lot of output. This is normal, be patient.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.10.1$ deactivate; cd
+(exvenv) electrumx@host:~/electrumx-1.11.0$ python setup.py install
+```
+4. Deactivate virtual environment and return to home dir.
+
+```
+(exvenv) electrumx@host:~/electrumx-1.11.0$ deactivate; cd
 ```
 ## IV. Set Up Electrumx
 ### A. Remain in an `electrumx` terminal, configure Electrumx data directory.

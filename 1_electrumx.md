@@ -350,7 +350,7 @@ REPORT_TCP_PORT = 0
 REPORT_SSL_PORT = 0
 ## Cache
 CACHE_MB = 400
-## Python3.7
+## Python
 PYTHONHOME = /home/electrumx/exvenv
 ```
 4. Save the file and switch back to the terminal.
@@ -389,15 +389,15 @@ user@host:~$ sudo /rw/config/rc.local
 ```
 user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
 ```
-2. Create `qubes.electrumx` action file.
+2. Create `qubes.electrumx_50002` action file.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrumx'
+user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrumx_50002'
 ```
 3. Fix permissions.
 
 ```
-user@host:~$ sudo chmod 0644 /rw/usrlocal/etc/qubes-rpc/qubes.electrumx
+user@host:~$ sudo chmod 0644 /rw/usrlocal/etc/qubes-rpc/qubes.electrumx_50002
 ```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory for new firewall rules.

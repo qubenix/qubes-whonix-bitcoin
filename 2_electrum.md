@@ -37,7 +37,7 @@ This increases the privacy and security of your Electrum wallet while still main
 - Skip this step is you did not install `electrumx` as your server VM.
 
 ```
-[user@dom0 ~]$ echo 'electrum electrumx allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrumx
+[user@dom0 ~]$ echo 'electrum electrumx allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrumx_50002
 ```
 ## II. Install Electrum
 ### A. In a `bitcoind` terminal, download and verify the Electrum appimage.
@@ -108,7 +108,7 @@ user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\
 - Skip this step is you did not install `electrumx` as your server VM.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrumx qubes.electrumx\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrumx qubes.electrumx_50002\" &" >> /rw/config/rc.local'
 ```
 3. Execute the file.
 

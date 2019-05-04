@@ -82,11 +82,17 @@ ConditionPathExists=/var/run/qubes-service/bitcoind
 After=qubes-sysinit.service
 
 [Service]
-ExecStart=/home/bitcoin/bin/bitcoind -daemon -pid=/run/bitcoind/bitcoind.pid
+ExecStart=/home/bitcoin/bin/bitcoind \
+  -conf=/home/bitcoin/.bitcoin/bitcoin.conf \
+  -daemon \
+  -pid=/run/bitcoind/bitcoind.pid
 ExecStop=/home/bitcoin/bin/bitcoin-cli stop
 
 RuntimeDirectory=bitcoind
+RuntimeDirectoryMode=0710
+
 User=bitcoin
+
 Type=forking
 PIDFile=/run/bitcoind/bitcoind.pid
 Restart=on-failure
@@ -148,39 +154,38 @@ bitcoin@host:/home/user$ cd
 1. Clone the repository.
 
 **Note:**
-- At the time of writing the current release branch is `0.17`, modify the following steps accordingly if the version has changed.
+- At the time of writing the current release branch is `0.18`, modify the following steps accordingly if the version has changed.
 
 ```
-bitcoin@host:~$ git clone --branch 0.17 https://github.com/bitcoin/bitcoin ~/bitcoin
-Cloning into '/home/bitcoin/bitcoin'...
-remote: Enumerating objects: 15, done.
-remote: Counting objects: 100% (15/15), done.
-remote: Compressing objects: 100% (11/11), done.
-remote: Total 132465 (delta 7), reused 5 (delta 4), pack-reused 132450
-Receiving objects: 100% (132465/132465), 117.69 MiB | 441.00 KiB/s, done.
-Resolving deltas: 100% (92773/92773), done.
+bitcoin@host:~$ git clone --branch 0.18 https://github.com/bitcoin/bitcoin
+Cloning into 'bitcoin'...
+remote: Enumerating objects: 136928, done.
+remote: Total 136928 (delta 0), reused 0 (delta 0), pack-reused 136928
+Receiving objects: 100% (136928/136928), 122.41 MiB | 463.00 KiB/s, done.
+Resolving deltas: 100% (95417/95417), done.
 ```
-2. Enter `bitcoin/` directory and receive signing keys.
+2. Enter the `~/bitcoin` directory and receive signing keys.
 
 ```
-bitcoin@host:~/bitcoin$ cd ~/bitcoin/
+bitcoin@host:~$ cd ~/bitcoin/
 bitcoin@host:~/bitcoin$ gpg --recv-keys $(<contrib/verify-commits/trusted-keys)
-gpg: keybox '/home/bitcoin/.gnupg/pubring.kbx' created
-gpg: key 0x3648A882F4316B9B: 43 signatures not checked due to missing keys
-gpg: /home/bitcoin/.gnupg/trustdb.gpg: trustdb created
+gpg: key 0xD300116E1C875A3D: 37 signatures not checked due to missing keys
+gpg: key 0xD300116E1C875A3D: public key "MeshCollider <dobsonsa68@gmail.com>" imported
+gpg: key 0x3648A882F4316B9B: 41 signatures not checked due to missing keys
 gpg: key 0x3648A882F4316B9B: public key "Marco Falke <marco.falke@tum.de>" imported
 gpg: key 0x29D4BCB6416F53EC: 4 duplicate signatures removed
-gpg: key 0x29D4BCB6416F53EC: 11 signatures not checked due to missing keys
+gpg: key 0x29D4BCB6416F53EC: 12 signatures not checked due to missing keys
 gpg: key 0x29D4BCB6416F53EC: 1 signature reordered
 gpg: key 0x29D4BCB6416F53EC: public key "Jonas Schnelli <dev@jonasschnelli.ch>" imported
 gpg: key 0x860FEB804E669320: 61 signatures not checked due to missing keys
 gpg: key 0x860FEB804E669320: public key "Pieter Wuille <pieter.wuille@gmail.com>" imported
 gpg: key 0x74810B012346C9A6: 12 duplicate signatures removed
-gpg: key 0x74810B012346C9A6: 73 signatures not checked due to missing keys
-gpg: key 0x74810B012346C9A6: public key "Wladimir J. van der Laan <laanwj@protonmail.com>" imported
+gpg: key 0x74810B012346C9A6: 74 signatures not checked due to missing keys
+gpg: key 0x74810B012346C9A6: 1 signature reordered
+gpg: key 0x74810B012346C9A6: public key "Wladimir J. van der Laan <laanwj@visucore.com>" imported
 gpg: no ultimately trusted keys found
-gpg: Total number processed: 4
-gpg:               imported: 4
+gpg: Total number processed: 5
+gpg:               imported: 5
 ```
 3. Verify source code.
 
@@ -189,7 +194,7 @@ gpg:               imported: 4
 
 ```
 bitcoin@host:~/bitcoin$ git verify-commit HEAD
-gpg: Signature made Sat Feb  2 11:30:09 2019 UTC
+gpg: Signature made Thu May  2 14:14:13 2019 UTC
 gpg:                using RSA key 9DEAE0DC7063249FB05474681E4AED62986CD25D
 gpg: Good signature from "Wladimir J. van der Laan <laanwj@visucore.com>" [unknown]
 gpg:                 aka "Wladimir J. van der Laan <laanwj@gmail.com>" [unknown]

@@ -44,14 +44,14 @@ This increases the privacy and security of your Electrum wallet while still main
 1. Download the latest Electrum [appimage and signature](https://electrum.org/#download).
 
 **Note:**
-- At the time of writing the most recent version of Electrum is `3.3.4`, modify the following steps accordingly if the version has changed.
+- At the time of writing the most recent version of Electrum is `3.3.6`, modify the following steps accordingly if the version has changed.
 
 ```
-user@host:~$ curl -O "https://download.electrum.org/3.3.4/electrum-3.3.4-x86_64.AppImage" -O "https://download.electrum.org/3.3.4/electrum-3.3.4-x86_64.AppImage.asc"
+user@host:~$ curl -O "https://download.electrum.org/3.3.6/electrum-3.3.6-x86_64.AppImage" -O "https://download.electrum.org/3.3.6/electrum-3.3.6-x86_64.AppImage.asc"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 85.1M  100 85.1M    0     0   320k      0  0:04:31  0:04:31 --:--:--  249k
-100   833  100   833    0     0    332      0  0:00:02  0:00:02 --:--:--   519
+100 70.8M  100 70.8M    0     0   167k      0  0:04:12  0:04:12 --:--:--  350k
+100   833  100   833    0     0    179      0  0:00:04  0:00:04 --:--:--   325
 ```
 2. Receive signing key.
 
@@ -60,8 +60,8 @@ user@host:~$ curl -O "https://download.electrum.org/3.3.4/electrum-3.3.4-x86_64.
 
 ```
 user@host:~$ gpg --recv-keys 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
-key 0x2BD5824B7F9470E6:
-166 signatures not checked due to missing keys
+gpg: key 0x2BD5824B7F9470E6: 2 duplicate signatures removed
+gpg: key 0x2BD5824B7F9470E6: 194 signatures not checked due to missing keys
 gpg: key 0x2BD5824B7F9470E6: public key "Thomas Voegtlin (https://electrum.org) <thomasv@electrum.org>" imported
 gpg: no ultimately trusted keys found
 gpg: Total number processed: 1
@@ -70,8 +70,8 @@ gpg:               imported: 1
 3. Verify the appimage.
 
 ```
-user@host:~$ gpg --verify electrum-3.3.4-x86_64.AppImage.asc electrum-3.3.4-x86_64.AppImage
-gpg: Signature made Wed 13 Feb 2019 10:08:30 PM UTC
+user@host:~$ gpg --verify electrum-3.3.6-x86_64.AppImage.asc electrum-3.3.6-x86_64.AppImage
+gpg: Signature made Thu 16 May 2019 06:14:30 PM UTC
 gpg:                using RSA key 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
 gpg: Good signature from "Thomas Voegtlin (https://electrum.org) <thomasv@electrum.org>" [unknown]
 gpg:                 aka "ThomasV <thomasv1@gmx.de>" [unknown]
@@ -83,14 +83,14 @@ Primary key fingerprint: 6694 D8DE 7BE8 EE56 31BE  D950 2BD5 824B 7F94 70E6
 4. Make the appimage executable.
 
 ```
-user@host:~$ chmod a+x electrum-3.3.4-x86_64.AppImage
+user@host:~$ chmod +x electrum-3.3.6-x86_64.AppImage
 ```
 ### B. Move appimage to the `electrum` VM.
 **Note:**
 - Select `electrum` from the `dom0` pop-up.
 
 ```
-user@host:~$ qvm-move electrum-3.3.4-x86_64.AppImage
+user@host:~$ qvm-move electrum-3.3.6-x86_64.AppImage
 ```
 ## III. Set Up Electrum
 ### A. In an `electrum` terminal, open communication with `electrum-personal-server` or `electrumx` on boot.
@@ -151,7 +151,7 @@ user@host:~$ mkdir -m 0700 ~/bin
 2. Copy executable to `bin/` directory.
 
 ```
-user@host:~$ cp electrum-3.3.4-x86_64.AppImage ~/bin/electrum
+user@host:~$ cp electrum-3.3.6-x86_64.AppImage ~/bin/electrum
 ```
 3. Source profile to fix `$PATH`.
 

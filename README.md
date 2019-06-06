@@ -36,10 +36,9 @@ The last shortcoming that should be made obvious is the fact that there is no up
     - Use the [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md) VM as its backend.
 - [`1_joinmarket.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_joinmarket.md)
   - Install [JoinMarket](https://github.com/JoinMarket-Org/joinmarket-clientserver) configured to:
-    - Communicate only over Tor.
-    - Connnect to only Tor onion endpoints.
-    - Provide full functionality from an offline VM.
-    - Run the daemon on the [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md) VM.
+    - Daemon communicates only over Tor, and connnects only to Tor onion services.
+    - Provide full functionality for the wallet from an offline VM.
+    - Use the [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md) VM to run the daemon.
     - Utilize Tor stream isolation.
 - [`2_electrum.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/2_electrum.md)
   - Install the [Electrum](https://electrum.org) wallet configured to:

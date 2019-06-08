@@ -60,8 +60,7 @@ user@host:~$ curl -O "https://download.electrum.org/3.3.6/electrum-3.3.6-x86_64.
 
 ```
 user@host:~$ gpg --recv-keys 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
-gpg: key 0x2BD5824B7F9470E6: 2 duplicate signatures removed
-gpg: key 0x2BD5824B7F9470E6: 194 signatures not checked due to missing keys
+gpg: key 0x2BD5824B7F9470E6: 198 signatures not checked due to missing keys
 gpg: key 0x2BD5824B7F9470E6: public key "Thomas Voegtlin (https://electrum.org) <thomasv@electrum.org>" imported
 gpg: no ultimately trusted keys found
 gpg: Total number processed: 1

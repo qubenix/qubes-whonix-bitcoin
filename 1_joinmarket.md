@@ -100,7 +100,7 @@ user@host:~$ sudo poweroff
 - At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.5.4`, modify the following steps accordingly if the version has changed.
 
 ```
-user@host:~$ git --branch v0.5.4 clone https://github.com/JoinMarket-Org/joinmarket-clientserver ~/joinmarket-clientserver
+user@host:~$ git clone --branch v0.5.4 https://github.com/JoinMarket-Org/joinmarket-clientserver ~/joinmarket-clientserver
 Cloning into '/home/user/joinmarket-clientserver'...
 remote: Enumerating objects: 74, done.
 remote: Counting objects: 100% (74/74), done.

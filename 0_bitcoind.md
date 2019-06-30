@@ -56,9 +56,9 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 ### A. In the `whonix-ws-14-bitcoin` terminal, update and install dependencies.
 ```
 user@host:~$ sudo apt update && sudo apt install -y automake autotools-dev build-essential git \
-libboost-chrono-dev libboost-filesystem-dev libboost-system-dev libboost-test-dev libboost-thread-dev \
-libevent-dev libprotobuf-dev libqrencode-dev libssl-dev libtool libzmq3-dev pkg-config \
-protobuf-compiler qttools5-dev qttools5-dev-tools
+libboost-chrono-dev libboost-filesystem-dev libboost-system-dev libboost-test-dev \
+libboost-thread-dev libevent-dev libprotobuf-dev libqrencode-dev libssl-dev libtool libzmq3-dev \
+pkg-config protobuf-compiler qttools5-dev qttools5-dev-tools
 ```
 ### B. Create system user.
 ```

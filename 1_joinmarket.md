@@ -34,8 +34,8 @@ This increases the privacy and security of your JoinMarket wallet while still ma
 ## II. Set Up TemplateVM
 ### A. In a `whonix-ws-14-bitcoin` terminal, update and install dependencies.
 ```
-user@host:~$ sudo apt update && sudo apt install -y libffi-dev libgmp-dev libsecp256k1-dev libsodium-dev \
-python-virtualenv python3-dev python3-pip
+user@host:~$ sudo apt update && sudo apt install -y libffi-dev libgmp-dev libsecp256k1-dev \
+libsodium-dev python-virtualenv python3-dev python3-pip
 ```
 ### B. Create system user.
 ```

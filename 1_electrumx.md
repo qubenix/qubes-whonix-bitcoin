@@ -249,29 +249,29 @@ electrumx@host:~/Python-3.7.3$ cd
 1. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
 
 **Note:**
-- The current version of Electrumx is `1.11.0`, modify the following steps accordingly if the version has changed.
+- The current version of Electrumx is `1.12.0`, modify the following steps accordingly if the version has changed.
 
 ```
-electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.11.0.tar.gz"
+electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.12.0.tar.gz"
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   128    0   128    0     0     20      0 --:--:--  0:00:06 --:--:--    35
-100  300k    0  300k    0     0  18930      0 --:--:--  0:00:16 --:--:-- 81897
+100   128    0   128    0     0     29      0 --:--:--  0:00:04 --:--:--    29
+100  311k    0  311k    0     0  27178      0 --:--:--  0:00:11 --:--:-- 74211
 ```
 2. Verify download.
 
 **Note:**
 - The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
-- While it doesn't offer the same security, I have included the SHA256 sum of my `1.11.0.tar.gz` download for your verification.
+- While it doesn't offer the same security, I have included the SHA256 sum of my `1.12.0.tar.gz` download for your verification.
 
 ```
-electrumx@host:~$ echo '1fdcd39edbd4317aa13ffa56c1119f22312aaabdb5afa329da76b765cdaa6d88  1.11.0.tar.gz' | shasum -c
-1.11.0.tar.gz: OK
+electrumx@host:~$ echo 'a27e8f503feaaad17f8ce7ab13bb33428a468b6beb13e041706a069f541364f8  1.12.0.tar.gz' | shasum -c
+1.12.0.tar.gz: OK
 ```
 3. Extract.
 
 ```
-electrumx@host:~$ tar -C ~ -xf 1.11.0.tar.gz
+electrumx@host:~$ tar -C ~ -xf 1.12.0.tar.gz
 ```
 ### B. Create virtual environment.
 1. Create virtual environment.
@@ -295,7 +295,7 @@ electrumx@host:~$ source ~/exvenv/bin/activate
 2. Change directory.
 
 ```
-(exvenv) electrumx@host:~$ cd ~/electrumx-1.11.0/
+(exvenv) electrumx@host:~$ cd ~/electrumx-1.12.0/
 ```
 3. Install Electrumx.
 
@@ -303,12 +303,12 @@ electrumx@host:~$ source ~/exvenv/bin/activate
 - This step will take some time and produce a lot of output. This is normal, be patient.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.11.0$ python setup.py install
+(exvenv) electrumx@host:~/electrumx-1.12.0$ python setup.py install
 ```
 4. Deactivate virtual environment and return to home dir.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.11.0$ deactivate; cd
+(exvenv) electrumx@host:~/electrumx-1.12.0$ deactivate; cd
 ```
 ## IV. Set Up Electrumx
 ### A. Remain in an `electrumx` terminal, configure Electrumx data directory.
@@ -335,19 +335,16 @@ COIN = BitcoinSegwit
 DB_DIRECTORY = /home/electrumx/.electrumx/electrumx-db
 DAEMON_URL = http://<rpc-user>:<rpc-pass>@127.0.0.1:8332/
 USERNAME = electrumx
+## Services
+SERVICES = ssl://:50002,rpc://
 ## Miscellaneous
 NET = mainnet
 DB_ENGINE = leveldb
-HOST = ''
-SSL_PORT = 50002
 SSL_CERTFILE = /home/electrumx/.electrumx/certs/server.crt
 SSL_KEYFILE = /home/electrumx/.electrumx/certs/server.key
 ## Peer Discovery
 PEER_DISCOVERY = self
 PEER_ANNOUNCE = ''
-## Server Advertising
-REPORT_TCP_PORT = 0
-REPORT_SSL_PORT = 0
 ## Cache
 CACHE_MB = 400
 ## Python

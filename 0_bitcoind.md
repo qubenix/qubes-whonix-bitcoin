@@ -62,9 +62,10 @@ pkg-config protobuf-compiler qttools5-dev qttools5-dev-tools
 ```
 ### B. Create system user.
 ```
-user@host:~$ sudo adduser --system bitcoin
+user@host:~$ sudo adduser --group --system bitcoin
 Adding system user `bitcoin' (UID 116) ...
-Adding new user `bitcoin' (UID 116) with group `nogroup' ...
+Adding new group `bitcoin' (GID 124) ...
+Adding new user `bitcoin' (UID 116) with group `bitcoin' ...
 Creating home directory `/home/bitcoin' ...
 ```
 ### C. Use `systemd` to keep `bitcoind` running.
@@ -92,6 +93,7 @@ RuntimeDirectory=bitcoind
 RuntimeDirectoryMode=0710
 
 User=bitcoin
+Group=bitcoin
 
 Type=forking
 PIDFile=/run/bitcoind/bitcoind.pid

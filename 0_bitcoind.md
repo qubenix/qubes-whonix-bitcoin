@@ -49,7 +49,7 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 2. Increase private volume size and enable `bitcoind` service.
 
 ```
-[user@dom0 ~]$ qvm-volume resize bitcoind:private 250G
+[user@dom0 ~]$ qvm-volume resize bitcoind:private 300G
 [user@dom0 ~]$ qvm-service --enable bitcoind bitcoind
 ```
 ## II. Set Up TemplateVM

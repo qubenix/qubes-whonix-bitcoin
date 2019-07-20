@@ -1,4 +1,4 @@
-# Qubes 4 & Whonix 14: Electrum
+# Qubes 4 & Whonix 15: Electrum
 Create a VM without networking to host an [Electrum](https://electrum.org) Bitcoin wallet. The offline `electrum` VM will communicate with either an `electrum-personal-server` or `electrumx` VM using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).
 ## What is Electrum?
 Electrum is a popular lightweight Bitcoin wallet based on a client-server protocol. See the [Bitcoin wiki](https://en.bitcoin.it/wiki/Electrum) for a more detailed explanation of Electrum.
@@ -13,14 +13,14 @@ This increases the privacy and security of your Electrum wallet while still main
 
 ## I. Set Up Dom0
 ### A. In a `dom0` terminal, create AppVM.
-1. Create an AppVM for Electrum with no networking, using the `whonix-ws-14` TemplateVM.
+1. Create an AppVM for Electrum with no networking, using the `whonix-ws-15` TemplateVM.
 
 **Notes:**
 - You must choose a label color, but it does not have to match this example.
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-14 electrum
+[user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-15 electrum
 ```
 ### B. Create rpc policy to allow comms from `electrum` to `electrum-personal-server` or `electrumx` VM.
 1. Allow `electrum` to communicate with `electrum-personal-server`.
@@ -40,37 +40,45 @@ This increases the privacy and security of your Electrum wallet while still main
 [user@dom0 ~]$ echo 'electrum electrumx allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrumx_50002
 ```
 ## II. Install Electrum
-### A. In a `bitcoind` terminal, download and verify the Electrum appimage.
-1. Download the latest Electrum [appimage and signature](https://electrum.org/#download).
+### A. In a `bitcoind` terminal, download the Electrum AppImage and signature.
+1. Download the latest Electrum [appimage and signature](https://download.electrum.org/3.3.8/).
 
 **Note:**
-- At the time of writing the most recent version of Electrum is `3.3.6`, modify the following steps accordingly if the version has changed.
+- At the time of writing the most recent version of Electrum is `3.3.8`, modify the following steps accordingly if the version has changed.
+- Due to the Cloudflare settings on https://electrum.org, downloading via the command line is not currently possible.
 
 ```
-user@host:~$ curl -O "https://download.electrum.org/3.3.6/electrum-3.3.6-x86_64.AppImage" -O "https://download.electrum.org/3.3.6/electrum-3.3.6-x86_64.AppImage.asc"
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 70.8M  100 70.8M    0     0   167k      0  0:04:12  0:04:12 --:--:--  350k
-100   833  100   833    0     0    179      0  0:00:04  0:00:04 --:--:--   325
+user@host:~$ torbrowser https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage.asc
 ```
-2. Receive signing key.
+2. Click `Yes` in the pop-up.
+3. Click `Download file` in the next pop-up.
+4. Select `Save File`, then click `OK`.
+5. File should be named: `electrum-3.3.8-x86_64.AppImage`. Click `Save`.
+6. Switch to the other tab on the browser. It should show some text that begins with `-----BEGIN PGP SIGNATURE-----`.
+7. Save the page: `Ctrl-S`.
+8. File should be named: `electrum-3.3.8-x86_64.AppImage.asc`. Click `Save`.
+9. Once downloads have finished, close the browser: `Ctrl-Q`.
+### B. In a `bitcoind` terminal, verify Electrum download.
+1. Receive signing key.
 
 **Note:**
 - You can verify the Thomas Voegtlin's key fingerprint on the Electrum [about page](https://electrum.org/#about).
 
 ```
 user@host:~$ gpg --recv-keys 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
-gpg: key 0x2BD5824B7F9470E6: 198 signatures not checked due to missing keys
+gpg: key 0x2BD5824B7F9470E6: 212 signatures not checked due to missing keys
 gpg: key 0x2BD5824B7F9470E6: public key "Thomas Voegtlin (https://electrum.org) <thomasv@electrum.org>" imported
 gpg: no ultimately trusted keys found
 gpg: Total number processed: 1
 gpg:               imported: 1
 ```
-3. Verify the appimage.
+2. Enter `Downloads/` directory, and verify the appimage.
 
 ```
-user@host:~$ gpg --verify electrum-3.3.6-x86_64.AppImage.asc electrum-3.3.6-x86_64.AppImage
-gpg: Signature made Thu 16 May 2019 06:14:30 PM UTC
+user@host:~$ cd ~/.tb/tor-browser/Browser/Downloads/
+user@host:~/.tb/tor-browser/Browser/Downloads$ gpg --verify electrum-3.3.8-x86_64.AppImage.asc
+gpg: assuming signed data in 'electrum-3.3.8-x86_64.AppImage'
+gpg: Signature made Thu 11 Jul 2019 02:26:15 PM UTC
 gpg:                using RSA key 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
 gpg: Good signature from "Thomas Voegtlin (https://electrum.org) <thomasv@electrum.org>" [unknown]
 gpg:                 aka "ThomasV <thomasv1@gmx.de>" [unknown]
@@ -79,17 +87,17 @@ gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
 Primary key fingerprint: 6694 D8DE 7BE8 EE56 31BE  D950 2BD5 824B 7F94 70E6
 ```
-4. Make the appimage executable.
+3. Make the appimage executable.
 
 ```
-user@host:~$ chmod +x electrum-3.3.6-x86_64.AppImage
+user@host:~/.tb/tor-browser/Browser/Downloads$ chmod +x electrum-3.3.8-x86_64.AppImage
 ```
 ### B. Move appimage to the `electrum` VM.
 **Note:**
 - Select `electrum` from the `dom0` pop-up.
 
 ```
-user@host:~$ qvm-move electrum-3.3.6-x86_64.AppImage
+user@host:~/.tb/tor-browser/Browser/Downloads$ qvm-move electrum-3.3.8-x86_64.AppImage
 ```
 ## III. Set Up Electrum
 ### A. In an `electrum` terminal, open communication with `electrum-personal-server` or `electrumx` on boot.
@@ -123,7 +131,7 @@ user@host:~$ mkdir -m 0700 ~/.electrum
 2. Create configuration file.
 
 ```
-user@host:~$ kwrite ~/.electrum/config
+user@host:~$ mousepad ~/.electrum/config
 ```
 3. Paste the following.
 
@@ -150,7 +158,7 @@ user@host:~$ mkdir -m 0700 ~/bin
 2. Copy executable to `bin/` directory.
 
 ```
-user@host:~$ cp electrum-3.3.6-x86_64.AppImage ~/bin/electrum
+user@host:~$ cp electrum-3.3.8-x86_64.AppImage ~/bin/electrum
 ```
 3. Source profile to fix `$PATH`.
 

@@ -1,4 +1,4 @@
-# Qubes 4 & Whonix 14: Bitcoin Isolation Guides
+# Qubes 4 & Whonix 15: Bitcoin Isolation Guides
 A series of guides that use the Qubes [security by isolation](https://www.qubes-os.org/security/goals/) model, combined with [Whonix](https://www.whonix.org) for additional hardening and anonymity features, to give users a safer environment to use Bitcoin in multiple ways.
 
 Each application will run in its own Whonix VM, and in the case of Electrum and JoinMarket, the wallets will have full functionality without any network connection. This is accomplished using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).

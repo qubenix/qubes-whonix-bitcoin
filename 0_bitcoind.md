@@ -107,12 +107,7 @@ MemoryDenyWriteExecute=true
 WantedBy=multi-user.target
 ```
 3. Save the file and switch back to the terminal.
-4. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /lib/systemd/system/bitcoind.service
-```
-5. Enable the service.
+4. Enable the service.
 
 ```
 user@host:~$ sudo systemctl enable bitcoind.service
@@ -285,12 +280,7 @@ user@host:~$ sudo mkdir -m 0755 /rw/config/whonix_firewall.d
 ```
 user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 8333 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
 ```
-3. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /rw/config/whonix_firewall.d/50_user.conf
-```
-4. Restart firewall service.
+3. Restart firewall service.
 
 ```
 user@host:~$ sudo systemctl restart whonix-firewall.service
@@ -309,11 +299,6 @@ user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
 
 ```
 user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:8332" > /rw/usrlocal/etc/qubes-rpc/qubes.bitcoind'
-```
-3. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /rw/usrlocal/etc/qubes-rpc/qubes.bitcoind
 ```
 ## VII. Create Alias
 1. Make an alias in order to control `bitcoind` easier.

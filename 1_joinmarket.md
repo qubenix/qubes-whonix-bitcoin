@@ -78,12 +78,7 @@ MemoryDenyWriteExecute=true
 WantedBy=multi-user.target
 ```
 3. Save the file and switch back to the terminal.
-4. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /lib/systemd/system/joinmarketd.service
-```
-5. Enable the service.
+4. Enable the service.
 
 ```
 user@host:~$ sudo systemctl enable joinmarketd.service
@@ -267,11 +262,6 @@ user@host:~$ sudo systemctl restart bitcoind.service
 user@host:~$ sudo sh -c "echo 'socat STDIO TCP:127.0.0.1:27183' > /rw/usrlocal/etc/qubes-rpc/qubes.joinmarketd-27183"
 user@host:~$ sudo sh -c "echo 'socat STDIO TCP:127.0.0.1:27184' > /rw/usrlocal/etc/qubes-rpc/qubes.joinmarketd-27184"
 ```
-2. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /rw/usrlocal/etc/qubes-rpc/joinmarketd*
-```
 ## VI. Configure `joinmarket` VM
 ### A. In a `joinmarket` terminal, open communication ports on boot.
 1. Edit the file `/rw/config/rc.local`.
@@ -290,7 +280,6 @@ socat TCP-LISTEN:27184,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes
 4. Execute the file.
 
 ```
-user@host:~$ sudo chmod 0755 /rw/config/rc.local
 user@host:~$ sudo /rw/config/rc.local
 ```
 ### B. Move copied JoinMarket directory to your home directory.

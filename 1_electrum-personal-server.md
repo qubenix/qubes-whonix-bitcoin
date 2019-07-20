@@ -1,4 +1,4 @@
-# Qubes 4 & Whonix 14: Electrum Personal Server
+# Qubes 4 & Whonix 15: Electrum Personal Server
 Create a VM for running an [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server) (EPS) which will connect to your `bitcoind` VM. The `electrum-personal-server` VM will be accessible from an Electrum Bitcoin wallet in an offline VM on the same host or remotely via a Tor onion service.
 ## What is Electrum Personal Server?
 EPS is one of the possible server backends for the Electrum Bitcoin wallet. The other implementation covered in these guides is [Electrumx](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md).
@@ -9,7 +9,7 @@ Here are some of the differences between EPS and Electrumx:
   - Electrumx can serve any wallet once fully sync'd.
 - An EPS VM requires less disk space.
   - EPS VM disk space: 1G
-  - Electrumx VM disk space: 40G.
+  - Electrumx VM disk space: 50G.
 - EPS sync time is shorter.
   - Initial EPS Sync: 10-20 min.
   - Initial Electrumx Sync: 1 or more days.
@@ -38,17 +38,17 @@ This setup also preserves your privacy. When connecting to any server your walle
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' --prop provides_network='True' --prop vcpus='1' --template whonix-gw-14 sys-electrum-personal-server
+[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' --prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-electrum-personal-server
 ```
 ### B. Create AppVM.
-1. Create the AppVM for Electrum Personal Server with the newly created gateway, using the `whonix-ws-14-bitcoin` TemplateVM.
+1. Create the AppVM for Electrum Personal Server with the newly created gateway, using the `whonix-ws-15-bitcoin` TemplateVM.
 
 **Notes:**
 - You must choose a label color, but it does not have to match this example.
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label red --prop maxmem='400' --prop netvm='sys-electrum-personal-server' --prop vcpus='1' --template whonix-ws-14-bitcoin electrum-personal-server
+[user@dom0 ~]$ qvm-create --label red --prop maxmem='400' --prop netvm='sys-electrum-personal-server' --prop vcpus='1' --template whonix-ws-15-bitcoin electrum-personal-server
 ```
 2. Enable `electrum-personal-server` service.
 
@@ -68,7 +68,7 @@ This setup also preserves your privacy. When connecting to any server your walle
 10.137.0.50
 ```
 ## II. Set Up TemplateVM
-### A. In a `whonix-ws-14-bitcoin` terminal, update and install dependency.
+### A. In a `whonix-ws-15-bitcoin` terminal, update and install dependency.
 ```
 user@host:~$ sudo apt update && sudo apt install -y python-virtualenv
 ```
@@ -83,7 +83,7 @@ Creating home directory `/home/electrum-personal-server' ...
 1. Create `systemd` service file.
 
 ```
-user@host:~$ sudo kwrite /lib/systemd/system/electrum-personal-server.service
+user@host:~$ lxsu mousepad /lib/systemd/system/electrum-personal-server.service
 ```
 
 2. Paste the following.
@@ -111,13 +111,7 @@ WantedBy=multi-user.target
 ```
 
 3. Save the file and switch back to the terminal.
-4. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /lib/systemd/system/electrum-personal-server.service
-```
-
-5. Enable the service.
+4. Enable the service.
 
 ```
 user@host:~$ sudo systemctl enable electrum-personal-server.service
@@ -156,7 +150,7 @@ GKkkKy-GAEDUw_6dp32O7Rh3DhHAnYhBUwNwNWUZPrI=
 1. Open `bitcoin.conf`.
 
 ```
-user@host:~$ sudo -u bitcoin kwrite /home/bitcoin/.bitcoin/bitcoin.conf
+user@host:~$ sudo -u bitcoin mousepad /home/bitcoin/.bitcoin/bitcoin.conf
 ```
 2. Paste the following at the bottom of the file.
 
@@ -176,7 +170,7 @@ wallet=electrum-personal-server
 ```
 user@host:~$ sudo systemctl restart bitcoind.service
 ```
-## III. Install Electrum Personal Server
+## IV. Install Electrum Personal Server
 ### A. In an `electrum-personal-server` terminal, change to `electrum-personal-server` user.
 1. Switch to user `electrum-personal-server` and change to home directory.
 
@@ -191,13 +185,15 @@ electrum-personal-server@host:/home/user$ cd
 - At the time of writing the most recent version of Electrum Personal Server is `v0.1.6`, modify the following steps accordingly if the version has changed.
 
 ```
-electrum-personal-server@host:~$ curl -LO "https://github.com/chris-belcher/electrum-personal-server/archive/electrum-personal-server-v0.1.7.tar.gz" -O "https://github.com/chris-belcher/electrum-personal-server/releases/download/electrum-personal-server-v0.1.7/electrum-personal-server-v0.1.7.tar.gz.asc"
+electrum-personal-server@host:~$ scurl-download https://github.com/chris-belcher/electrum-personal-server/archive/electrum-personal-server-v0.1.7.tar.gz https://github.com/chris-belcher/electrum-personal-server/releases/download/electrum-personal-server-v0.1.7/electrum-personal-server-v0.1.7.tar.gz.asc
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   171    0   171    0     0     16      0 --:--:--  0:00:10 --:--:--    36
-100 68723    0 68723    0     0   4376      0 --:--:--  0:00:15 --:--:-- 20489
-100   633    0   633    0     0    489      0 --:--:--  0:00:01 --:--:--  2175
-100   819  100   819    0     0     72      0  0:00:11  0:00:11 --:--:--   181
+100   171    0   171    0     0     25      0 --:--:--  0:00:06 --:--:--    35
+100 68723    0 68723    0     0   6561      0 --:--:--  0:00:10 --:--:-- 18776
+curl: Saved to filename 'electrum-personal-server-electrum-personal-server-v0.1.7.tar.gz'
+100   633    0   633    0     0    756      0 --:--:-- --:--:-- --:--:--  618k
+100   819  100   819    0     0    141      0  0:00:05  0:00:05 --:--:--   190
+curl: Saved to filename 'electrum-personal-server-v0.1.7.tar.gz.asc'
 ```
 2. Receive signing key.
 
@@ -207,7 +203,7 @@ electrum-personal-server@host:~$ curl -LO "https://github.com/chris-belcher/elec
 ```
 electrum-personal-server@host:~$ gpg --recv-keys "0A8B 038F 5E10 CC27 89BF CFFF EF73 4EA6 77F3 1129"
 gpg: keybox '/home/electrum-personal-server/.gnupg/pubring.kbx' created
-gpg: key 0xEF734EA677F31129: 4 signatures not checked due to missing keys
+gpg: key 0xEF734EA677F31129: 5 signatures not checked due to missing keys
 gpg: /home/electrum-personal-server/.gnupg/trustdb.gpg: trustdb created
 gpg: key 0xEF734EA677F31129: public key "Chris Belcher <false@email.com>" imported
 gpg: no ultimately trusted keys found
@@ -217,7 +213,7 @@ gpg:               imported: 1
 3. Verify source code.
 
 ```
-electrum-personal-server@host:~$ gpg --verify electrum-personal-server-v0.1.7.tar.gz.asc electrum-personal-server-v0.1.7.tar.gz
+electrum-personal-server@host:~$ gpg --verify electrum-personal-server-v0.1.7.tar.gz.asc electrum-personal-server-electrum-personal-server-v0.1.7.tar.gz
 gpg: Signature made Fri 26 Apr 2019 04:08:13 PM UTC
 gpg:                using RSA key 0xEF734EA677F31129
 gpg: Good signature from "Chris Belcher <false@email.com>" [unknown]
@@ -234,7 +230,7 @@ electrum-personal-server@host:~$ mkdir ~/eps
 2. Extract and enter directory.
 
 ```
-electrum-personal-server@host:~$ tar -C ~/eps/ -xf electrum-personal-server-v0.1.7.tar.gz --strip-components=1
+electrum-personal-server@host:~$ tar -C ~/eps/ -xf electrum-personal-server-electrum-personal-server-v0.1.7.tar.gz --strip-components=1
 ```
 1. Create virtual environment.
 
@@ -263,7 +259,7 @@ electrum-personal-server@host:~$ source ~/epsvenv/bin/activate
 ```
 (epsvenv) electrum-personal-server@host:~/eps$ cd
 ```
-## IV. Set Up EPS
+## V. Set Up EPS
 ### A. Remain in an `electrum-personal-server` terminal, configure EPS data directory.
 1. Create EPS's data directory and subdirectories.
 
@@ -274,7 +270,7 @@ electrum-personal-server@host:~$ mkdir -m 0700 ~/.eps/certs
 2. Create configuration file.
 
 ```
-electrum-personal-server@host:~$ kwrite ~/.eps/config.cfg
+electrum-personal-server@host:~$ mousepad ~/.eps/config.cfg
 ```
 3. Paste the following.
 
@@ -346,7 +342,7 @@ writing new private key to '/home/electrum-personal-server/.eps/certs/server.key
 ```
 electrumx@host:~$ exit
 ```
-## V. Set Up Communication Channels
+## VI. Set Up Communication Channels
 ### A. Remain in an `electrum-personal-server` terminal, open communication with `bitcoind` on boot.
 1. Edit the file `/rw/config/rc.local`.
 
@@ -372,22 +368,16 @@ user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
 ```
 user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum-personal-server'
 ```
-3. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /rw/usrlocal/etc/qubes-rpc/qubes.electrum-personal-server
-```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory.
 
 ```
 user@host:~$ sudo mkdir -m 0755 /rw/config/whonix_firewall.d
 ```
-2. Configure firewall, and fix permissions.
+2. Configure firewall.
 
 ```
 user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50002 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
-user@host:~$ sudo chmod 0644 /rw/config/whonix_firewall.d/50_user.conf
 ```
 3. Restart firewall service.
 
@@ -402,17 +392,17 @@ user@host:~$ sudo systemctl restart whonix-firewall.service
 user@host:~$ qubesdb-read /qubes-ip
 10.137.0.51
 ```
-## VI. Initial EPS Synchronization
+## VII. Initial EPS Synchronization
 ### A. In an `electrum-personal-server` terminal, start the `electrum-personal-server` service.
 ```
 user@host:~$ sudo systemctl start electrum-personal-server.service
 ```
-## VII. Set Up Gateway.
+## VIII. Set Up Gateway.
 ### A. In a `sys-electrum-personal-server` terminal, set up Tor.
 1. Edit the Tor configuration file.
 
 ```
-user@host:~$ sudo kwrite /rw/usrlocal/etc/torrc.d/50_user.conf
+user@host:~$ lxsu mousepad /rw/usrlocal/etc/torrc.d/50_user.conf
 ```
 2. Paste the following.
 

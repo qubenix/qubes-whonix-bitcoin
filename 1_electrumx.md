@@ -1,4 +1,4 @@
-# Qubes 4 & Whonix 14: Electrumx
+# Qubes 4 & Whonix 15: Electrumx
 Create a VM for running an [Electrumx](https://github.com/kyuupichan/electrumx) server which will connect to your `bitcoind` VM. The `electrumx` VM will be accessible from an Electrum Bitcoin wallet in an offline VM on the same host or remotely via a Tor onion service.
 ## What is Electrumx?
 Electrumx is one of the possible server backends for the Electrum Bitcoin wallet. The other implementation covered in these guides is [Electrum Personal Server](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md) (EPS).
@@ -8,7 +8,7 @@ Here are some of the differences between Electrumx and EPS:
   - Electrumx can serve any wallet once fully sync'd.
   - EPS requires that each wallet's [MPK](https://bitcoin.stackexchange.com/a/50031) is in its config file.
 - An Electrumx VM requires more disk space.
-  - Electrumx VM disk space: 40G.
+  - Electrumx VM disk space: 50G.
   - EPS VM disk space: 1G
 - Electrumxc sync time is longer.
   - Initial Electrumx Sync: 1 or more days.
@@ -36,17 +36,17 @@ In addition to preventing certain types of attacks, this setup also increases yo
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' --prop provides_network='True' --prop vcpus='1' --template whonix-gw-14 sys-electrumx
+[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' --prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-electrumx
 ```
 ### B. Create AppVM.
-1. Create the AppVM for Electrumx with the newly created gateway, using the `whonix-ws-14-bitcoin` TemplateVM.
+1. Create the AppVM for Electrumx with the newly created gateway, using the `whonix-ws-15-bitcoin` TemplateVM.
 
 **Notes:**
 - You must choose a label color, but it does not have to match this example.
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label red --prop maxmem='800' --prop netvm='sys-electrumx' --prop vcpus='1' --template whonix-ws-14-bitcoin electrumx
+[user@dom0 ~]$ qvm-create --label red --prop maxmem='800' --prop netvm='sys-electrumx' --prop vcpus='1' --template whonix-ws-15-bitcoin electrumx
 ```
 2. Increase private volume size and enable `electrumx` service.
 
@@ -60,9 +60,9 @@ In addition to preventing certain types of attacks, this setup also increases yo
 [user@dom0 ~]$ echo 'electrumx bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.bitcoind
 ```
 ## II. Set Up TemplateVM
-### A. In a `whonix-ws-14-bitcoin` terminal, update and install dependency.
+### A. In a `whonix-ws-15-bitcoin` terminal, update and install dependency.
 ```
-user@host:~$ sudo apt update && sudo apt install -y python-virtualenv zlib1g-dev
+user@host:~$ sudo apt update && sudo apt install -y python-virtualenv python3-aiohttp
 ```
 ### B. Create a system user.
 ```
@@ -75,7 +75,7 @@ Creating home directory `/home/electrumx' ...
 1. Create `systemd` service file.
 
 ```
-user@host:~$ sudo kwrite /lib/systemd/system/electrumx.service
+user@host:~$ lxsu mousepad /lib/systemd/system/electrumx.service
 ```
 2. Paste the following.
 
@@ -104,12 +104,7 @@ MemoryDenyWriteExecute=true
 WantedBy=multi-user.target
 ```
 3. Save the file and switch back to the terminal.
-4. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /lib/systemd/system/electrumx.service
-```
-5. Enable the service.
+4. Enable the service.
 
 ```
 user@host:~$ sudo systemctl enable electrumx.service
@@ -148,7 +143,7 @@ GKkkKy-GAEDUw_6dp32O7Rh3DhHAnYhBUwNwNWUZPrI=
 1. Open `bitcoin.conf`.
 
 ```
-user@host:~$ sudo -u bitcoin kwrite /home/bitcoin/.bitcoin/bitcoin.conf
+user@host:~$ sudo -u bitcoin mousepad /home/bitcoin/.bitcoin/bitcoin.conf
 ```
 2. Paste the following at the bottom of the file.
 
@@ -166,85 +161,7 @@ rpcauth=<rpc-user>:<hashed-pass>
 ```
 user@host:~$ sudo systemctl restart bitcoind.service
 ```
-## III. Upgrade Python
-### A. In an `electrumx` terminal, change to `electrumx` user.
-1. Switch to user `electrumx` and change to home directory.
-
-```
-user@host:~$ sudo -H -u electrumx bash
-electrumx@host:/home/user$ cd
-```
-### B. Download and verify Python3.7.
-1. Download Python3.7.
-
-**Note:**
-- At the time of writing the most recent stable version of Python3.7 is `3.7.3`, modify the following steps accordingly if the version has changed.
-
-```
-electrumx@host:~$ curl -O "https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz" -O "https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz.asc"
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100 16.3M  100 16.3M    0     0   325k      0  0:00:51  0:00:51 --:--:--  345k
-100   833  100   833    0     0    958      0 --:--:-- --:--:-- --:--:--     0
-```
-2. Receive signing key.
-
-**Note:**
-- You can verify the key ID on the [downloads page](https://www.python.org/downloads/#pubkeys).
-
-```
-electrumx@host:~$ gpg --recv-keys 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-gpg: keybox '/home/electrumx/.gnupg/pubring.kbx' created
-gpg: key 0x2D347EA6AA65421D: 18 signatures not checked due to missing keys
-gpg: /home/electrumx/.gnupg/trustdb.gpg: trustdb created
-gpg: key 0x2D347EA6AA65421D: public key "Ned Deily (Python release signing key) <nad@python.org>" imported
-gpg: no ultimately trusted keys found
-gpg: Total number processed: 1
-gpg:               imported: 1
-```
-3. Verify.
-
-```
-electrumx@host:~$ gpg --verify Python-3.7.3.tar.xz.asc Python-3.7.3.tar.xz
-gpg: Signature made Mon Mar 25 21:00:43 2019 UTC
-gpg:                using RSA key 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-gpg: Good signature from "Ned Deily (Python release signing key) <nad@python.org>" [unknown]
-gpg:                 aka "Ned Deily <nad@baybryj.net>" [unknown]
-gpg:                 aka "keybase.io/nad <nad@keybase.io>" [unknown]
-gpg:                 aka "Ned Deily (Python release signing key) <nad@acm.org>" [unknown]
-gpg: WARNING: This key is not certified with a trusted signature!
-gpg:          There is no indication that the signature belongs to the owner.
-Primary key fingerprint: 0D96 DF4D 4110 E5C4 3FBF  B17F 2D34 7EA6 AA65 421D
-```
-### C. Build and install Python3.7.
-1. Extract and enter directory.
-
-```
-electrumx@host:~$ tar -C ~ -xf Python-3.7.3.tar.xz
-electrumx@host:~$ cd ~/Python-3.7.3/
-```
-2. Configure.
-
-**Note:**
-- This step will take some time and produce a lot of output. This is normal, be patient.
-
-```
-electrumx@host:~/Python-3.7.3$ ./configure --enable-optimizations --prefix=/home/electrumx --with-ensurepip=install
-```
-3. Make and install.
-
-**Note:**
-- This step will take some time and produce a lot of output. This is normal, be patient.
-
-```
-electrumx@host:~/Python-3.7.3$ make && make install
-```
-4. Return to home directory.
-
-```
-electrumx@host:~/Python-3.7.3$ cd
-```
-## IV. Install Electrumx
+##III. Install Electrumx
 ### A. Download and verify Electrumx.
 1. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
 
@@ -252,39 +169,43 @@ electrumx@host:~/Python-3.7.3$ cd
 - The current version of Electrumx is `1.12.0`, modify the following steps accordingly if the version has changed.
 
 ```
-electrumx@host:~$ curl -LO "https://github.com/kyuupichan/electrumx/archive/1.12.0.tar.gz"
+electrumx@host:~$ scurl-download https://github.com/kyuupichan/electrumx/archive/1.12.0.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   128    0   128    0     0     29      0 --:--:--  0:00:04 --:--:--    29
-100  311k    0  311k    0     0  27178      0 --:--:--  0:00:11 --:--:-- 74211
+100   128    0   128    0     0     41      0 --:--:--  0:00:03 --:--:--    41
+100  311k    0  311k    0     0  50022      0 --:--:--  0:00:06 --:--:--  133k
+curl: Saved to filename 'electrumx-1.12.0.tar.gz'
 ```
 2. Verify download.
 
 **Note:**
 - The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
-- While it doesn't offer the same security, I have included the SHA256 sum of my `1.12.0.tar.gz` download for your verification.
+- While it doesn't offer the same security, I have included the SHA256 sum of my `electrumx-1.12.0.tar.gz` download for your verification.
 
 ```
-electrumx@host:~$ echo 'a27e8f503feaaad17f8ce7ab13bb33428a468b6beb13e041706a069f541364f8  1.12.0.tar.gz' | shasum -c
-1.12.0.tar.gz: OK
+electrumx@host:~$ echo 'a27e8f503feaaad17f8ce7ab13bb33428a468b6beb13e041706a069f541364f8  electrumx-1.12.0.tar.gz' | shasum -c
+electrumx-1.12.0.tar.gz: OK
 ```
 3. Extract.
 
 ```
-electrumx@host:~$ tar -C ~ -xf 1.12.0.tar.gz
+electrumx@host:~$ tar -C ~ -xf electrumx-1.12.0.tar.gz
 ```
-### B. Create virtual environment.
+### B. Create virtual environment, link installed packages.
 1. Create virtual environment.
 
 ```
-electrumx@host:~$ virtualenv -p ~/bin/python3.7 ~/exvenv
-Running virtualenv with interpreter /home/electrumx/bin/python3.7
-Using base prefix '/home/electrumx'
-/usr/lib/python3/dist-packages/virtualenv.py:1086: DeprecationWarning: the imp module is deprecated in favour of importlib; see the module's documentation for alternative uses
-  import imp
-New python executable in /home/electrumx/exvenv/bin/python3.7
+electrumx@host:~$ virtualenv -p python3 ~/exvenv
+Already using interpreter /usr/bin/python3
+Using base prefix '/usr'
+New python executable in /home/electrumx/exvenv/bin/python3
 Also creating executable in /home/electrumx/exvenv/bin/python
 Installing setuptools, pkg_resources, pip, wheel...done.
+```
+2. Link installed packages to virtual environment.
+
+```
+electrumx@host:~$ ln -s /usr/lib/python3/dist-packages/* ~/exvenv/lib/python3.7/site-packages/
 ```
 ### C. Install inside virtual environment.
 1. Source virtual environment.
@@ -321,7 +242,7 @@ electrumx@host:~$ mkdir -m 0700 ~/.electrumx/{certs,electrumx-db}
 2. Create configuration file.
 
 ```
-electrumx@host:~$ kwrite ~/.electrumx/electrumx.conf
+electrumx@host:~$ mousepad ~/.electrumx/electrumx.conf
 ```
 3. Paste the following.
 
@@ -391,11 +312,6 @@ user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
 ```
 user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrumx_50002'
 ```
-3. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /rw/usrlocal/etc/qubes-rpc/qubes.electrumx_50002
-```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory for new firewall rules.
 
@@ -407,12 +323,7 @@ user@host:~$ sudo mkdir -m 0755 /rw/config/whonix_firewall.d
 ```
 user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50002 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
 ```
-3. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /rw/config/whonix_firewall.d/50_user.conf
-```
-4. Restart firewall service.
+3. Restart firewall service.
 
 ```
 user@host:~$ sudo systemctl restart whonix-firewall.service
@@ -435,7 +346,7 @@ user@host:~$ sudo systemctl start electrumx.service
 1. Edit the Tor configuration file.
 
 ```
-user@host:~$ sudo kwrite /rw/usrlocal/etc/torrc.d/50_user.conf
+user@host:~$ lxsu mousepad /rw/usrlocal/etc/torrc.d/50_user.conf
 ```
 2. Paste the following.
 

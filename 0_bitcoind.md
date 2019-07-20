@@ -1,4 +1,4 @@
-# Qubes 4 & Whonix 14: Building a Bitcoin Core Full Node
+# Qubes 4 & Whonix 15: Building a Bitcoin Core Full Node
 Build a [Bitcoin Core](https://github.com/bitcoin/bitcoin) full node from source code and configure it to:
 - Allow other VMs to connect when given explicit permission from `dom0`.
 - Communicate only over Tor.
@@ -28,7 +28,7 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 ## I. Set Up Dom0
 ### A. In a `dom0` terminal, clone a Whonix workstation TemplateVM.
 ```
-[user@dom0 ~]$ qvm-clone whonix-ws-14 whonix-ws-14-bitcoin
+[user@dom0 ~]$ qvm-clone whonix-ws-15 whonix-ws-15-bitcoin
 ```
 ### B. Create a gateway.
 **Notes:**
@@ -37,14 +37,14 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' --prop provides_network='True' --prop vcpus='1' --template whonix-gw-14 sys-bitcoin
+[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' --prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-bitcoin
 ```
 ### C. Create an AppVM, use newly created gateway and template.
 **Note:**
 - You must choose a label color, but it does not have to match this example.
 
 ```
-[user@dom0 ~]$ qvm-create --label red --prop netvm='sys-bitcoin' --template whonix-ws-14-bitcoin bitcoind
+[user@dom0 ~]$ qvm-create --label red --prop netvm='sys-bitcoin' --template whonix-ws-15-bitcoin bitcoind
 ```
 2. Increase private volume size and enable `bitcoind` service.
 
@@ -53,7 +53,7 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 [user@dom0 ~]$ qvm-service --enable bitcoind bitcoind
 ```
 ## II. Set Up TemplateVM
-### A. In the `whonix-ws-14-bitcoin` terminal, update and install dependencies.
+### A. In the `whonix-ws-15-bitcoin` terminal, update and install dependencies.
 ```
 user@host:~$ sudo apt update && sudo apt install -y automake autotools-dev build-essential git \
 libboost-chrono-dev libboost-filesystem-dev libboost-system-dev libboost-test-dev \
@@ -72,7 +72,7 @@ Creating home directory `/home/bitcoin' ...
 1. Create `systemd` service file.
 
 ```
-user@host:~$ sudo kwrite /lib/systemd/system/bitcoind.service
+user@host:~$ lxsu mousepad /lib/systemd/system/bitcoind.service
 ```
 2. Paste the following.
 
@@ -109,12 +109,7 @@ MemoryDenyWriteExecute=true
 WantedBy=multi-user.target
 ```
 3. Save the file and switch back to the terminal.
-4. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /lib/systemd/system/bitcoind.service
-```
-5. Enable the service.
+4. Enable the service.
 
 ```
 user@host:~$ sudo systemctl enable bitcoind.service
@@ -134,12 +129,17 @@ user@host:~$ qubesdb-read /qubes-ip
 10.137.0.50
 ```
 ### B. Configure `onion-grater`.
-1. Install provided profile for `bitcoind` to persistent directory.
+1. Create directory.
 
 ```
-user@host:~$ sudo install -D -t /usr/local/etc/onion-grater-merger.d/ /usr/share/onion-grater-merger/examples/40_bitcoind.yml
+user@host:~$ sudo mkdir -p /usr/local/etc/onion-grater-merger.d/
 ```
-2. Restart `onion-grater` service.
+2. Symlink the provided `bitcoind` profile.
+
+```
+user@host:~$ sudo ln -s /usr/share/doc/onion-grater-merger/examples/40_bitcoind.yml /usr/local/etc/onion-grater-merger.d/
+```
+3. Restart `onion-grater` service.
 
 ```
 user@host:~$ sudo systemctl restart onion-grater.service
@@ -171,19 +171,21 @@ Resolving deltas: 100% (95417/95417), done.
 ```
 bitcoin@host:~$ cd ~/bitcoin/
 bitcoin@host:~/bitcoin$ gpg --recv-keys $(<contrib/verify-commits/trusted-keys)
-gpg: key 0xD300116E1C875A3D: 37 signatures not checked due to missing keys
+gpg: keybox '/home/user/.gnupg/pubring.kbx' created
+gpg: key 0xD300116E1C875A3D: 39 signatures not checked due to missing keys
+gpg: /home/user/.gnupg/trustdb.gpg: trustdb created
 gpg: key 0xD300116E1C875A3D: public key "MeshCollider <dobsonsa68@gmail.com>" imported
 gpg: key 0x3648A882F4316B9B: 41 signatures not checked due to missing keys
 gpg: key 0x3648A882F4316B9B: public key "Marco Falke <marco.falke@tum.de>" imported
-gpg: key 0x29D4BCB6416F53EC: 4 duplicate signatures removed
-gpg: key 0x29D4BCB6416F53EC: 12 signatures not checked due to missing keys
+gpg: key 0x29D4BCB6416F53EC: 1 duplicate signature removed
+gpg: key 0x29D4BCB6416F53EC: 20 signatures not checked due to missing keys
 gpg: key 0x29D4BCB6416F53EC: 1 signature reordered
 gpg: key 0x29D4BCB6416F53EC: public key "Jonas Schnelli <dev@jonasschnelli.ch>" imported
 gpg: key 0x860FEB804E669320: 61 signatures not checked due to missing keys
 gpg: key 0x860FEB804E669320: public key "Pieter Wuille <pieter.wuille@gmail.com>" imported
-gpg: key 0x74810B012346C9A6: 12 duplicate signatures removed
-gpg: key 0x74810B012346C9A6: 74 signatures not checked due to missing keys
-gpg: key 0x74810B012346C9A6: 1 signature reordered
+gpg: key 0x74810B012346C9A6: 2 duplicate signatures removed
+gpg: key 0x74810B012346C9A6: 88 signatures not checked due to missing keys
+gpg: key 0x74810B012346C9A6: 2 signatures reordered
 gpg: key 0x74810B012346C9A6: public key "Wladimir J. van der Laan <laanwj@visucore.com>" imported
 gpg: no ultimately trusted keys found
 gpg: Total number processed: 5
@@ -196,7 +198,7 @@ gpg:               imported: 5
 
 ```
 bitcoin@host:~/bitcoin$ git verify-commit HEAD
-gpg: Signature made Thu May  2 14:14:13 2019 UTC
+gpg: Signature made Wed 10 Jul 2019 10:06:19 AM UTC
 gpg:                using RSA key 9DEAE0DC7063249FB05474681E4AED62986CD25D
 gpg: Good signature from "Wladimir J. van der Laan <laanwj@visucore.com>" [unknown]
 gpg:                 aka "Wladimir J. van der Laan <laanwj@gmail.com>" [unknown]
@@ -217,12 +219,13 @@ bitcoin@host:~/bitcoin$ ./contrib/install_db4.sh `pwd`
 ```
 2. Generate Bitcoin Core configuration script.
 
-**Note:**
-- This step will take some time and produce a lot of output. This is normal, be patient.
-
 ```
 bitcoin@host:~/bitcoin$ export BDB_PREFIX='/home/bitcoin/bitcoin/db4'; ./autogen.sh
 ```
+
+**Note:**
+- The next two steps will take some time and produce a lot of output. This is normal, be patient.
+
 3. Configure.
 
 ```
@@ -244,7 +247,7 @@ bitcoin@host:~/bitcoin$ cd
 
 ```
 bitcoin@host:~$ mkdir -m 0700 ~/.bitcoin
-bitcoin@host:~$ kwrite ~/.bitcoin/bitcoin.conf
+bitcoin@host:~$ mousepad ~/.bitcoin/bitcoin.conf
 ```
 2. Paste the following.
 
@@ -279,12 +282,7 @@ user@host:~$ sudo mkdir -m 0755 /rw/config/whonix_firewall.d
 ```
 user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 8333 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
 ```
-3. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /rw/config/whonix_firewall.d/50_user.conf
-```
-4. Restart firewall service.
+3. Restart firewall service.
 
 ```
 user@host:~$ sudo systemctl restart whonix-firewall.service
@@ -303,11 +301,6 @@ user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
 
 ```
 user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:8332" > /rw/usrlocal/etc/qubes-rpc/qubes.bitcoind'
-```
-3. Fix permissions.
-
-```
-user@host:~$ sudo chmod 0644 /rw/usrlocal/etc/qubes-rpc/qubes.bitcoind
 ```
 ## VII. Create Alias
 1. Make an alias in order to control `bitcoind` easier.

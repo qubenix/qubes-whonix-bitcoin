@@ -1,4 +1,4 @@
-# Qubes 4 & Whonix 14: JoinMarket
+# Qubes 4 & Whonix 15: JoinMarket
 Create a VM without networking to host a [JoinMarket](https://github.com/JoinMarket-Org/joinmarket-clientserver) wallet. The `joinmarketd` daemon will run on the `bitcoind` VM, communicate only over Tor onion services, and use stream isolation.
 
 The offline `joinmarket` VM will communicate with your `bitcoind` VM using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).
@@ -21,7 +21,7 @@ This increases the privacy and security of your JoinMarket wallet while still ma
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-14-bitcoin joinmarket
+[user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-15-bitcoin joinmarket
 ```
 ### B. Enable `joinmarketd` service.
 ```
@@ -32,10 +32,11 @@ This increases the privacy and security of your JoinMarket wallet while still ma
 [user@dom0 ~]$ echo 'joinmarket bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.{bitcoind,joinmarketd-2718{3,4}}
 ```
 ## II. Set Up TemplateVM
-### A. In a `whonix-ws-14-bitcoin` terminal, update and install dependencies.
+### A. In a `whonix-ws-15-bitcoin` terminal, update and install dependencies.
 ```
 user@host:~$ sudo apt update && sudo apt install -y libffi-dev libgmp-dev libsecp256k1-dev \
-libsodium-dev python-virtualenv python3-dev python3-pip
+python-configparser python-virtualenv python3-argon2 python3-cffi python3-dev python3-future \
+python3-libnacl python3-mnemonic python3-pip python3-pyaes
 ```
 ### B. Create system user.
 ```
@@ -48,7 +49,7 @@ Creating home directory `/home/joinmarket' ...
 1. Create `systemd` service file.
 
 ```
-user@host:~$ sudo kwrite /lib/systemd/system/joinmarketd.service
+user@host:~$ lxsu mousepad /lib/systemd/system/joinmarketd.service
 ```
 2. Paste the following.
 
@@ -117,8 +118,7 @@ Note: checking out 'dcde815bcb06de198b0826023def9b41af7cd507'.
 
 ```
 user@host:~$ gpg --recv-keys "2B6F C204 D9BF 332D 062B 461A 1410 01A1 AF77 F20B"
-key 0x141001A1AF77F20B:
-2 signatures not checked due to missing keys
+gpg: key 0x141001A1AF77F20B: 2 signatures not checked due to missing keys
 gpg: key 0x141001A1AF77F20B: public key "Adam Gibson (CODE SIGNING KEY) <ekaggata@gmail.com>" imported
 gpg: no ultimately trusted keys found
 gpg: Total number processed: 1
@@ -131,8 +131,8 @@ gpg:               imported: 1
 
 ```
 user@host:~$ cd ~/joinmarket-clientserver/
-user@host:~/joinmarket-clientserver$ git verify-commit HEAD
-gpg: Signature made Mon Apr  1 13:15:50 2019 UTC
+user@host:~/joinmarket-clientserver$ git verify-tag v0.5.4
+gpg: Signature made Mon 01 Apr 2019 01:16:16 PM UTC
 gpg:                using RSA key 141001A1AF77F20B
 gpg: Good signature from "Adam Gibson (CODE SIGNING KEY) <ekaggata@gmail.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!
@@ -150,7 +150,13 @@ New python executable in /home/user/joinmarket-clientserver/jmvenv/bin/python3
 Also creating executable in /home/user/joinmarket-clientserver/jmvenv/bin/python
 Installing setuptools, pkg_resources, pip, wheel...done.
 ```
-2. Install dependencies to virtual environment.
+
+2. Link installed packages to virtual environment.
+
+```
+user@host:~/joinmarket-clientserver$ ln -s /usr/lib/python3/dist-packages/* ~/joinmarket-clientserver/jmvenv/lib/python3.7/site-packages/
+```
+3. Install dependencies to virtual environment.
 
 **Note:**
 - This step, and the next optional step, will produce a lot of output and take some time. This is normal, be patient.
@@ -166,13 +172,13 @@ user@host:~/joinmarket-clientserver$ source jmvenv/bin/activate
 ```
 (jmvenv) user@host:~/joinmarket-clientserver$ pip install PySide2 https://github.com/sunu/qt5reactor/archive/58410aaead2185e9917ae9cac9c50fe7b70e4a60.zip
 ```
-3. Deactivate virtual environment and make relocatable.
+4. Deactivate virtual environment and make relocatable.
 
 ```
 (jmvenv) user@host:~/joinmarket-clientserver$ deactivate
 user@host:~/joinmarket-clientserver$ virtualenv -p python3 --relocatable jmvenv
 ```
-4. Return to home directory.
+5. Return to home directory.
 
 ```
 user@host:~/joinmarket-clientserver$ cd
@@ -217,7 +223,7 @@ uJDzc07zxn5riJDx7N5m
 ```
 2. Use Bitcoin's tool to create a random RPC password and config entry. Do not use the one shown.
 
-**Notes:** 
+**Notes:**
 - Save the hased password (`838c4dd74606918f1f27a5a2a52b168$9634018b87451bca05082f51b0b5b876fc72ef877bad98298e97e277abd5f90c` in this example) to replace `<hashed-pass>` in later examples.
 - Save your password (`IuziNnTsOUkonsDD3jn5WatPnFrFOMSnGUsRSUaq5Qg=` in this example) to replace `<rpc-pass>` in later examples.
 - Replace `<rpc-user>` with the information noted earlier.
@@ -233,7 +239,7 @@ IuziNnTsOUkonsDD3jn5WatPnFrFOMSnGUsRSUaq5Qg=
 1. Open `bitcoin.conf`.
 
 ```
-user@host:~$ sudo -u bitcoin kwrite /home/bitcoin/.bitcoin/bitcoin.conf
+user@host:~$ sudo -u bitcoin mousepad /home/bitcoin/.bitcoin/bitcoin.conf
 ```
 2. Paste the following at the bottom of the file.
 
@@ -271,7 +277,7 @@ user@host:~$ sudo chmod 0644 /rw/usrlocal/etc/qubes-rpc/joinmarketd*
 1. Edit the file `/rw/config/rc.local`.
 
 ```
-user@host:~$ sudo kwrite /rw/config/rc.local
+user@host:~$ lxsu mousepad /rw/config/rc.local
 ```
 2. Paste the following at the bottom of the file.
 
@@ -309,7 +315,7 @@ Created a new `joinmarket.cfg`. Please review and adopt the settings and restart
 ```
 (jmvenv) user@host:~/joinmarket-clientserver/scripts$ cp joinmarket.cfg joinmarket.cfg.orig
 (jmvenv) user@host:~/joinmarket-clientserver/scripts$ echo > joinmarket.cfg
-(jmvenv) user@host:~/joinmarket-clientserver/scripts$ kwrite joinmarket.cfg
+(jmvenv) user@host:~/joinmarket-clientserver/scripts$ mousepad joinmarket.cfg
 ```
 4. Paste the following.
 
@@ -388,11 +394,11 @@ accept_commitment_broadcasts = 1
 - Once `bitcoind` has finished syncing in the `bitcoind` VM you will be able to use JoinMarket's wallet from the `joinmarket` VM.
 
 ## VII. Optional Steps
-### A. Source virtual envrionment and change to JoinMarket `scripts/` directory on boot.
+### A. In a `joinmarket` terminal, source virtual envrionment and change to JoinMarket `scripts/` directory on boot.
 1. Edit the file `~/.bashrc`.
 
 ```
-user@host:~$ kwrite ~/.bashrc
+user@host:~$ mousepad ~/.bashrc
 ```
 2. Paste the following at the bottom of the file.
 

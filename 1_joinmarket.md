@@ -138,7 +138,7 @@ Primary key fingerprint: 2B6F C204 D9BF 332D 062B  461A 1410 01A1 AF77 F20B
 1. Create Python virtual environment.
 
 ```
-user@host:~/joinmarket-clientserver$ virtualenv -p python3 jmvenv
+user@host:~/joinmarket-clientserver$ virtualenv -p python3 ~/joinmarket-clientserver/jmvenv
 Already using interpreter /usr/bin/python3
 Using base prefix '/usr'
 New python executable in /home/user/joinmarket-clientserver/jmvenv/bin/python3
@@ -157,8 +157,8 @@ user@host:~/joinmarket-clientserver$ ln -s /usr/lib/python3/dist-packages/* ~/jo
 - This step, and the next optional step, will produce a lot of output and take some time. This is normal, be patient.
 
 ```
-user@host:~/joinmarket-clientserver$ source jmvenv/bin/activate
-(jmvenv) user@host:~/joinmarket-clientserver$ python setupall.py --all
+user@host:~/joinmarket-clientserver$ source ~/joinmarket-clientserver/jmvenv/bin/activate
+(jmvenv) user@host:~/joinmarket-clientserver$ python ~/joinmarket-clientserver/setupall.py --all
 ```
 #### Optional Step: Install QT dependencies for JoinMarket GUI.
 **Note:**
@@ -171,7 +171,7 @@ user@host:~/joinmarket-clientserver$ source jmvenv/bin/activate
 
 ```
 (jmvenv) user@host:~/joinmarket-clientserver$ deactivate
-user@host:~/joinmarket-clientserver$ virtualenv -p python3 --relocatable jmvenv
+user@host:~/joinmarket-clientserver$ virtualenv -p python3 --relocatable ~/joinmarket-clientserver/jmvenv
 ```
 5. Return to home directory.
 

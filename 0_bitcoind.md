@@ -11,7 +11,7 @@ Build a [Bitcoin Core](https://github.com/bitcoin/bitcoin) full node from source
 ## What is Bitcoin Core?
 The server daemon for the Bitcoin distributed cryptocurrency (`bitcoind`), command line tools (`bitcoin-cli`), and a gui wallet (`bitcoin-qt`). These tools can be used to observe and interact with Bitcoin's blockchain.
 ## Why Do This?
-Bitcoin Core is a full node implementation, meaning it will verify that all incoming transactions and blocks are following Bitcoin's rules. This allows you to validate transactions without trusting third parties.
+Bitcoin Core is a [full node](https://en.bitcoin.it/wiki/Full_node), meaning it will verify that all incoming transactions and blocks are following Bitcoin's rules. This allows you to validate transactions without trusting third parties.
 
 An indexed node can be used as a backend for other software which needs access to the blockchain, such as:
 - [BTCPay Server](https://github.com/btcpayserver/btcpayserver)
@@ -32,7 +32,7 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 ```
 ### B. Create a gateway.
 **Notes:**
-- This gateway should be independent of other Whonix gateways to isolate its onion service. See [here](https://www.whonix.org/wiki/Multiple_Whonix-Workstations#Multiple_Whonix-Gateways).
+- This gateway should be independent of other Whonix gateways to isolate its onion service. See [here](https://www.whonix.org/wiki/Multiple_Whonix-Gateway).
 - You must choose a label color, but it does not have to match this example.
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 

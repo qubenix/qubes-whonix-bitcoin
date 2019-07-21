@@ -33,7 +33,7 @@ This setup also preserves your privacy. When connecting to any server your walle
 ## I. Set Up Dom0
 ### A. In a `dom0` terminal, create a gateway.
 **Notes:**
-- This gateway should be independent of other Whonix gateways to isolate its onion service. See [here](https://www.whonix.org/wiki/Multiple_Whonix-Workstations#Multiple_Whonix-Gateways).
+- This gateway should be independent of other Whonix gateways to isolate its onion service. See [here](https://www.whonix.org/wiki/Multiple_Whonix-Gateway).
 - You must choose a label color, but it does not have to match this example.
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 

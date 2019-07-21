@@ -155,10 +155,10 @@ user@host:~$ chmod 0600 ~/.electrum/config
 ```
 user@host:~$ mkdir -m 0700 ~/bin
 ```
-2. Copy executable to `bin/` directory.
+2. Move executable to `bin/` directory.
 
 ```
-user@host:~$ cp electrum-3.3.8-x86_64.AppImage ~/bin/electrum
+user@host:~$ mv ~/QubesIncoming/bitcoin/electrum-3.3.8-x86_64.AppImage ~/bin/electrum
 ```
 3. Source profile to fix `$PATH`.
 

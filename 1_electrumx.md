@@ -103,8 +103,9 @@ MemoryDenyWriteExecute=true
 [Install]
 WantedBy=multi-user.target
 ```
-3. Save the file and switch back to the terminal.
-4. Enable the service.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Enable the service.
 
 ```
 user@host:~$ sudo systemctl enable electrumx.service
@@ -155,13 +156,14 @@ user@host:~$ sudo -u bitcoin mousepad /home/bitcoin/.bitcoin/bitcoin.conf
 # Electrumx Auth
 rpcauth=<rpc-user>:<hashed-pass>
 ```
-3. Save the file and switch back to the terminal.
-4. Restart the `bitcoind` service.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Restart the `bitcoind` service.
 
 ```
 user@host:~$ sudo systemctl restart bitcoind.service
 ```
-##III. Install Electrumx
+## IV. Install Electrumx
 ### A. Download and verify Electrumx.
 1. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
 
@@ -231,7 +233,7 @@ electrumx@host:~$ source ~/exvenv/bin/activate
 ```
 (exvenv) electrumx@host:~/electrumx-1.12.0$ deactivate; cd
 ```
-## IV. Set Up Electrumx
+## V. Set Up Electrumx
 ### A. Remain in an `electrumx` terminal, configure Electrumx data directory.
 1. Create Electrumx's data directory and subdirectories.
 
@@ -271,7 +273,8 @@ CACHE_MB = 400
 ## Python
 PYTHONHOME = /home/electrumx/exvenv
 ```
-4. Save the file and switch back to the terminal.
+4. Save the file: `Ctrl-S`.
+5. Switch back to the terminal: `Ctrl-Q`.
 
 ### B. Create certificate.
 ```
@@ -286,7 +289,7 @@ writing new private key to '/home/electrumx/.electrumx/certs/server.key'
 ```
 electrumx@host:~$ exit
 ```
-## V. Set Up Communication Channels
+## VI. Set Up Communication Channels
 ### A. Remain in an `electrumx` terminal, open communication with `bitcoind` on boot.
 1. Edit the file `/rw/config/rc.local`.
 
@@ -336,12 +339,12 @@ user@host:~$ sudo systemctl restart whonix-firewall.service
 user@host:~$ qubesdb-read /qubes-ip
 10.137.0.50
 ```
-## VI. Initial Electrumx Synchronization
+## VII. Initial Electrumx Synchronization
 ### A. In an `electrumx` terminal, start the `electrumx` service.
 ```
 user@host:~$ sudo systemctl start electrumx.service
 ```
-## VII. Set Up Gateway.
+## VIII. Set Up Gateway.
 ### A. In a `sys-electrumx` terminal, set up Tor.
 1. Edit the Tor configuration file.
 
@@ -357,13 +360,14 @@ user@host:~$ lxsu mousepad /rw/usrlocal/etc/torrc.d/50_user.conf
 HiddenServiceDir /var/lib/tor/electrumx/
 HiddenServicePort 50002 <electrumx-ip>:50002
 ```
-3. Save the file and switch back to the terminal.
-4. Reload `tor`.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Reload `tor`.
 
 ```
 user@host:~$ sudo systemctl reload tor.service
 ```
-5. Find out your onion hostname.
+6. Find out your onion hostname.
 
 **Note:**
 - Make a note of your server hostname for use with your remote Electrum wallet.
@@ -372,7 +376,7 @@ user@host:~$ sudo systemctl reload tor.service
 user@host:~$ sudo cat /var/lib/tor/electrumx/hostname
 electrumxtoronionserviceaddressxxxxxxxxxxxxxxxxxxxxxxxxx.onion
 ```
-## VIII. Final Notes
+## IX. Final Notes
 - The intial sync can take anywhere from a day to multiple days depending on a number of factors including your hardware and resources dedicated to the `electrumx` VM.
 - Once the sync is finished you may connect your Electrum wallet via the Tor onion address.
 - To check the status of the server: `sudo journalctl -fu electrumx`

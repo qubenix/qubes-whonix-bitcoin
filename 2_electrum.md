@@ -143,8 +143,9 @@ user@host:~$ mousepad ~/.electrum/config
     "server": "127.0.0.1:50002:s"
 }
 ```
-4. Save the file and switch back to the terminal.
-5. Fix permissions.
+4. Save the file: `Ctrl-S`.
+5. Switch back to the terminal: `Ctrl-Q`.
+6. Fix permissions.
 
 ```
 user@host:~$ chmod 0600 ~/.electrum/config

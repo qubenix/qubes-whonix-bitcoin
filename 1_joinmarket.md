@@ -77,8 +77,9 @@ MemoryDenyWriteExecute=true
 [Install]
 WantedBy=multi-user.target
 ```
-3. Save the file and switch back to the terminal.
-4. Enable the service.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Enable the service.
 
 ```
 user@host:~$ sudo systemctl enable joinmarketd.service
@@ -248,8 +249,9 @@ rpcauth=<rpc-user>:<hashed-pass>
 # JoinMarket Wallet
 wallet=joinmarket
 ```
-3. Save the file and switch back to the terminal.
-4. Restart the `bitcoind` service.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Restart the `bitcoind` service.
 
 ```
 user@host:~$ sudo systemctl restart bitcoind.service
@@ -276,8 +278,9 @@ socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.
 socat TCP-LISTEN:27183,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.joinmarketd-27183" &
 socat TCP-LISTEN:27184,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.joinmarketd-27184" &
 ```
-3. Save the file and switch back to the terminal.
-4. Execute the file.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Execute the file.
 
 ```
 user@host:~$ sudo /rw/config/rc.local
@@ -377,7 +380,8 @@ taker_utxo_age = 5
 taker_utxo_amtpercent = 20
 accept_commitment_broadcasts = 1
 ```
-4. Save the file.
+4. Save the file: `Ctrl-S`.
+5. Close the editor: `Ctrl-Q`.
 
 ## VI. Final Notes
 - Once `bitcoind` has finished syncing in the `bitcoind` VM you will be able to use JoinMarket's wallet from the `joinmarket` VM.
@@ -395,8 +399,9 @@ user@host:~$ mousepad ~/.bashrc
 source /home/user/joinmarket-clientserver/jmvenv/bin/activate
 cd /home/user/joinmarket-clientserver/scripts/
 ```
-3. Save the file.
-4. Source the file to take effect.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Source the file to take effect.
 
 ```
 user@host:~$ source ~/.bashrc

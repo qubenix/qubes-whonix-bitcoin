@@ -110,8 +110,9 @@ MemoryDenyWriteExecute=true
 WantedBy=multi-user.target
 ```
 
-3. Save the file and switch back to the terminal.
-4. Enable the service.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Enable the service.
 
 ```
 user@host:~$ sudo systemctl enable electrum-personal-server.service
@@ -164,8 +165,9 @@ rpcauth=<rpc-user>:<hashed-pass>
 # Electrum Personal Server Wallet
 wallet=electrum-personal-server
 ```
-3. Save the file and switch back to the terminal.
-4. Restart the `bitcoind` service.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Restart the `bitcoind` service.
 
 ```
 user@host:~$ sudo systemctl restart bitcoind.service
@@ -323,8 +325,9 @@ log_file_location = /home/electrum-personal-server/.eps/debug.log
 append_log = false
 log_format = %(levelname)s:%(asctime)s: %(message)s
 ```
-4. Save the file and switch back to the terminal.
-5. Fix permissions.
+4. Save the file: `Ctrl-S`.
+5. Switch back to the terminal: `Ctrl-Q`.
+6. Fix permissions.
 
 ```
 electrum-personal-server@host:~$ chmod 0600 /home/electrum-personal-server/.eps/config.cfg
@@ -413,13 +416,14 @@ user@host:~$ lxsu mousepad /rw/usrlocal/etc/torrc.d/50_user.conf
 HiddenServiceDir /var/lib/tor/electrum-personal-server/
 HiddenServicePort 50002 <eps-ip>:50002
 ```
-3. Save the file and switch back to the terminal.
-4. Reload `tor`.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Reload `tor`.
 
 ```
 user@host:~$ sudo systemctl reload tor.service
 ```
-5. Find out your onion hostname.
+6. Find out your onion hostname.
 
 **Note:**
 - Make a note of your server hostname for use with your remote Electrum wallet.

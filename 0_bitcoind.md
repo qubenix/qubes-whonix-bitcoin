@@ -108,8 +108,9 @@ MemoryDenyWriteExecute=true
 [Install]
 WantedBy=multi-user.target
 ```
-3. Save the file and switch back to the terminal.
-4. Enable the service.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Enable the service.
 
 ```
 user@host:~$ sudo systemctl enable bitcoind.service
@@ -261,8 +262,9 @@ onlynet=onion
 proxy=<gateway-ip>:9111
 txindex=1
 ```
-3. Save the file and switch back to the terminal.
-4. Fix permissions.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Fix permissions.
 
 ```
 bitcoin@host:~$ chmod 0600 ~/.bitcoin/bitcoin.conf

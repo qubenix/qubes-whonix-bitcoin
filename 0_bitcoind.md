@@ -1,5 +1,5 @@
-# Qubes 4 & Whonix 15: Building a Bitcoin Core Full Node
-Build a [Bitcoin Core](https://github.com/bitcoin/bitcoin) full node from source code and configure it to:
+# Qubes 4 & Whonix 15: Bitcoin Core
+Create a VM for running [Bitcoin Core](https://github.com/bitcoin/bitcoin), which will be built from source code and configured to:
 - Allow other VMs to connect when given explicit permission from `dom0`.
 - Communicate only over Tor.
 - Easily plugin other applications which require a `bitcoind` backend.

@@ -40,43 +40,59 @@ This increases the privacy and security of your Electrum wallet while still main
 [user@dom0 ~]$ echo 'electrum electrumx allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrumx_50002
 ```
 ## II. Install Electrum
-### A. In a `bitcoind` terminal, download the Electrum AppImage and signature.
-1. Download the latest Electrum [appimage and signature](https://download.electrum.org/3.3.8/).
+### A. In a `bitcoind` terminal, download Electrum files.
+1. Download the latest Electrum [appimage](https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage) and [signature](https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage.asc).
 
 **Note:**
 - At the time of writing the most recent version of Electrum is `3.3.8`, modify the following steps accordingly if the version has changed.
-- Due to the Cloudflare settings on https://electrum.org, downloading via the command line is not currently possible.
 
 ```
-user@host:~$ torbrowser https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage.asc
+user@host:~$ scurl-download https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage \
+https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage.asc
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 47.0M  100 47.0M    0     0   501k      0  0:01:36  0:01:36 --:--:--  697k
+100   833    0   833    0     0   1735      0 --:--:-- --:--:-- --:--:--  1735
 ```
-2. Click `Yes` in the pop-up.
-3. Click `Download file` in the next pop-up.
-4. Select `Save File`, then click `OK`.
-5. File should be named: `electrum-3.3.8-x86_64.AppImage`. Click `Save`.
-6. Switch to the other tab on the browser. It should show some text that begins with `-----BEGIN PGP SIGNATURE-----`.
-7. Save the page: `Ctrl-S`.
-8. File should be named: `electrum-3.3.8-x86_64.AppImage.asc`. Click `Save`.
-9. Once downloads have finished, close the browser: `Ctrl-Q`.
-### B. In a `bitcoind` terminal, verify Electrum download.
+### B. In a `bitcoind` terminal, verify Electrum appimage.
 1. Receive signing key.
 
+```
+user@host:~$ scurl-download https://raw.githubusercontent.com/spesmilo/electrum/master/pubkeys/ThomasV.asc
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  4739  100  4739    0     0   2492      0  0:00:01  0:00:01 --:--:--  2491
+```
+2. Verify the key fingerprint.
+
 **Note:**
-- You can verify the Thomas Voegtlin's key fingerprint on the Electrum [about page](https://electrum.org/#about).
+- You can verify Thomas Voegtlin's key fingerprint on the Electrum [about page](https://electrum.org/#about).
 
 ```
-user@host:~$ gpg --recv-keys 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
-gpg: key 0x2BD5824B7F9470E6: 212 signatures not checked due to missing keys
+user@host:~$ gpg --with-fingerprint ThomasV.asc
+gpg: WARNING: no command supplied.  Trying to guess what you mean ...
+pub   rsa4096/0x2BD5824B7F9470E6 2011-06-15 [SC]
+      Key fingerprint = 6694 D8DE 7BE8 EE56 31BE  D950 2BD5 824B 7F94 70E6
+uid                             ThomasV <thomasv1@gmx.de>
+uid                             Thomas Voegtlin <thomasv1@gmx.de>
+uid                             Thomas Voegtlin (https://electrum.org) <thomasv@electrum.org>
+sub   rsa4096/0x1A25C4602021CD84 2011-06-15 [E]
+```
+3. Import the key.
+
+```
+user@host:~$ gpg --import ThomasV.asc
 gpg: key 0x2BD5824B7F9470E6: public key "Thomas Voegtlin (https://electrum.org) <thomasv@electrum.org>" imported
-gpg: no ultimately trusted keys found
 gpg: Total number processed: 1
 gpg:               imported: 1
 ```
-2. Enter `Downloads/` directory, and verify the appimage.
+4. Verify the appimage.
+
+**Note:**
+- Your output may not match the example. Just check that it says `Good signature`.
 
 ```
-user@host:~$ cd ~/.tb/tor-browser/Browser/Downloads/
-user@host:~/.tb/tor-browser/Browser/Downloads$ gpg --verify electrum-3.3.8-x86_64.AppImage.asc
+user@host:~$ gpg --verify electrum-3.3.8-x86_64.AppImage.asc
 gpg: assuming signed data in 'electrum-3.3.8-x86_64.AppImage'
 gpg: Signature made Thu 11 Jul 2019 02:26:15 PM UTC
 gpg:                using RSA key 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
@@ -87,17 +103,17 @@ gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
 Primary key fingerprint: 6694 D8DE 7BE8 EE56 31BE  D950 2BD5 824B 7F94 70E6
 ```
-3. Make the appimage executable.
+5. Make the appimage executable.
 
 ```
-user@host:~/.tb/tor-browser/Browser/Downloads$ chmod +x electrum-3.3.8-x86_64.AppImage
+user@host:~$ chmod +x electrum-3.3.8-x86_64.AppImage
 ```
-### B. Move appimage to the `electrum` VM.
+### C. Move appimage to the `electrum` VM.
 **Note:**
 - Select `electrum` from the `dom0` pop-up.
 
 ```
-user@host:~/.tb/tor-browser/Browser/Downloads$ qvm-move electrum-3.3.8-x86_64.AppImage
+user@host:~$ qvm-move electrum-3.3.8-x86_64.AppImage
 ```
 ## III. Set Up Electrum
 ### A. In an `electrum` terminal, open communication with `electrum-personal-server` or `electrumx` on boot.

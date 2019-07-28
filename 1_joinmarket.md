@@ -333,8 +333,8 @@ rpc_wallet_file = joinmarket
 
 [MESSAGING:CyberguerrillaIRC]
 channel = joinmarket-pit
-host = 6dvj6v5imhny3anf.onion
-port = 6698
+host = epynixtbonxn4odv34z4eqnlamnpuwfz6uwmsamcqd62si7cbix5hqad.onion
+port = 6697
 socks5 = true
 socks5_host = <gateway-ip>
 socks5_port = 9180

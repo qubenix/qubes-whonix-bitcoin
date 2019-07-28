@@ -258,18 +258,23 @@ COIN = BitcoinSegwit
 DB_DIRECTORY = /home/electrumx/.electrumx/electrumx-db
 DAEMON_URL = http://<rpc-user>:<rpc-pass>@127.0.0.1:8332/
 USERNAME = electrumx
+
 ## Services
 SERVICES = ssl://:50002,rpc://
+
 ## Miscellaneous
 NET = mainnet
 DB_ENGINE = leveldb
 SSL_CERTFILE = /home/electrumx/.electrumx/certs/server.crt
 SSL_KEYFILE = /home/electrumx/.electrumx/certs/server.key
+
 ## Peer Discovery
 PEER_DISCOVERY = self
 PEER_ANNOUNCE = ''
+
 ## Cache
 CACHE_MB = 400
+
 ## Python
 PYTHONHOME = /home/electrumx/exvenv
 ```

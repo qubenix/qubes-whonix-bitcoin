@@ -22,6 +22,11 @@ The last shortcoming that should be made obvious is the fact that there is no up
     - Prefer Tor onion endpoints, use them exclusively if possible.
     - Use an ephemeral Tor onion address for serving peers.
     - Utilize Tor stream isolation.
+- [`1_electrs.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrs.md)
+  - Install an [Electrs](https://github.com/romanz/electrs) server configured to:
+    - Allow a local Electrum wallet to connect from an offline VM.
+    - Allow a remote Electrum wallet to connect via a Tor onion service.
+    - Use the [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md) VM as its backend.
 - [`1_electrum-personal-server.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md)
   - Install an [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server) configured to:
     - Allow a local Electrum wallet to connect from an offline VM.
@@ -48,7 +53,6 @@ The last shortcoming that should be made obvious is the fact that there is no up
 ## Guides To Come
 - [BTCPay Server](https://github.com/btcpayserver/btcpayserver)
 - [c-Lightning](https://github.com/ElementsProject/lightning)
-- [Electrs](https://github.com/romanz/electrs)
 - [LND](https://github.com/LightningNetwork/lnd)
 
 ## Git Mirrors

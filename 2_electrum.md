@@ -1,5 +1,5 @@
 # Qubes 4 & Whonix 15: Electrum
-Create a VM without networking to host an [Electrum](https://electrum.org) Bitcoin wallet. The offline `electrum` VM will communicate with either an `electrum-personal-server` or `electrumx` VM using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).
+Create a VM without networking to host an [Electrum](https://electrum.org) Bitcoin wallet. The offline `electrum` VM will communicate an Electrum server (`electrum-personal-server`, `electrs`, or `electrumx`) VM using Qubes' [`qrexec`](https://www.qubes-os.org/doc/qrexec3/).
 ## What is Electrum?
 Electrum is a popular lightweight Bitcoin wallet based on a client-server protocol. See the [Bitcoin wiki](https://en.bitcoin.it/wiki/Electrum) for a more detailed explanation of Electrum.
 ## Why Do This?
@@ -7,7 +7,8 @@ This increases the privacy and security of your Electrum wallet while still main
 ## Prerequisites
 - To complete this guide you must have first completed:
   - [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md)
-  - You will also need either one of these, but not both:
+  - You will also need either one of these server VMs:
+    - [`1_electrs.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrs.md)
     - [`1_electrum-personal-server.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md)
     - [`1_electrumx.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md)
 
@@ -22,22 +23,30 @@ This increases the privacy and security of your Electrum wallet while still main
 ```
 [user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-15 electrum
 ```
-### B. Create rpc policy to allow comms from `electrum` to `electrum-personal-server` or `electrumx` VM.
-1. Allow `electrum` to communicate with `electrum-personal-server`.
+### B. Create rpc policy to allow comms from `electrum` to `electrs`, `electrum-personal-server`, or `electrumx` VM.
+1. Allow `electrum` to communicate with `electrs`.
+
+**Note:**
+- Skip this step is you did not install `electrs` as your server VM.
+
+```
+[user@dom0 ~]$ echo 'electrum electrs allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum_50001
+```
+2. Allow `electrum` to communicate with `electrum-personal-server`.
 
 **Note:**
 - Skip this step if you did not install `electrum-personal-server` as your server VM.
 
 ```
-[user@dom0 ~]$ echo 'electrum electrum-personal-server allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum-personal-server
+[user@dom0 ~]$ echo 'electrum electrum-personal-server allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum_50002
 ```
-2. Allow `electrum` to communicate with `electrumx`.
+3. Allow `electrum` to communicate with `electrumx`.
 
 **Note:**
 - Skip this step is you did not install `electrumx` as your server VM.
 
 ```
-[user@dom0 ~]$ echo 'electrum electrumx allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrumx_50002
+[user@dom0 ~]$ echo 'electrum electrumx allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum_50001
 ```
 ## II. Install Electrum
 ### A. In a `bitcoind` terminal, download Electrum files.
@@ -116,24 +125,32 @@ user@host:~$ chmod +x electrum-3.3.8-x86_64.AppImage
 user@host:~$ qvm-move electrum-3.3.8-x86_64.AppImage
 ```
 ## III. Set Up Electrum
-### A. In an `electrum` terminal, open communication with `electrum-personal-server` or `electrumx` on boot.
-1. Edit the file `/rw/config/local` for `electrum-personal-server`.
+### A. In an `electrum` terminal, open communication with `electrs`, `electrum-personal-server`, or `electrumx` VM on boot.
+1. Edit the file `/rw/config/local` for `electrs`.
+
+**Note:**
+- Skip this step is you did not install `electrs` as your server VM.
+
+```
+user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50001,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrumx qubes.electrum_50001\" &" >> /rw/config/rc.local'
+```
+2. Edit the file `/rw/config/local` for `electrum-personal-server`.
 
 **Note:**
 - Skip this step if you did not install `electrum-personal-server` as your server VM.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrum-personal-server qubes.electrum-personal-server\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrum-personal-server qubes.electrum_50002\" &" >> /rw/config/rc.local'
 ```
-2. Edit the file `/rw/config/local` for `electrumx`.
+3. Edit the file `/rw/config/local` for `electrumx`.
 
 **Note:**
 - Skip this step is you did not install `electrumx` as your server VM.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrumx qubes.electrumx_50002\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50001,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrumx qubes.electrum_50001\" &" >> /rw/config/rc.local'
 ```
-3. Execute the file.
+4. Execute the file.
 
 ```
 user@host:~$ sudo /rw/config/rc.local
@@ -150,6 +167,24 @@ user@host:~$ mkdir -m 0700 ~/.electrum
 user@host:~$ mousepad ~/.electrum/config
 ```
 3. Paste the following.
+
+a. Paste this section to configure for `electrs` or `electrumx`.
+
+**Note:**
+- Don't paste this section if you did not install `electrs` or `electrumx` as your server VM.
+
+```
+{
+    "auto_connect": false,
+    "check_updates": false,
+    "oneserver": true,
+    "server": "127.0.0.1:50001:t"
+}
+```
+b. Paste this section to configure for `electrum-personal-server`.
+
+**Note:**
+- Don't paste this section if you did not install `electrum-personal-server` as your server VM.
 
 ```
 {
@@ -183,7 +218,7 @@ user@host:~$ mv ~/QubesIncoming/bitcoin/electrum-3.3.8-x86_64.AppImage ~/bin/ele
 user@host:~$ source ~/.profile
 ```
 ## IV. Final Notes
-- Once your `electrum-personal-server` or `electrumx` server has sync'd you will be able to use your Electrum wallet.
+- Once your server VM has synchronized you will be able to use your Electrum wallet.
 - To launch the wallet:
 
 ```

@@ -299,10 +299,10 @@ user@host:~$ sudo systemctl restart whonix-firewall.service
 ```
 user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
 ```
-2. Create `qubes.bitcoind` action file.
+2. Create `qubes.bitcoind_8332` action file.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:8332" > /rw/usrlocal/etc/qubes-rpc/qubes.bitcoind'
+user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:8332" > /rw/usrlocal/etc/qubes-rpc/qubes.bitcoind_8332'
 ```
 ## VII. Create Alias
 1. Make an alias in order to control `bitcoind` easier.

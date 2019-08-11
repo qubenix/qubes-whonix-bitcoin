@@ -29,7 +29,7 @@ This increases the privacy and security of your JoinMarket wallet while still ma
 ```
 ### C. Create rpc policies to allow comms from `joinmarket` to `bitcoind` VM.
 ```
-[user@dom0 ~]$ echo 'joinmarket bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.{bitcoind,joinmarketd-2718{3,4}}
+[user@dom0 ~]$ echo 'joinmarket bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.{bitcoind,joinmarket_2718{3,4}}
 ```
 ## II. Set Up TemplateVM
 ### A. In a `whonix-ws-15-bitcoin` terminal, update and install dependencies.
@@ -258,11 +258,11 @@ user@host:~$ sudo systemctl restart bitcoind.service
 ```
 
 ### D. Set up `qubes-rpc` for `joinmarketd`.
-1. Create `qubes.joinmarketd-27183` and `qubes.joinmarketd-27184` rpc action files.
+1. Create `qubes.joinmarket_27183` and `qubes.joinmarket_27184` rpc action files.
 
 ```
-user@host:~$ sudo sh -c "echo 'socat STDIO TCP:127.0.0.1:27183' > /rw/usrlocal/etc/qubes-rpc/qubes.joinmarketd-27183"
-user@host:~$ sudo sh -c "echo 'socat STDIO TCP:127.0.0.1:27184' > /rw/usrlocal/etc/qubes-rpc/qubes.joinmarketd-27184"
+user@host:~$ sudo sh -c "echo 'socat STDIO TCP:127.0.0.1:27183' > /rw/usrlocal/etc/qubes-rpc/qubes.joinmarket_27183"
+user@host:~$ sudo sh -c "echo 'socat STDIO TCP:127.0.0.1:27184' > /rw/usrlocal/etc/qubes-rpc/qubes.joinmarket_27184"
 ```
 ## VI. Configure `joinmarket` VM
 ### A. In a `joinmarket` terminal, open communication ports on boot.
@@ -274,9 +274,9 @@ user@host:~$ lxsu mousepad /rw/config/rc.local
 2. Paste the following at the bottom of the file.
 
 ```
-socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.bitcoind" &
-socat TCP-LISTEN:27183,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.joinmarketd-27183" &
-socat TCP-LISTEN:27184,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.joinmarketd-27184" &
+socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.bitcoind_8332" &
+socat TCP-LISTEN:27183,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.joinmarket_27183" &
+socat TCP-LISTEN:27184,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.joinmarket_27184" &
 ```
 3. Save the file: `Ctrl-S`.
 4. Switch back to the terminal: `Ctrl-Q`.

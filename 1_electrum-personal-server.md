@@ -1,21 +1,20 @@
 # Qubes 4 & Whonix 15: Electrum Personal Server
 Create a VM for running an [Electrum Personal Server](https://github.com/chris-belcher/electrum-personal-server) (EPS) which will connect to your `bitcoind` VM. The `electrum-personal-server` VM will be accessible from an Electrum Bitcoin wallet in an offline VM on the same host or remotely via a Tor onion service.
 ## What is Electrum Personal Server?
-EPS is one of the possible server backends for the Electrum Bitcoin wallet. The other implementation covered in these guides is [Electrumx](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md).
+EPS is one of the possible server backends for the Electrum Bitcoin wallet. The other implementations covered in these guides are [Electrs](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrs.md), and [Electrumx](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md).
 
-Here are some of the differences between EPS and Electrumx:
-- EPS is less versatile.
+Here are some of the differences between the different implementations:
+- Electrs and Electrumx are more versatile.
+  - Electrs and Electrumx can serve any wallet once fully synchronized.
   - EPS requires that each wallet's [MPK](https://bitcoin.stackexchange.com/a/50031) is in its config file.
-  - Electrumx can serve any wallet once fully sync'd.
-- An EPS VM requires less disk space.
-  - EPS VM disk space: 1G
-  - Electrumx VM disk space: 50G.
-- EPS sync time is shorter.
+- Different disk space requirements.
+  - Electrs and Electrumx VM disk space: under 60G.
+  - EPS VM disk space: 1G.
+- Different initial sync times.
+  - Initial Electrs Sync: 1-12 hours.
+  - Initial Electrumx Sync: 12-24 hours.
   - Initial EPS Sync: 10-20 min.
-  - Initial Electrumx Sync: 1 or more days.
-- EPS has a safe install process.
-  - EPS only compiles itself.
-  - Electrumx pulls in dependencies without verification.
+- Electrumx can be configured to be part of a p2p network of servers that support random Electrum wallet users. That setup is out of scope for these guides.
 
 For more information see the
 [mailing list email](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2018-February/015707.html)
@@ -57,7 +56,7 @@ This setup also preserves your privacy. When connecting to any server your walle
 ```
 ### C. Create rpc policy to allow comms from `electrum-personal-server` to `bitcoind`.
 ```
-[user@dom0 ~]$ echo 'electrum-personal-server bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.bitcoind
+[user@dom0 ~]$ echo 'electrum-personal-server bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.bitcoind_8332
 ```
 ### D. Get IP of the `sys-electrum-personal-server` gateway.
 **Note:**
@@ -214,6 +213,9 @@ gpg:               imported: 1
 ```
 3. Verify source code.
 
+**Note:**
+- Your output may not match the example. Just check that it says `Good signature`.
+
 ```
 electrum-personal-server@host:~$ gpg --verify electrum-personal-server-v0.1.7.tar.gz.asc electrum-personal-server-electrum-personal-server-v0.1.7.tar.gz
 gpg: Signature made Fri 26 Apr 2019 04:08:13 PM UTC
@@ -350,7 +352,7 @@ electrumx@host:~$ exit
 1. Edit the file `/rw/config/rc.local`.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm bitcoind qubes.bitcoind\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm bitcoind qubes.bitcoind_8332\" &" >> /rw/config/rc.local'
 ```
 2. Execute the file.
 
@@ -366,10 +368,10 @@ user@host:~$ sudo /rw/config/rc.local
 ```
 user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
 ```
-2. Create `qubes.electrum-personal-server` action file.
+2. Create `qubes.electrum_50002` action file.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum-personal-server'
+user@host:~$ sudo sh -c 'echo "ocat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum_50002'
 ```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory.

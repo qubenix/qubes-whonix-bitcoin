@@ -1,21 +1,20 @@
 # Qubes 4 & Whonix 15: Electrumx
 Create a VM for running an [Electrumx](https://github.com/kyuupichan/electrumx) server which will connect to your `bitcoind` VM. The `electrumx` VM will be accessible from an Electrum Bitcoin wallet in an offline VM on the same host or remotely via a Tor onion service.
 ## What is Electrumx?
-Electrumx is one of the possible server backends for the Electrum Bitcoin wallet. The other implementation covered in these guides is [Electrum Personal Server](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md) (EPS).
+Electrumx is one of the possible server backends for the Electrum Bitcoin wallet. The other implementations covered in these guides are [Electrs](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrs.md), and [Electrum Personal Server](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md) (EPS).
 
-Here are some of the differences between Electrumx and EPS:
-- Electrumx is more versatile.
-  - Electrumx can serve any wallet once fully sync'd.
+Here are some of the differences between the different implementations:
+- Electrs and Electrumx are more versatile.
+  - Electrs and Electrumx can serve any wallet once fully synchronized.
   - EPS requires that each wallet's [MPK](https://bitcoin.stackexchange.com/a/50031) is in its config file.
-- An Electrumx VM requires more disk space.
-  - Electrumx VM disk space: 50G.
-  - EPS VM disk space: 1G
-- Electrumxc sync time is longer.
-  - Initial Electrumx Sync: 1 or more days.
+- Different disk space requirements.
+  - Electrs and Electrumx VM disk space: under 60G.
+  - EPS VM disk space: 1G.
+- Different initial sync times.
+  - Initial Electrs Sync: 1-12 hours.
+  - Initial Electrumx Sync: 12-24 hours.
   - Initial EPS Sync: 10-20 min.
-- Electrumx has an unsafe install process.
-  - Electrumx pulls in dependencies without verification.
-  - EPS only compiles itself.
+- Electrumx can be configured to be part of a p2p network of servers that support random Electrum wallet users. That setup is out of scope for these guides.
 
 This guide will set up a private server which will not broadcast it's onion address or connect to any peers. If a user wishes to serve other peers on the network, then they will be responsible for making the needed changes to the Electrumx configuration.
 ## Why Do This?
@@ -51,13 +50,13 @@ In addition to preventing certain types of attacks, this setup also increases yo
 2. Increase private volume size and enable `electrumx` service.
 
 ```
-[user@dom0 ~]$ qvm-volume resize electrumx:private 50G
+[user@dom0 ~]$ qvm-volume resize electrumx:private 60G
 [user@dom0 ~]$ qvm-service --enable electrumx electrumx
 ```
 
 ### C. Create rpc policy to allow comms from `electrumx` to `bitcoind`.
 ```
-[user@dom0 ~]$ echo 'electrumx bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.bitcoind
+[user@dom0 ~]$ echo 'electrumx bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.bitcoind_8332
 ```
 ## II. Set Up TemplateVM
 ### A. In a `whonix-ws-15-bitcoin` terminal, update and install dependency.
@@ -165,7 +164,13 @@ user@host:~$ sudo systemctl restart bitcoind.service
 ```
 ## IV. Install Electrumx
 ### A. Download and verify Electrumx.
-1. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
+1. Switch to user `electrumx` and enter home directory.
+
+```
+user@host:~$ sudo -H -u electrumx bash
+electrumx@host:/home/user$ cd
+```
+2. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
 
 **Note:**
 - The current version of Electrumx is `1.12.0`, modify the following steps accordingly if the version has changed.
@@ -178,7 +183,7 @@ electrumx@host:~$ scurl-download https://github.com/kyuupichan/electrumx/archive
 100  311k    0  311k    0     0  50022      0 --:--:--  0:00:06 --:--:--  133k
 curl: Saved to filename 'electrumx-1.12.0.tar.gz'
 ```
-2. Verify download.
+3. Verify download.
 
 **Note:**
 - The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
@@ -188,7 +193,7 @@ curl: Saved to filename 'electrumx-1.12.0.tar.gz'
 electrumx@host:~$ echo 'a27e8f503feaaad17f8ce7ab13bb33428a468b6beb13e041706a069f541364f8  electrumx-1.12.0.tar.gz' | shasum -c
 electrumx-1.12.0.tar.gz: OK
 ```
-3. Extract.
+4. Extract.
 
 ```
 electrumx@host:~$ tar -C ~ -xf electrumx-1.12.0.tar.gz
@@ -239,7 +244,7 @@ electrumx@host:~$ source ~/exvenv/bin/activate
 
 ```
 electrumx@host:~$ mkdir -m 0700 ~/.electrumx
-electrumx@host:~$ mkdir -m 0700 ~/.electrumx/{certs,electrumx-db}
+electrumx@host:~$ mkdir -m 0700 ~/.electrumx/electrumx-db
 ```
 2. Create configuration file.
 
@@ -260,13 +265,11 @@ DAEMON_URL = http://<rpc-user>:<rpc-pass>@127.0.0.1:8332/
 USERNAME = electrumx
 
 ## Services
-SERVICES = ssl://:50002,rpc://
+SERVICES = tcp://:50001,rpc://
 
 ## Miscellaneous
 NET = mainnet
 DB_ENGINE = leveldb
-SSL_CERTFILE = /home/electrumx/.electrumx/certs/server.crt
-SSL_KEYFILE = /home/electrumx/.electrumx/certs/server.key
 
 ## Peer Discovery
 PEER_DISCOVERY = self
@@ -280,17 +283,7 @@ PYTHONHOME = /home/electrumx/exvenv
 ```
 4. Save the file: `Ctrl-S`.
 5. Switch back to the terminal: `Ctrl-Q`.
-
-### B. Create certificate.
-```
-electrumx@host:~$ openssl req -x509 -sha256 -newkey rsa:4096 -keyout ~/.electrumx/certs/server.key -out ~/.electrumx/certs/server.crt -days 1825 -nodes -subj '/CN=localhost'
-Generating a RSA private key
-.........................................................................................++++
-....++++
-writing new private key to '/home/electrumx/.electrumx/certs/server.key'
------
-```
-### C. Change back to original user.
+### B. Change back to original user.
 ```
 electrumx@host:~$ exit
 ```
@@ -299,7 +292,7 @@ electrumx@host:~$ exit
 1. Edit the file `/rw/config/rc.local`.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm bitcoind qubes.bitcoind\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm bitcoind qubes.bitcoind_8332\" &" >> /rw/config/rc.local'
 ```
 2. Execute the file.
 
@@ -315,10 +308,10 @@ user@host:~$ sudo /rw/config/rc.local
 ```
 user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
 ```
-2. Create `qubes.electrumx_50002` action file.
+2. Create `qubes.electrum_50001` action file.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrumx_50002'
+user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50001" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum_50001'
 ```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory for new firewall rules.
@@ -329,7 +322,7 @@ user@host:~$ sudo mkdir -m 0755 /rw/config/whonix_firewall.d
 2. Configure firewall.
 
 ```
-user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50002 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
+user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50001 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
 ```
 3. Restart firewall service.
 
@@ -363,7 +356,7 @@ user@host:~$ lxsu mousepad /rw/usrlocal/etc/torrc.d/50_user.conf
 
 ```
 HiddenServiceDir /var/lib/tor/electrumx/
-HiddenServicePort 50002 <electrumx-ip>:50002
+HiddenServicePort 50001 <electrumx-ip>:50001
 ```
 3. Save the file: `Ctrl-S`.
 4. Switch back to the terminal: `Ctrl-Q`.

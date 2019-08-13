@@ -148,7 +148,7 @@ user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\
 - Skip this step is you did not install `electrumx` as your server VM.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50001,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrumx qubes.electrum_50001\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrumx qubes.electrum_50002\" &" >> /rw/config/rc.local'
 ```
 4. Execute the file.
 
@@ -168,10 +168,10 @@ user@host:~$ mousepad ~/.electrum/config
 ```
 3. Paste the following.
 
-a. Paste this section to configure for `electrs` or `electrumx`.
+a. Paste this section to configure for `electrs`.
 
 **Note:**
-- Don't paste this section if you did not install `electrs` or `electrumx` as your server VM.
+- Don't paste this section if you did not install `electrs` as your server VM.
 
 ```
 {
@@ -181,10 +181,10 @@ a. Paste this section to configure for `electrs` or `electrumx`.
     "server": "127.0.0.1:50001:t"
 }
 ```
-b. Paste this section to configure for `electrum-personal-server`.
+b. Paste this section to configure for `electrum-personal-server` or `electrumx`.
 
 **Note:**
-- Don't paste this section if you did not install `electrum-personal-server` as your server VM.
+- Don't paste this section if you did not install `electrum-personal-server` or `electrumx` as your server VM.
 
 ```
 {

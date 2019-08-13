@@ -244,7 +244,7 @@ electrumx@host:~$ source ~/exvenv/bin/activate
 
 ```
 electrumx@host:~$ mkdir -m 0700 ~/.electrumx
-electrumx@host:~$ mkdir -m 0700 ~/.electrumx/electrumx-db
+electrumx@host:~$ mkdir -m 0700 ~/.electrumx/{certs,electrumx-db}
 ```
 2. Create configuration file.
 
@@ -265,11 +265,13 @@ DAEMON_URL = http://<rpc-user>:<rpc-pass>@127.0.0.1:8332/
 USERNAME = electrumx
 
 ## Services
-SERVICES = tcp://:50001,rpc://
+SERVICES = ssl://:50002,rpc://
 
 ## Miscellaneous
 NET = mainnet
 DB_ENGINE = leveldb
+SSL_CERTFILE = /home/electrumx/.electrumx/certs/server.crt
+SSL_KEYFILE = /home/electrumx/.electrumx/certs/server.key
 
 ## Peer Discovery
 PEER_DISCOVERY = self
@@ -283,7 +285,16 @@ PYTHONHOME = /home/electrumx/exvenv
 ```
 4. Save the file: `Ctrl-S`.
 5. Switch back to the terminal: `Ctrl-Q`.
-### B. Change back to original user.
+### B. Create certificate.
+```
+electrumx@host:~$ openssl req -x509 -sha256 -newkey rsa:4096 -keyout ~/.electrumx/certs/server.key -out ~/.electrumx/certs/server.crt -days 1825 -nodes -subj '/CN=localhost'
+Generating a RSA private key
+.........................................................................................++++
+....++++
+writing new private key to '/home/electrumx/.electrumx/certs/server.key'
+-----
+```
+### C. Change back to original user.
 ```
 electrumx@host:~$ exit
 ```
@@ -308,10 +319,10 @@ user@host:~$ sudo /rw/config/rc.local
 ```
 user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
 ```
-2. Create `qubes.electrum_50001` action file.
+2. Create `qubes.electrum_50002` action file.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50001" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum_50001'
+user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum_50002'
 ```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory for new firewall rules.
@@ -322,7 +333,7 @@ user@host:~$ sudo mkdir -m 0755 /rw/config/whonix_firewall.d
 2. Configure firewall.
 
 ```
-user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50001 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
+user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50002 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
 ```
 3. Restart firewall service.
 
@@ -356,7 +367,7 @@ user@host:~$ lxsu mousepad /rw/usrlocal/etc/torrc.d/50_user.conf
 
 ```
 HiddenServiceDir /var/lib/tor/electrumx/
-HiddenServicePort 50001 <electrumx-ip>:50001
+HiddenServicePort 50002 <electrumx-ip>:50002
 ```
 3. Save the file: `Ctrl-S`.
 4. Switch back to the terminal: `Ctrl-Q`.

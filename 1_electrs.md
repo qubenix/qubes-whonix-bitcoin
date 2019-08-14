@@ -33,7 +33,8 @@ In addition to preventing certain types of attacks, this setup also increases yo
 - You must choose a label color, but it does not have to match this example.
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 ```
-[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' --prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-electrs
+[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' \
+--prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-electrs
 ```
 ### B. Create AppVM.
 1. Create the AppVM for Electrumx with the newly created gateway, using the `whonix-ws-15-bitcoin` TemplateVM.
@@ -44,7 +45,8 @@ In addition to preventing certain types of attacks, this setup also increases yo
 
 
 ```
-[user@dom0 ~]$ qvm-create --label red --prop maxmem='800' --prop netvm='sys-electrs' --prop vcpus='1' --template whonix-ws-15-bitcoin electrs
+[user@dom0 ~]$ qvm-create --label red --prop maxmem='800' --prop netvm='sys-electrs' \
+--prop vcpus='1' --template whonix-ws-15-bitcoin electrs
 ```
 2. Increase private volume size and enable `electrs` service.
 
@@ -272,7 +274,9 @@ electrs@host:~$ mkdir -m 0700 ~/.electrs/{certs,electrs-db}
 ```
 2. Create certificate.
 ```
-electrumx@host:~$ openssl req -x509 -sha256 -newkey rsa:4096 -keyout ~/.electrumx/certs/server.key -out ~/.electrumx/certs/server.crt -days 1825 -nodes -subj '/CN=localhost'
+electrumx@host:~$ openssl req -x509 -sha256 -newkey rsa:4096 \
+-keyout ~/.electrumx/certs/server.key -out ~/.electrumx/certs/server.crt -days 1825 \
+-nodes -subj '/CN=localhost'
 Generating a RSA private key
 .........................................................................................++++
 ....++++

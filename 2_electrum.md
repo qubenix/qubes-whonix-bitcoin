@@ -30,7 +30,7 @@ This increases the privacy and security of your Electrum wallet while still main
 - Skip this step is you did not install `electrs` as your server VM.
 
 ```
-[user@dom0 ~]$ echo 'electrum electrs allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum_50001
+[user@dom0 ~]$ echo 'electrum electrs allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum_50002
 ```
 2. Allow `electrum` to communicate with `electrum-personal-server`.
 
@@ -46,7 +46,7 @@ This increases the privacy and security of your Electrum wallet while still main
 - Skip this step is you did not install `electrumx` as your server VM.
 
 ```
-[user@dom0 ~]$ echo 'electrum electrumx allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum_50001
+[user@dom0 ~]$ echo 'electrum electrumx allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum_50002
 ```
 ## II. Install Electrum
 ### A. In a `bitcoind` terminal, download Electrum files.
@@ -132,7 +132,7 @@ user@host:~$ qvm-move electrum-3.3.8-x86_64.AppImage
 - Skip this step is you did not install `electrs` as your server VM.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50001,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrumx qubes.electrum_50001\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrs qubes.electrum_50002\" &" >> /rw/config/rc.local'
 ```
 2. Edit the file `/rw/config/local` for `electrum-personal-server`.
 
@@ -167,25 +167,6 @@ user@host:~$ mkdir -m 0700 ~/.electrum
 user@host:~$ mousepad ~/.electrum/config
 ```
 3. Paste the following.
-
-a. Paste this section to configure for `electrs`.
-
-**Note:**
-- Don't paste this section if you did not install `electrs` as your server VM.
-
-```
-{
-    "auto_connect": false,
-    "check_updates": false,
-    "oneserver": true,
-    "server": "127.0.0.1:50001:t"
-}
-```
-b. Paste this section to configure for `electrum-personal-server` or `electrumx`.
-
-**Note:**
-- Don't paste this section if you did not install `electrum-personal-server` or `electrumx` as your server VM.
-
 ```
 {
     "auto_connect": false,

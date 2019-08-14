@@ -63,7 +63,7 @@ In addition to preventing certain types of attacks, this setup also increases yo
 ## II. Set Up TemplateVM
 ### A. In a `whonix-ws-15-bitcoin` terminal, update and install dependencies.
 ```
-user@host:~$ sudo apt update && sudo apt install -y cargo clang cmake rustc
+user@host:~$ sudo apt update && sudo apt install -y cargo clang cmake nginx rustc
 ```
 ### B. Create a system user.
 ```
@@ -92,7 +92,6 @@ User=electrs
 Type=simple
 ExecStart=/home/electrs/electrs/target/release/electrs -vvvv \
   --db-dir /home/electrs/.electrs/electrs-db \
-  --electrum-rpc-addr="0.0.0.0:50001" \
   --index-batch-size=10 --jsonrpc-import
 Restart=on-failure
 RestartSec=60
@@ -114,7 +113,39 @@ WantedBy=multi-user.target
 user@host:~$ sudo systemctl enable electrs.service
 Created symlink /etc/systemd/system/multi-user.target.wants/electrs.service → /lib/systemd/system/electrs.service.
 ```
-### D. Shutdown the TemplateVM.
+### D. Set up ngingx for TLS.
+1. Open nginx configuration file.
+
+```
+user@host:~$ lxsu mousepad /etc/nginx/nginx.conf
+```
+2. Paste the following at the bottom of the file.
+
+**Note:**
+- Be sure not to alter any of the existing information.
+
+```
+stream {
+        upstream electrs {
+                server 127.0.0.1:50001;
+        }
+
+        server {
+                listen 50002 ssl;
+                proxy_pass electrs;
+
+                ssl_certificate /home/electrs/.electrs/certs/server.crt;
+                ssl_certificate_key  /home/electrs/.electrs/certs/server.key;
+                ssl_session_cache shared:SSL:1m;
+                ssl_session_timeout 4h;
+                ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+                ssl_prefer_server_ciphers on;
+        }
+}
+```
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+### E. Shutdown the TemplateVM.
 ```
 user@host:~$ sudo poweroff
 ```
@@ -231,18 +262,30 @@ Primary key fingerprint: 15C8 C357 4AE4 F1E2 5F3F  35C5 87CA E5FA 4691 7CBB
 ```
 electrs@host:~/electrs$ cargo build --release
 ```
-### C. Set up Electrs.
+## V. Configure Electrs.
+### A. Set up TLS.
 1. Create necessary directories.
 
 ```
 electrs@host:~$ mkdir -m 0700 ~/.{bitcoin,electrs}
+electrs@host:~$ mkdir -m 0700 ~/.electrs/{certs,electrs-db}
 ```
-2. Create cookie file.
+2. Create certificate.
+```
+electrumx@host:~$ openssl req -x509 -sha256 -newkey rsa:4096 -keyout ~/.electrumx/certs/server.key -out ~/.electrumx/certs/server.crt -days 1825 -nodes -subj '/CN=localhost'
+Generating a RSA private key
+.........................................................................................++++
+....++++
+writing new private key to '/home/electrumx/.electrumx/certs/server.key'
+-----
+```
+### B. Set up Bitcoin cookie auth.
+1. Create cookie file.
 
 ```
 electrs@host:~$ mousepad ~/.bitcoin/.cookie
 ```
-3. Paste the following.
+2. Paste the following.
 
 **Notes:**
 - Replace `<rpc-user>` and `<rpc-pass>` with the information noted earlier.
@@ -250,9 +293,9 @@ electrs@host:~$ mousepad ~/.bitcoin/.cookie
 ```
 <rpc-user>:<rpc-pass>
 ```
-4. Save the file: `Ctrl-S`.
-5. Switch back to the terminal: `Ctrl-Q`.
-### D. Switch back to main user account.
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+### C. Switch back to main user account.
 ```
 electrs@host:~$ exit
 ```
@@ -277,10 +320,10 @@ user@host:~$ sudo /rw/config/rc.local
 ```
 user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
 ```
-2. Create `qubes.electrum_50001` action file.
+2. Create `qubes.electrum_50002` action file.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50001" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum_50001'
+user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum_50002'
 ```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory for new firewall rules.
@@ -291,7 +334,7 @@ user@host:~$ sudo mkdir -m 0755 /rw/config/whonix_firewall.d
 2. Configure firewall.
 
 ```
-user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50001 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
+user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50002 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
 ```
 3. Restart firewall service.
 
@@ -325,7 +368,7 @@ user@host:~$ lxsu mousepad /rw/usrlocal/etc/torrc.d/50_user.conf
 
 ```
 HiddenServiceDir /var/lib/tor/electrs/
-HiddenServicePort 50001 <electrs-ip>:50001
+HiddenServicePort 50002 <electrs-ip>:50002
 ```
 3. Save the file: `Ctrl-S`.
 4. Switch back to the terminal: `Ctrl-Q`.
@@ -345,6 +388,6 @@ electrstoronionserviceaddressxxxxxxxxxxxxxxxxxxxxxxxxx.onion
 ```
 ## IX. Final Notes
 - The intial sync can take anywhere from one hour to multiple hours depending on a number of factors including your hardware and resources dedicated to the `electrs` VM.
-- Once the sync is finished you may connect your Electrum wallet via the Tor onion address and port `50001`.
+- Once the sync is finished you may connect your Electrum wallet via the Tor onion address and port `50002`.
 - To check the status of the server: `sudo journalctl -fu electrs`
 - To connect an offline Electrum wallet from a separate VM (split-electrum) use the guide: [`2_electrum.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/2_electrum.md).

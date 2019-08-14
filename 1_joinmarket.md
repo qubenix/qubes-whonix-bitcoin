@@ -21,7 +21,8 @@ This increases the privacy and security of your JoinMarket wallet while still ma
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-15-bitcoin joinmarket
+[user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' \
+--prop vcpus='1' --template whonix-ws-15-bitcoin joinmarket
 ```
 ### B. Enable `joinmarketd` service.
 ```
@@ -97,7 +98,8 @@ user@host:~$ sudo poweroff
 - At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.5.4`, modify the following steps accordingly if the version has changed.
 
 ```
-user@host:~$ git clone --branch v0.5.4 https://github.com/JoinMarket-Org/joinmarket-clientserver ~/joinmarket-clientserver
+user@host:~$ git clone --branch v0.5.4 \
+https://github.com/JoinMarket-Org/joinmarket-clientserver ~/joinmarket-clientserver
 Cloning into '/home/user/joinmarket-clientserver'...
 remote: Enumerating objects: 74, done.
 remote: Counting objects: 100% (74/74), done.
@@ -166,7 +168,8 @@ user@host:~/joinmarket-clientserver$ source ~/joinmarket-clientserver/jmvenv/bin
 - You can safely skip this step if you do not intend to use the JoinMarket GUI.
 
 ```
-(jmvenv) user@host:~/joinmarket-clientserver$ pip install PySide2 https://github.com/sunu/qt5reactor/archive/58410aaead2185e9917ae9cac9c50fe7b70e4a60.zip
+(jmvenv) user@host:~/joinmarket-clientserver$ pip install PySide2 \
+https://github.com/sunu/qt5reactor/archive/58410aaead2185e9917ae9cac9c50fe7b70e4a60.zip
 ```
 4. Deactivate virtual environment and make relocatable.
 

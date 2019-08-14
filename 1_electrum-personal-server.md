@@ -37,7 +37,9 @@ This setup also preserves your privacy. When connecting to any server your walle
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' --prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-electrum-personal-server
+[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' \
+--prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 \
+sys-electrum-personal-server
 ```
 ### B. Create AppVM.
 1. Create the AppVM for Electrum Personal Server with the newly created gateway, using the `whonix-ws-15-bitcoin` TemplateVM.
@@ -47,7 +49,9 @@ This setup also preserves your privacy. When connecting to any server your walle
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label red --prop maxmem='400' --prop netvm='sys-electrum-personal-server' --prop vcpus='1' --template whonix-ws-15-bitcoin electrum-personal-server
+[user@dom0 ~]$ qvm-create --label red --prop maxmem='400' \
+--prop netvm='sys-electrum-personal-server' --prop vcpus='1' \
+--template whonix-ws-15-bitcoin electrum-personal-server
 ```
 2. Enable `electrum-personal-server` service.
 
@@ -183,10 +187,12 @@ electrum-personal-server@host:/home/user$ cd
 1. Download the latest Electrum Personal Server [release and signature](https://github.com/chris-belcher/electrum-personal-server/releases).
 
 **Note:**
-- At the time of writing the most recent version of Electrum Personal Server is `v0.1.6`, modify the following steps accordingly if the version has changed.
+- At the time of writing the most recent version of Electrum Personal Server is `v0.1.7`, modify the following steps accordingly if the version has changed.
 
 ```
-electrum-personal-server@host:~$ scurl-download https://github.com/chris-belcher/electrum-personal-server/archive/electrum-personal-server-v0.1.7.tar.gz https://github.com/chris-belcher/electrum-personal-server/releases/download/electrum-personal-server-v0.1.7/electrum-personal-server-v0.1.7.tar.gz.asc
+electrum-personal-server@host:~$ scurl-download \
+https://github.com/chris-belcher/electrum-personal-server/archive/electrum-personal-server-v0.1.7.tar.gz \
+https://github.com/chris-belcher/electrum-personal-server/releases/download/electrum-personal-server-v0.1.7/electrum-personal-server-v0.1.7.tar.gz.asc
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100   171    0   171    0     0     25      0 --:--:--  0:00:06 --:--:--    35
@@ -217,7 +223,8 @@ gpg:               imported: 1
 - Your output may not match the example. Just check that it says `Good signature`.
 
 ```
-electrum-personal-server@host:~$ gpg --verify electrum-personal-server-v0.1.7.tar.gz.asc electrum-personal-server-electrum-personal-server-v0.1.7.tar.gz
+electrum-personal-server@host:~$ gpg --verify electrum-personal-server-v0.1.7.tar.gz.asc
+gpg: assuming signed data in 'electrum-personal-server-v0.1.7.tar.gz'
 gpg: Signature made Fri 26 Apr 2019 04:08:13 PM UTC
 gpg:                using RSA key 0xEF734EA677F31129
 gpg: Good signature from "Chris Belcher <false@email.com>" [unknown]
@@ -234,9 +241,11 @@ electrum-personal-server@host:~$ mkdir ~/eps
 2. Extract and enter directory.
 
 ```
-electrum-personal-server@host:~$ tar -C ~/eps/ -xf electrum-personal-server-electrum-personal-server-v0.1.7.tar.gz --strip-components=1
+electrum-personal-server@host:~$ tar -C ~/eps/ \
+-xf electrum-personal-server-electrum-personal-server-v0.1.7.tar.gz \
+--strip-components=1
 ```
-1. Create virtual environment.
+3. Create virtual environment.
 
 ```
 electrum-personal-server@host:~$ virtualenv -p python3 ~/epsvenv
@@ -246,19 +255,19 @@ New python executable in /home/electrum-personal-server/epsvenv/bin/python3
 Also creating executable in /home/electrum-personal-server/epsvenv/bin/python
 Installing setuptools, pkg_resources, pip, wheel...done.
 ```
-2. Source the virtual environment.
+4. Source the virtual environment.
 
 ```
 electrum-personal-server@host:~$ source ~/epsvenv/bin/activate
 ```
-3. Enter the EPS directory, install EPS, and deactivate virtual environment.
+5. Enter the EPS directory, install EPS, and deactivate virtual environment.
 
 ```
 (epsvenv) electrum-personal-server@host:~$ cd ~/eps/
 (epsvenv) electrum-personal-server@host:~/eps$ python setup.py install
 (epsvenv) electrum-personal-server@host:~/eps$ deactivate
 ```
-4. Return to home directory.
+6. Return to home directory.
 
 ```
 (epsvenv) electrum-personal-server@host:~/eps$ cd
@@ -280,7 +289,7 @@ electrum-personal-server@host:~$ mousepad ~/.eps/config.cfg
 
 **Notes:**
 - Be sure to replace `<rpc-user>` and `<rpc-pass>` with the information noted earlier.
-- For a verbose desciption of these settings, look to the file: [`~/electrum-personal-server-eps-v0.1.6/config.cfg_sample`](https://github.com/chris-belcher/electrum-personal-server/blob/master/config.cfg_sample).
+- For a verbose desciption of these settings, look to the file: [`~/electrum-personal-server-eps-v0.1.7/config.cfg_sample`](https://github.com/chris-belcher/electrum-personal-server/blob/master/config.cfg_sample).
 - At this point you may add your Electrum wallet master public keys (MPK) or individual addresses to the config file.
 
 ```
@@ -336,7 +345,9 @@ electrum-personal-server@host:~$ chmod 0600 /home/electrum-personal-server/.eps/
 ```
 ### B. Create certificate.
 ```
-electrum-personal-server@host:~$ openssl req -x509 -sha256 -newkey rsa:4096 -keyout ~/.eps/certs/server.key -out ~/.eps/certs/server.crt -days 1825 -nodes -subj '/CN=localhost'
+electrum-personal-server@host:~$ openssl req -x509 -sha256 -newkey rsa:4096 \
+-keyout ~/.eps/certs/server.key -out ~/.eps/certs/server.crt -days 1825 \
+-nodes -subj '/CN=localhost'
 Generating a RSA private key
 .........................................................................................++++
 ....++++

@@ -37,14 +37,16 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' --prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-bitcoin
+[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' \
+--prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-bitcoin
 ```
 ### C. Create an AppVM, use newly created gateway and template.
 **Note:**
 - You must choose a label color, but it does not have to match this example.
 
 ```
-[user@dom0 ~]$ qvm-create --label red --prop netvm='sys-bitcoin' --template whonix-ws-15-bitcoin bitcoind
+[user@dom0 ~]$ qvm-create --label red --prop netvm='sys-bitcoin' \
+--template whonix-ws-15-bitcoin bitcoind
 ```
 2. Increase private volume size and enable `bitcoind` service.
 
@@ -230,7 +232,8 @@ bitcoin@host:~/bitcoin$ export BDB_PREFIX='/home/bitcoin/bitcoin/db4'; ./autogen
 3. Configure.
 
 ```
-bitcoin@host:~/bitcoin$ ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --prefix=/home/bitcoin
+bitcoin@host:~/bitcoin$ ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" \
+BDB_CFLAGS="-I${BDB_PREFIX}/include" --prefix=/home/bitcoin
 ```
 4. Make and install.
 

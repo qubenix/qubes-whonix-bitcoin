@@ -35,7 +35,8 @@ In addition to preventing certain types of attacks, this setup also increases yo
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' --prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-electrumx
+[user@dom0 ~]$ qvm-create --label purple --prop maxmem='400' --prop netvm='sys-firewall' \
+--prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-electrumx
 ```
 ### B. Create AppVM.
 1. Create the AppVM for Electrumx with the newly created gateway, using the `whonix-ws-15-bitcoin` TemplateVM.
@@ -45,7 +46,8 @@ In addition to preventing certain types of attacks, this setup also increases yo
 - It is safe to lower the `maxmem` and `vcpus` on this VM.
 
 ```
-[user@dom0 ~]$ qvm-create --label red --prop maxmem='800' --prop netvm='sys-electrumx' --prop vcpus='1' --template whonix-ws-15-bitcoin electrumx
+[user@dom0 ~]$ qvm-create --label red --prop maxmem='800' --prop netvm='sys-electrumx' \
+--prop vcpus='1' --template whonix-ws-15-bitcoin electrumx
 ```
 2. Increase private volume size and enable `electrumx` service.
 
@@ -287,7 +289,9 @@ PYTHONHOME = /home/electrumx/exvenv
 5. Switch back to the terminal: `Ctrl-Q`.
 ### B. Create certificate.
 ```
-electrumx@host:~$ openssl req -x509 -sha256 -newkey rsa:4096 -keyout ~/.electrumx/certs/server.key -out ~/.electrumx/certs/server.crt -days 1825 -nodes -subj '/CN=localhost'
+electrumx@host:~$ openssl req -x509 -sha256 -newkey rsa:4096 \
+-keyout ~/.electrumx/certs/server.key -out ~/.electrumx/certs/server.crt -days 1825 \
+-nodes -subj '/CN=localhost'
 Generating a RSA private key
 .........................................................................................++++
 ....++++

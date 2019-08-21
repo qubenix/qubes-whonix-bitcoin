@@ -137,7 +137,7 @@ stream {
                 proxy_pass electrs;
 
                 ssl_certificate /home/electrs/.electrs/certs/server.crt;
-                ssl_certificate_key  /home/electrs/.electrs/certs/server.key;
+                ssl_certificate_key /home/electrs/.electrs/certs/server.key;
                 ssl_session_cache shared:SSL:1m;
                 ssl_session_timeout 4h;
                 ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;

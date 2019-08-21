@@ -95,10 +95,10 @@ user@host:~$ sudo poweroff
 1. Clone the JoinMarket [repository](https://github.com/JoinMarket-Org/joinmarket-clientserver).
 
 **Note:**
-- At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.5.4`, modify the following steps accordingly if the version has changed.
+- At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.5.5`, modify the following steps accordingly if the version has changed.
 
 ```
-user@host:~$ git clone --branch v0.5.4 \
+user@host:~$ git clone --branch v0.5.5 \
 https://github.com/JoinMarket-Org/joinmarket-clientserver ~/joinmarket-clientserver
 Cloning into '/home/user/joinmarket-clientserver'...
 remote: Enumerating objects: 74, done.
@@ -129,8 +129,8 @@ gpg:               imported: 1
 
 ```
 user@host:~$ cd ~/joinmarket-clientserver/
-user@host:~/joinmarket-clientserver$ git verify-tag v0.5.4
-gpg: Signature made Mon 01 Apr 2019 01:16:16 PM UTC
+user@host:~/joinmarket-clientserver$ git verify-tag v0.5.5
+gpg: Signature made Wed 21 Aug 2019 04:42:16 PM UTC
 gpg:                using RSA key 141001A1AF77F20B
 gpg: Good signature from "Adam Gibson (CODE SIGNING KEY) <ekaggata@gmail.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!
@@ -345,12 +345,12 @@ usessl = true
 
 [MESSAGING:AgoraAnarplexIRC]
 channel = joinmarket-pit
-host = cfyfz6afpgfeirst.onion
-port = 6667
+host = agora.anarplex.net
+port = 14716
 socks5 = true
 socks5_host = <gateway-ip>
 socks5_port = 9181
-usessl = false
+usessl = true
 
 [MESSAGING:DarkScienceIRC]
 channel = joinmarket-pit

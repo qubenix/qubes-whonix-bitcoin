@@ -14,7 +14,7 @@ This increases the privacy and security of your JoinMarket wallet while still ma
 
 ## I. Set Up Dom0
 ### A. In a `dom0` terminal, create an AppVM.
-1. Create the AppVM for JoinMarket's wallet with no networking, using the `whonix-ws-14-bitcoin` TemplateVM.
+1. Create the AppVM for JoinMarket's wallet with no networking, using the `whonix-ws-15-bitcoin` TemplateVM.
 
 **Notes:**
 - You must choose a label color, but it does not have to match this example.

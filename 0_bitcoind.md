@@ -41,6 +41,8 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 --prop provides_network='True' --prop vcpus='1' --template whonix-gw-15 sys-bitcoin
 ```
 ### C. Create an AppVM, use newly created gateway and template.
+1. Create AppVM.
+
 **Note:**
 - You must choose a label color, but it does not have to match this example.
 
@@ -48,11 +50,10 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 [user@dom0 ~]$ qvm-create --label red --prop netvm='sys-bitcoin' \
 --template whonix-ws-15-bitcoin bitcoind
 ```
-2. Increase private volume size and enable `bitcoind` service.
+2. Increase the private volume size.
 
 ```
-[user@dom0 ~]$ qvm-volume resize bitcoind:private 300G
-[user@dom0 ~]$ qvm-service --enable bitcoind bitcoind
+[user@dom0 ~]$ qvm-volume resize bitcoind:private 350G
 ```
 ## II. Set Up TemplateVM
 ### A. In the `whonix-ws-15-bitcoin` terminal, update and install dependencies.
@@ -64,61 +65,12 @@ pkg-config protobuf-compiler qttools5-dev qttools5-dev-tools
 ```
 ### B. Create system user.
 ```
-user@host:~$ sudo adduser --group --system bitcoin
+user@host:~$ sudo adduser --system bitcoin
 Adding system user `bitcoin' (UID 116) ...
-Adding new group `bitcoin' (GID 124) ...
-Adding new user `bitcoin' (UID 116) with group `bitcoin' ...
+Adding new user `bitcoin' (UID 116) with group `nogroup' ...
 Creating home directory `/home/bitcoin' ...
 ```
-### C. Use `systemd` to keep `bitcoind` running.
-1. Create `systemd` service file.
-
-```
-user@host:~$ lxsu mousepad /lib/systemd/system/bitcoind.service
-```
-2. Paste the following.
-
-```
-[Unit]
-Description=Bitcoin daemon
-ConditionPathExists=/var/run/qubes-service/bitcoind
-After=qubes-sysinit.service
-
-[Service]
-ExecStart=/home/bitcoin/bin/bitcoind \
-  -conf=/home/bitcoin/.bitcoin/bitcoin.conf \
-  -daemon \
-  -pid=/run/bitcoind/bitcoind.pid
-ExecStop=/home/bitcoin/bin/bitcoin-cli stop
-
-RuntimeDirectory=bitcoind
-RuntimeDirectoryMode=0710
-
-User=bitcoin
-Group=bitcoin
-
-Type=forking
-PIDFile=/run/bitcoind/bitcoind.pid
-Restart=on-failure
-
-PrivateTmp=true
-ProtectSystem=full
-NoNewPrivileges=true
-PrivateDevices=true
-MemoryDenyWriteExecute=true
-
-[Install]
-WantedBy=multi-user.target
-```
-3. Save the file: `Ctrl-S`.
-4. Switch back to the terminal: `Ctrl-Q`.
-5. Enable the service.
-
-```
-user@host:~$ sudo systemctl enable bitcoind.service
-Created symlink /etc/systemd/system/multi-user.target.wants/bitcoind.service → /lib/systemd/system/bitcoind.service.
-```
-### D. Shutdown TemplateVM.
+### C. Shutdown TemplateVM.
 ```
 user@host:~$ sudo poweroff
 ```
@@ -159,15 +111,18 @@ bitcoin@host:/home/user$ cd
 1. Clone the repository.
 
 **Note:**
-- At the time of writing the current release branch is `0.18`, modify the following steps accordingly if the version has changed.
+- At the time of writing the current release branch is `0.19`, modify the following steps accordingly if the version has changed.
 
 ```
-bitcoin@host:~$ git clone --branch 0.18 https://github.com/bitcoin/bitcoin
-Cloning into 'bitcoin'...
-remote: Enumerating objects: 136928, done.
-remote: Total 136928 (delta 0), reused 0 (delta 0), pack-reused 136928
-Receiving objects: 100% (136928/136928), 122.41 MiB | 463.00 KiB/s, done.
-Resolving deltas: 100% (95417/95417), done.
+bitcoin@host:~$ git clone --branch 0.19 \
+https://github.com/bitcoin/bitcoin ~/bitcoin
+Cloning into '/home/bitcoin/bitcoin'...
+remote: Enumerating objects: 6, done.
+remote: Counting objects: 100% (6/6), done.
+remote: Compressing objects: 100% (5/5), done.
+remote: Total 150618 (delta 1), reused 2 (delta 1), pack-reused 150612
+Receiving objects: 100% (150618/150618), 134.39 MiB | 465.00 KiB/s, done.
+Resolving deltas: 100% (105128/105128), done.
 ```
 2. Enter the `~/bitcoin` directory and receive signing keys.
 
@@ -175,24 +130,17 @@ Resolving deltas: 100% (95417/95417), done.
 bitcoin@host:~$ cd ~/bitcoin/
 bitcoin@host:~/bitcoin$ gpg --recv-keys $(<contrib/verify-commits/trusted-keys)
 gpg: keybox '/home/user/.gnupg/pubring.kbx' created
-gpg: key 0xD300116E1C875A3D: 39 signatures not checked due to missing keys
 gpg: /home/user/.gnupg/trustdb.gpg: trustdb created
+gpg: key 0x944D35F9AC3DB76A: public key "Michael Ford (bitcoin-otc) <fanquake@gmail.com>" imported
 gpg: key 0xD300116E1C875A3D: public key "MeshCollider <dobsonsa68@gmail.com>" imported
-gpg: key 0x3648A882F4316B9B: 41 signatures not checked due to missing keys
 gpg: key 0x3648A882F4316B9B: public key "Marco Falke <marco.falke@tum.de>" imported
 gpg: key 0x29D4BCB6416F53EC: 1 duplicate signature removed
-gpg: key 0x29D4BCB6416F53EC: 20 signatures not checked due to missing keys
 gpg: key 0x29D4BCB6416F53EC: 1 signature reordered
 gpg: key 0x29D4BCB6416F53EC: public key "Jonas Schnelli <dev@jonasschnelli.ch>" imported
-gpg: key 0x860FEB804E669320: 61 signatures not checked due to missing keys
 gpg: key 0x860FEB804E669320: public key "Pieter Wuille <pieter.wuille@gmail.com>" imported
-gpg: key 0x74810B012346C9A6: 2 duplicate signatures removed
-gpg: key 0x74810B012346C9A6: 88 signatures not checked due to missing keys
-gpg: key 0x74810B012346C9A6: 2 signatures reordered
 gpg: key 0x74810B012346C9A6: public key "Wladimir J. van der Laan <laanwj@visucore.com>" imported
-gpg: no ultimately trusted keys found
-gpg: Total number processed: 5
-gpg:               imported: 5
+gpg: Total number processed: 6
+gpg:               imported: 6
 ```
 3. Verify source code.
 
@@ -201,7 +149,7 @@ gpg:               imported: 5
 
 ```
 bitcoin@host:~/bitcoin$ git verify-commit HEAD
-gpg: Signature made Wed 10 Jul 2019 10:06:19 AM UTC
+gpg: Signature made Mon 25 Nov 2019 09:13:25 AM UTC
 gpg:                using RSA key 9DEAE0DC7063249FB05474681E4AED62986CD25D
 gpg: Good signature from "Wladimir J. van der Laan <laanwj@visucore.com>" [unknown]
 gpg:                 aka "Wladimir J. van der Laan <laanwj@gmail.com>" [unknown]
@@ -292,22 +240,71 @@ user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 8333 \"" >> /rw/config/wh
 ```
 user@host:~$ sudo systemctl restart whonix-firewall.service
 ```
-## VI. Create Communication Channel
-**Note:**
-- This only creates the possibility for other VMs to communicate with `bitcoind`, it does not yet give them permission.
-
-### A. In a `bitcoind` terminal, set up `qubes-rpc` for `bitcoind`.
-1. Create persistent directory for `qrexec` action files.
+### D. Use `systemd` to keep `bitcoind` running.
+1. Create a persistent directory.
 
 ```
-user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
+user@host:~$ sudo mkdir -m 0700 /rw/config/systemd
 ```
-2. Create `qubes.bitcoind_8332` action file.
+2. Create the service file.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:8332" > /rw/usrlocal/etc/qubes-rpc/qubes.bitcoind_8332'
+user@host:~$ lxsu mousepad /rw/config/systemd/bitcoind.service
 ```
-## VII. Create Alias
+3. Paste the following.
+
+```
+[Unit]
+Description=Bitcoin daemon
+After=qubes-sysinit.service
+
+[Service]
+ExecStart=/home/bitcoin/bin/bitcoind \
+  -conf=/home/bitcoin/.bitcoin/bitcoin.conf \
+  -daemon \
+  -pid=/run/bitcoind/bitcoind.pid
+ExecStop=/home/bitcoin/bin/bitcoin-cli stop
+
+RuntimeDirectory=bitcoind
+RuntimeDirectoryMode=0710
+
+User=bitcoin
+Type=forking
+PIDFile=/run/bitcoind/bitcoind.pid
+Restart=on-failure
+
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+PrivateDevices=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target
+```
+4. Save the file: `Ctrl-S`.
+5. Switch back to the terminal: `Ctrl-Q`.
+### E. Enable the service on boot.
+1. Edit the file `/rw/config/rc.local`.
+
+```
+user@host:~$ lxsu mousepad /rw/config/rc.local
+```
+2. Paste the following at the bottom of the file.
+
+```
+cp /rw/config/systemd/bitcoind.service /lib/systemd/system/
+systemctl daemon-reload
+systemctl start bitcoind.service
+```
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Execute the file.
+
+```
+user@host:~$ sudo /rw/config/rc.local
+```
+## VI. Create Alias
 1. Make an alias in order to control `bitcoind` easier.
 
 ```
@@ -318,7 +315,7 @@ user@host:~$ echo 'alias bitcoin-cli="sudo -u bitcoin /home/bitcoin/bin/bitcoin-
 ```
 user@host:~$ source ~/.bashrc
 ```
-## VIII. Initial Blockchain Download
+## VII. Initial Blockchain Download
 **Note:**
 - Initial block download can take anywhere from a day to a week (or even more) depending on a number of factors including your hardware and internet connection.
 
@@ -326,7 +323,7 @@ user@host:~$ source ~/.bashrc
 ```
 user@host:~$ sudo systemctl start bitcoind
 ```
-## IX. Final Notes
+## VIII. Final Notes
 - Once the initial synchronization has finished you may begin using your Bitcoin node as a backend for other services.
 - To check the status of the server: `sudo tail -f /home/bitcoin/.bitcoin/debug.log`
 - To interact with the server: `bitcoin-cli --help`

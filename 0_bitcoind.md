@@ -284,6 +284,11 @@ WantedBy=multi-user.target
 ```
 4. Save the file: `Ctrl-S`.
 5. Switch back to the terminal: `Ctrl-Q`.
+6. Fix permissions.
+
+```
+user@host:~$ chmod 0600 /rw/config/systemd/bitcoind.service
+```
 ### E. Enable the service on boot.
 1. Edit the file `/rw/config/rc.local`.
 

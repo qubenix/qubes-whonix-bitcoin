@@ -246,6 +246,11 @@ WantedBy=multi-user.target
 ```
 3. Save the file: `Ctrl-S`.
 4. Switch back to the terminal: `Ctrl-Q`.
+5. Fix permissions.
+
+```
+user@host:~$ chmod 0600 /rw/config/systemd/joinmarketd.service
+```
 ### E. Enable the service on boot.
 1. Edit the file `/rw/config/rc.local`.
 
@@ -261,11 +266,6 @@ systemctl start joinmarketd.service
 ```
 3. Save the file: `Ctrl-S`.
 4. Switch back to the terminal: `Ctrl-Q`.
-5. Execute the file.
-
-```
-user@host:~$ sudo /rw/config/rc.local
-```
 ## VI. Configure `joinmarket` VM
 ### A. In a `joinmarket` terminal, open communication ports on boot.
 1. Edit the file `/rw/config/rc.local`.

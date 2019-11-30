@@ -55,7 +55,7 @@ In addition to preventing certain types of attacks, this setup also increases yo
 [user@dom0 ~]$ qvm-volume resize electrumx:private 60G
 ```
 
-### C. Create rpc policy to allow comms from `electrumx` to `bitcoind`.
+### C. Allow comms from `electrumx` to `bitcoind`.
 ```
 [user@dom0 ~]$ echo 'electrumx bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.ConnectTCP
 ```

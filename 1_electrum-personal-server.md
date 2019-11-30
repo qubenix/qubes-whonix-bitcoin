@@ -53,7 +53,7 @@ sys-electrum-personal-server
 --prop netvm='sys-electrum-personal-server' --prop vcpus='1' \
 --template whonix-ws-15-bitcoin electrum-personal-server
 ```
-### C. Create rpc policy to allow comms from `electrum-personal-server` to `bitcoind`.
+### C. Allow comms from `electrum-personal-server` to `bitcoind`.
 ```
 [user@dom0 ~]$ echo 'electrum-personal-server bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.ConnectTCP
 ```

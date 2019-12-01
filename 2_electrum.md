@@ -112,7 +112,7 @@ user@host:~$ qvm-move electrum-3.3.8-x86_64.AppImage
 **Note:** Replace `<electrum-server>` in this example with the name of the prerequisite server you installed (`electrs`, `electrum-personal-server`, or `electrumx`).
 
 ```
-user@host:~$ echo "qvm-connect-tcp 50002:<electrum-server>:50002" | sudo tee -a /rw/config/rc.local
+user@host:~$ sudo sh -c 'echo "qvm-connect-tcp 50002:<electrum-server>:50002" >> /rw/config/rc.local'
 ```
 4. Execute the file.
 

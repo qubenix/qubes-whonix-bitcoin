@@ -24,20 +24,16 @@ This increases the privacy and security of your JoinMarket wallet while still ma
 [user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' \
 --prop vcpus='1' --template whonix-ws-15-bitcoin joinmarket
 ```
-### B. Enable `joinmarketd` service.
+### B. Allow comms from `joinmarket` to `bitcoind` VM.
 ```
-[user@dom0 ~]$ qvm-service --enable bitcoind joinmarketd
-```
-### C. Create rpc policies to allow comms from `joinmarket` to `bitcoind` VM.
-```
-[user@dom0 ~]$ echo 'joinmarket bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.{bitcoind,joinmarket_2718{3,4}}
+[user@dom0 ~]$ echo 'joinmarket bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.ConnectTCP
 ```
 ## II. Set Up TemplateVM
 ### A. In a `whonix-ws-15-bitcoin` terminal, update and install dependencies.
 ```
 user@host:~$ sudo apt update && sudo apt install -y libffi-dev libgmp-dev libsecp256k1-dev \
 python-configparser python-virtualenv python3-argon2 python3-cffi python3-dev python3-future \
-python3-libnacl python3-mnemonic python3-pip python3-pyaes
+python3-libnacl python3-matplotlib python3-mnemonic python3-pip python3-pyaes python3-qrcode
 ```
 ### B. Create system user.
 ```
@@ -45,46 +41,6 @@ user@host:~$ sudo adduser --system joinmarket
 Adding system user `joinmarket' (UID 117) ...
 Adding new user `joinmarket' (UID 117) with group `nogroup' ...
 Creating home directory `/home/joinmarket' ...
-```
-### C. Use `systemd` to keep `joinmarketd` running.
-1. Create `systemd` service file.
-
-```
-user@host:~$ lxsu mousepad /lib/systemd/system/joinmarketd.service
-```
-2. Paste the following.
-
-```
-[Unit]
-Description=JoinMarket daemon
-ConditionPathExists=/var/run/qubes-service/joinmarketd
-After=qubes-sysinit.service
-After=bitcoind.service
-
-[Service]
-WorkingDirectory=/home/joinmarket/joinmarket-clientserver
-ExecStart=/bin/sh -c 'jmvenv/bin/python scripts/joinmarketd.py'
-
-User=joinmarket
-Type=idle
-Restart=on-failure
-
-PrivateTmp=true
-ProtectSystem=full
-NoNewPrivileges=true
-PrivateDevices=true
-MemoryDenyWriteExecute=true
-
-[Install]
-WantedBy=multi-user.target
-```
-3. Save the file: `Ctrl-S`.
-4. Switch back to the terminal: `Ctrl-Q`.
-5. Enable the service.
-
-```
-user@host:~$ sudo systemctl enable joinmarketd.service
-Created symlink /etc/systemd/system/multi-user.target.wants/joinmarketd.service → /lib/systemd/system/joinmarketd.service.
 ```
 ### C. Shutdown TemplateVM.
 ```
@@ -95,19 +51,19 @@ user@host:~$ sudo poweroff
 1. Clone the JoinMarket [repository](https://github.com/JoinMarket-Org/joinmarket-clientserver).
 
 **Note:**
-- At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.5.5`, modify the following steps accordingly if the version has changed.
+- At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.6.0`, modify the following steps accordingly if the version has changed.
 
 ```
-user@host:~$ git clone --branch v0.5.5 \
+user@host:~$ git clone --branch v0.6.0 \
 https://github.com/JoinMarket-Org/joinmarket-clientserver ~/joinmarket-clientserver
 Cloning into '/home/user/joinmarket-clientserver'...
-remote: Enumerating objects: 74, done.
-remote: Counting objects: 100% (74/74), done.
-remote: Compressing objects: 100% (52/52), done.
-remote: Total 4461 (delta 35), reused 50 (delta 22), pack-reused 4387
-Receiving objects: 100% (4461/4461), 3.44 MiB | 337.00 KiB/s, done.
-Resolving deltas: 100% (2897/2897), done.
-Note: checking out 'dcde815bcb06de198b0826023def9b41af7cd507'.
+remote: Enumerating objects: 32, done.
+remote: Counting objects: 100% (32/32), done.
+remote: Compressing objects: 100% (29/29), done.
+remote: Total 5238 (delta 9), reused 14 (delta 3), pack-reused 5206
+Receiving objects: 100% (5238/5238), 3.85 MiB | 156.00 KiB/s, done.
+Resolving deltas: 100% (3434/3434), done.
+Note: checking out 'df3712f662c03db4b353e4c1c92d901153c5b8f0'.
 ```
 2. Receive signing key.
 
@@ -129,9 +85,9 @@ gpg:               imported: 1
 
 ```
 user@host:~$ cd ~/joinmarket-clientserver/
-user@host:~/joinmarket-clientserver$ git verify-tag v0.5.5
-gpg: Signature made Wed 21 Aug 2019 04:42:16 PM UTC
-gpg:                using RSA key 141001A1AF77F20B
+user@host:~/joinmarket-clientserver$ git verify-tag v0.6.0
+gpg: Signature made Sat 30 Nov 2019 04:41:03 PM UTC
+gpg:                using RSA key 2B6FC204D9BF332D062B461A141001A1AF77F20B
 gpg: Good signature from "Adam Gibson (CODE SIGNING KEY) <ekaggata@gmail.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
@@ -151,6 +107,8 @@ Installing setuptools, pkg_resources, pip, wheel...done.
 
 2. Link installed packages to virtual environment.
 
+**Note:** Ignore the `File exists` errors.
+
 ```
 user@host:~/joinmarket-clientserver$ ln -s /usr/lib/python3/dist-packages/* ~/joinmarket-clientserver/jmvenv/lib/python3.7/site-packages/
 ```
@@ -158,10 +116,16 @@ user@host:~/joinmarket-clientserver$ ln -s /usr/lib/python3/dist-packages/* ~/jo
 
 **Note:**
 - This step, and the next optional step, will produce a lot of output and take some time. This is normal, be patient.
+- If you have errors re-run the `setupall.py` step a second time.
 
 ```
 user@host:~/joinmarket-clientserver$ source ~/joinmarket-clientserver/jmvenv/bin/activate
 (jmvenv) user@host:~/joinmarket-clientserver$ python ~/joinmarket-clientserver/setupall.py --all
+```
+4. Upgrade `service-identity` to avoid an annoying warning.
+
+```
+(jmvenv) user@host:~/joinmarket-clientserver$ pip install service-identity --upgrade
 ```
 #### Optional Step: Install QT dependencies for JoinMarket GUI.
 **Note:**
@@ -171,13 +135,13 @@ user@host:~/joinmarket-clientserver$ source ~/joinmarket-clientserver/jmvenv/bin
 (jmvenv) user@host:~/joinmarket-clientserver$ pip install PySide2 \
 https://github.com/sunu/qt5reactor/archive/58410aaead2185e9917ae9cac9c50fe7b70e4a60.zip
 ```
-4. Deactivate virtual environment and make relocatable.
+5. Deactivate virtual environment and make relocatable.
 
 ```
 (jmvenv) user@host:~/joinmarket-clientserver$ deactivate
 user@host:~/joinmarket-clientserver$ virtualenv -p python3 --relocatable ~/joinmarket-clientserver/jmvenv
 ```
-5. Return to home directory.
+6. Return to home directory.
 
 ```
 user@host:~/joinmarket-clientserver$ cd
@@ -259,14 +223,57 @@ wallet=joinmarket
 ```
 user@host:~$ sudo systemctl restart bitcoind.service
 ```
-
-### D. Set up `qubes-rpc` for `joinmarketd`.
-1. Create `qubes.joinmarket_27183` and `qubes.joinmarket_27184` rpc action files.
+### D. Use `systemd` to keep `joinmarketd` running.
+1. Create the service file.
 
 ```
-user@host:~$ sudo sh -c "echo 'socat STDIO TCP:127.0.0.1:27183' > /rw/usrlocal/etc/qubes-rpc/qubes.joinmarket_27183"
-user@host:~$ sudo sh -c "echo 'socat STDIO TCP:127.0.0.1:27184' > /rw/usrlocal/etc/qubes-rpc/qubes.joinmarket_27184"
+user@host:~$ lxsu mousepad /rw/config/systemd/joinmarketd.service
 ```
+2. Paste the following.
+
+```
+[Unit]
+Description=JoinMarket daemon
+
+[Service]
+WorkingDirectory=/home/joinmarket/joinmarket-clientserver
+ExecStart=/bin/sh -c 'jmvenv/bin/python scripts/joinmarketd.py'
+
+User=joinmarket
+Type=idle
+Restart=on-failure
+
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+PrivateDevices=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target
+```
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+5. Fix permissions.
+
+```
+user@host:~$ chmod 0600 /rw/config/systemd/joinmarketd.service
+```
+### E. Enable the service on boot.
+1. Edit the file `/rw/config/rc.local`.
+
+```
+user@host:~$ lxsu mousepad /rw/config/rc.local
+```
+2. Paste the following at the bottom of the file.
+
+```
+cp /rw/config/systemd/joinmarketd.service /lib/systemd/system/
+systemctl daemon-reload
+systemctl start joinmarketd.service
+```
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
 ## VI. Configure `joinmarket` VM
 ### A. In a `joinmarket` terminal, open communication ports on boot.
 1. Edit the file `/rw/config/rc.local`.
@@ -277,9 +284,9 @@ user@host:~$ lxsu mousepad /rw/config/rc.local
 2. Paste the following at the bottom of the file.
 
 ```
-socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.bitcoind_8332" &
-socat TCP-LISTEN:27183,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.joinmarket_27183" &
-socat TCP-LISTEN:27184,fork,bind=127.0.0.1 EXEC:"qrexec-client-vm bitcoind qubes.joinmarket_27184" &
+qvm-connect-tcp 8332:bitcoind:8332
+qvm-connect-tcp 27183:bitcoind:27183
+qvm-connect-tcp 27184:bitcoind:27184
 ```
 3. Save the file: `Ctrl-S`.
 4. Switch back to the terminal: `Ctrl-Q`.
@@ -366,7 +373,7 @@ console_log_level = INFO
 color = true
 
 [TIMEOUT]
-maker_timeout_sec = 60
+maker_timeout_sec = 45
 unconfirm_timeout_sec = 180
 confirm_timeout_hours = 6
 
@@ -390,7 +397,7 @@ accept_commitment_broadcasts = 1
 - Once `bitcoind` has finished syncing in the `bitcoind` VM you will be able to use JoinMarket's wallet from the `joinmarket` VM.
 
 ## VII. Optional Steps
-### A. In a `joinmarket` terminal, source virtual envrionment and change to JoinMarket `scripts/` directory on boot.
+### A. In a `joinmarket` terminal, source virtual envrionment and change to JoinMarket's `scripts/` directory on boot.
 1. Edit the file `~/.bashrc`.
 
 ```

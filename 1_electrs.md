@@ -48,19 +48,18 @@ In addition to preventing certain types of attacks, this setup also increases yo
 [user@dom0 ~]$ qvm-create --label red --prop maxmem='800' --prop netvm='sys-electrs' \
 --prop vcpus='1' --template whonix-ws-15-bitcoin electrs
 ```
-2. Increase private volume size and enable `electrs` service.
+2. Increase the private volume size.
 
 **Note:**
 - The disk usage will settle at somewhere under 60G, but during initial download and compaction the disk usage can get to under 140G.
 
 ```
 [user@dom0 ~]$ qvm-volume resize electrs:private 140G
-[user@dom0 ~]$ qvm-service --enable electrs electrs
 ```
 
-### C. Create rpc policy to allow comms from `electrs` to `bitcoind`.
+### C. Allow comms from `electrs` to `bitcoind`.
 ```
-[user@dom0 ~]$ echo 'electrs bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.bitcoind_8332
+[user@dom0 ~]$ echo 'electrs bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.ConnectTCP
 ```
 ## II. Set Up TemplateVM
 ### A. In a `whonix-ws-15-bitcoin` terminal, update and install dependencies.
@@ -74,80 +73,7 @@ Adding system user `electrs' (UID 117) ...
 Adding new user `electrs' (UID 117) with group `nogroup' ...
 Creating home directory `/home/electrs' ...
 ```
-### C. Use `systemd` to keep `electrs` running.
-1. Create `systemd` service file.
-
-```
-user@host:~$ lxsu mousepad /lib/systemd/system/electrs.service
-```
-2. Paste the following.
-
-```
-[Unit]
-Description=Electrum Rust Server
-ConditionPathExists=/var/run/qubes-service/electrs
-After=qubes-sysinit.service
-
-[Service]
-User=electrs
-
-Type=simple
-ExecStart=/home/electrs/electrs/target/release/electrs -vvvv \
-  --db-dir /home/electrs/.electrs/electrs-db \
-  --index-batch-size=10 --jsonrpc-import
-Restart=on-failure
-RestartSec=60
-Environment="RUST_BACKTRACE=1"
-
-PrivateTmp=true
-ProtectSystem=full
-NoNewPrivileges=true
-MemoryDenyWriteExecute=true
-
-[Install]
-WantedBy=multi-user.target
-```
-3. Save the file: `Ctrl-S`.
-4. Switch back to the terminal: `Ctrl-Q`.
-5. Enable the service.
-
-```
-user@host:~$ sudo systemctl enable electrs.service
-Created symlink /etc/systemd/system/multi-user.target.wants/electrs.service → /lib/systemd/system/electrs.service.
-```
-### D. Set up ngingx for TLS.
-1. Open nginx configuration file.
-
-```
-user@host:~$ lxsu mousepad /etc/nginx/nginx.conf
-```
-2. Paste the following at the bottom of the file.
-
-**Note:**
-- Be sure not to alter any of the existing information.
-
-```
-stream {
-        upstream electrs {
-                server 127.0.0.1:50001;
-        }
-
-        server {
-                listen 50002 ssl;
-                proxy_pass electrs;
-
-                ssl_certificate /home/electrs/.electrs/certs/server.crt;
-                ssl_certificate_key /home/electrs/.electrs/certs/server.key;
-                ssl_session_cache shared:SSL:1m;
-                ssl_session_timeout 4h;
-                ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
-                ssl_prefer_server_ciphers on;
-        }
-}
-```
-3. Save the file: `Ctrl-S`.
-4. Switch back to the terminal: `Ctrl-Q`.
-### E. Shutdown the TemplateVM.
+### C. Shutdown the TemplateVM.
 ```
 user@host:~$ sudo poweroff
 ```
@@ -200,7 +126,7 @@ rpcauth=<rpc-user>:<hashed-pass>
 user@host:~$ sudo systemctl restart bitcoind.service
 ```
 ## IV. Install Electrs
-### A. Download and verify Electrs.
+### A. In an `electrs` VM, download and verify Electrs.
 1. Switch to user `electrs` and change to home directory.
 
 ```
@@ -210,10 +136,10 @@ electrs@host:/home/user$ cd
 2. Clone the Electrs [repository](https://github.com/romanz/electrs).
 
 **Note:**
-- The current version of Electrs is `v0.7.1`, modify the following steps accordingly if the version has changed.
+- The current version of Electrs is `v0.8.1`, modify the following steps accordingly if the version has changed.
 
 ```
-electrs@host:~$ git clone -b v0.7.1 https://github.com/romanz/electrs ~/electrs
+electrs@host:~$ git clone --branch v0.8.1 https://github.com/romanz/electrs ~/electrs
 Cloning into 'electrs'...
 remote: Enumerating objects: 26, done.
 remote: Counting objects: 100% (26/26), done.
@@ -247,8 +173,8 @@ electrs@host:~$ cd ~/electrs
 - Your output may not match the example. Just check that it says `Good signature`.
 
 ```
-electrs@host:~/electrs$ git verify-tag v0.7.1
-gpg: Signature made Sat 27 Jul 2019 02:43:19 PM UTC
+electrs@host:~/electrs$ git verify-tag v0.8.1
+gpg: Signature made Wed 20 Nov 2019 08:22:49 PM UTC
 gpg:                using ECDSA key 15C8C3574AE4F1E25F3F35C587CAE5FA46917CBB
 gpg:                issuer "me@romanzey.de"
 gpg: Good signature from "Roman Zeyde <me@romanzey.de>" [unknown]
@@ -269,25 +195,25 @@ electrs@host:~/electrs$ cargo build --release
 1. Create necessary directories.
 
 ```
-electrs@host:~$ mkdir -m 0700 ~/.{bitcoin,electrs}
-electrs@host:~$ mkdir -m 0700 ~/.electrs/{certs,electrs-db}
+electrs@host:~/electrs$ mkdir -m 0700 ~/.{bitcoin,electrs}
+electrs@host:~/electrs$ mkdir -m 0700 ~/.electrs/{certs,electrs-db}
 ```
 2. Create certificate.
 ```
-electrumx@host:~$ openssl req -x509 -sha256 -newkey rsa:4096 \
--keyout ~/.electrumx/certs/server.key -out ~/.electrumx/certs/server.crt -days 1825 \
+electrs@host:~/electrs$ openssl req -x509 -sha256 -newkey rsa:4096 \
+-keyout ~/.electrs/certs/server.key -out ~/.electrs/certs/server.crt -days 1825 \
 -nodes -subj '/CN=localhost'
 Generating a RSA private key
 .........................................................................................++++
 ....++++
-writing new private key to '/home/electrumx/.electrumx/certs/server.key'
+writing new private key to '/home/electrs/.electrs/certs/server.key'
 -----
 ```
 ### B. Set up Bitcoin cookie auth.
 1. Create cookie file.
 
 ```
-electrs@host:~$ mousepad ~/.bitcoin/.cookie
+electrs@host:~/electrs$ mousepad ~/.bitcoin/.cookie
 ```
 2. Paste the following.
 
@@ -299,35 +225,124 @@ electrs@host:~$ mousepad ~/.bitcoin/.cookie
 ```
 3. Save the file: `Ctrl-S`.
 4. Switch back to the terminal: `Ctrl-Q`.
-### C. Switch back to main user account.
+5. Switch back to main user account.
+
 ```
-electrs@host:~$ exit
+electrs@host:~/electrs$ exit
 ```
-## VI. Set Up Communication Channels
-### A. Remain in an `electrs` terminal, open communication with `bitcoind` on boot.
+### C. Set up TLS for ngingx.
+1. Create the nginx configuration file.
+
+```
+user@host:~$ lxsu mousepad /rw/config/nginx-tls.conf
+```
+
+2. Paste the following.
+
+```
+stream {
+        upstream electrs {
+                server 127.0.0.1:50001;
+        }
+
+        server {
+                listen 50002 ssl;
+                proxy_pass electrs;
+
+                ssl_certificate /home/electrs/.electrs/certs/server.crt;
+                ssl_certificate_key /home/electrs/.electrs/certs/server.key;
+                ssl_session_cache shared:SSL:1m;
+                ssl_session_timeout 4h;
+                ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+                ssl_prefer_server_ciphers on;
+        }
+}
+```
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+### D. Fix nginx configuration on boot.
 1. Edit the file `/rw/config/rc.local`.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm bitcoind qubes.bitcoind_8332\" &" >> /rw/config/rc.local'
+user@host:~$ lxsu mousepad /rw/config/rc.local
+```
+2. Paste the following at the bottom of the file.
+
+```
+cat /rw/config/nginx-tls.conf >> /etc/nginx/nginx.conf
+systemctl restart nginx.service
+```
+### E. Use `systemd` to keep `electrs` running.
+1. Create a persistent directory.
+
+```
+user@host:~$ sudo mkdir -m 0700 /rw/config/systemd
+```
+2. Create the service file.
+
+```
+user@host:~$ lxsu mousepad /rw/config/systemd/electrs.service
+```
+3. Paste the following.
+
+```
+[Unit]
+Description=Electrum Rust Server
+
+[Service]
+ExecStart=/home/electrs/electrs/target/release/electrs -vvvv \
+  --db-dir /home/electrs/.electrs/electrs-db \
+  --index-batch-size=10 --jsonrpc-import
+
+User=electrs
+Type=simple
+KillMode=process
+TimeoutSec=60
+Restart=on-failure
+RestartSec=60
+Environment="RUST_BACKTRACE=1"
+
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target
+```
+4. Save the file: `Ctrl-S`.
+5. Switch back to the terminal: `Ctrl-Q`.
+6. Fix permissions.
+
+```
+user@host:~$ sudo chmod 0600 /rw/config/systemd/electrs.service
+```
+### F. Enable the service on boot.
+1. Edit the file `/rw/config/rc.local`.
+
+```
+user@host:~$ lxsu mousepad /rw/config/rc.local
+```
+2. Paste the following at the bottom of the file.
+
+```
+cp /rw/config/systemd/electrs.service /lib/systemd/system/
+systemctl daemon-reload
+systemctl start electrs.service
+```
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+## VI. Fix Networking
+### A. Remain in an `electrum-personal-server` terminal, open communication with `bitcoind` on boot.
+1. Edit the file `/rw/config/rc.local`.
+
+```
+user@host:~$ sudo sh -c 'echo "qvm-connect-tcp 8332:bitcoind:8332" >> /rw/config/rc.local'
 ```
 2. Execute the file.
 
 ```
 user@host:~$ sudo /rw/config/rc.local
-```
-### B. Set up `qubes-rpc` for `electrs`.
-**Note:**
-- This only creates the possibility for other VMs to communicate with `electrs`, it does not yet give them permission.
-
-1. Create persistent directory for `qrexec` action files.
-
-```
-user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
-```
-2. Create `qubes.electrum_50002` action file.
-
-```
-user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum_50002'
 ```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory for new firewall rules.
@@ -338,7 +353,7 @@ user@host:~$ sudo mkdir -m 0755 /rw/config/whonix_firewall.d
 2. Configure firewall.
 
 ```
-user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50002 \"" >> /rw/config/whonix_firewall.d/50_user.conf'
+user@host:~$ echo 'EXTERNAL_OPEN_PORTS+=" 50002 "' | sudo tee -a /rw/config/whonix_firewall.d/50_user.conf
 ```
 3. Restart firewall service.
 

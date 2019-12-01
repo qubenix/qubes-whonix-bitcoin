@@ -53,14 +53,9 @@ sys-electrum-personal-server
 --prop netvm='sys-electrum-personal-server' --prop vcpus='1' \
 --template whonix-ws-15-bitcoin electrum-personal-server
 ```
-2. Enable `electrum-personal-server` service.
-
+### C. Allow comms from `electrum-personal-server` to `bitcoind`.
 ```
-[user@dom0 ~]$ qvm-service --enable electrum-personal-server electrum-personal-server
-```
-### C. Create rpc policy to allow comms from `electrum-personal-server` to `bitcoind`.
-```
-[user@dom0 ~]$ echo 'electrum-personal-server bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.bitcoind_8332
+[user@dom0 ~]$ echo 'electrum-personal-server bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.ConnectTCP
 ```
 ### D. Get IP of the `sys-electrum-personal-server` gateway.
 **Note:**
@@ -82,46 +77,7 @@ Adding system user `electrum-personal-server' (UID 117) ...
 Adding new user `electrum-personal-server' (UID 117) with group `nogroup' ...
 Creating home directory `/home/electrum-personal-server' ...
 ```
-### C. Use `systemd` to keep `electrum-personal-server` running.
-1. Create `systemd` service file.
-
-```
-user@host:~$ lxsu mousepad /lib/systemd/system/electrum-personal-server.service
-```
-
-2. Paste the following.
-
-```
-[Unit]
-Description=Electrum Personal Server
-ConditionPathExists=/var/run/qubes-service/electrum-personal-server
-After=qubes-sysinit.service
-
-[Service]
-ExecStart=/home/electrum-personal-server/epsvenv/bin/electrum-personal-server /home/electrum-personal-server/.eps/config.cfg
-
-User=electrum-personal-server
-Restart=on-failure
-
-PrivateTmp=true
-ProtectSystem=full
-NoNewPrivileges=true
-PrivateDevices=true
-MemoryDenyWriteExecute=true
-
-[Install]
-WantedBy=multi-user.target
-```
-
-3. Save the file: `Ctrl-S`.
-4. Switch back to the terminal: `Ctrl-Q`.
-5. Enable the service.
-
-```
-user@host:~$ sudo systemctl enable electrum-personal-server.service
-Created symlink /etc/systemd/system/multi-user.target.wants/electrum-personal-server.service → /lib/systemd/system/electrum-personal-server.service.
-```
-### D. Shutdown TemplateVM.
+### C. Shutdown TemplateVM.
 ```
 user@host:~$ sudo poweroff
 ```
@@ -358,31 +314,72 @@ writing new private key to '/home/electrum-personal-server/.eps/certs/server.key
 ```
 electrumx@host:~$ exit
 ```
-## VI. Set Up Communication Channels
+### D. Use `systemd` to keep `electrum-personal-server` running.
+1. Create a persistent directory.
+
+```
+user@host:~$ sudo mkdir -m 0700 /rw/config/systemd
+```
+2. Create the service file.
+
+```
+user@host:~$ lxsu mousepad /rw/config/systemd/electrum-personal-server.service
+```
+3. Paste the following.
+
+```
+[Unit]
+Description=Electrum Personal Server
+
+[Service]
+ExecStart=/home/electrum-personal-server/epsvenv/bin/electrum-personal-server \
+    /home/electrum-personal-server/.eps/config.cfg
+
+User=electrum-personal-server
+Restart=on-failure
+
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+PrivateDevices=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target
+```
+4. Save the file: `Ctrl-S`.
+5. Switch back to the terminal: `Ctrl-Q`.
+6. Fix permissions.
+
+```
+user@host:~$ chmod 0600 /rw/config/systemd/electrum-personal-server.service
+```
+### E. Enable the service on boot.
+1. Edit the file `/rw/config/rc.local`.
+
+```
+user@host:~$ lxsu mousepad /rw/config/rc.local
+```
+2. Paste the following at the bottom of the file.
+
+```
+cp /rw/config/systemd/electrum-personal-server.service /lib/systemd/system/
+systemctl daemon-reload
+systemctl start electrum-personal-server.service
+```
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+## VI. Fix Networking
 ### A. Remain in an `electrum-personal-server` terminal, open communication with `bitcoind` on boot.
 1. Edit the file `/rw/config/rc.local`.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm bitcoind qubes.bitcoind_8332\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "qvm-connect-tcp 8332:bitcoind:8332" >> /rw/config/rc.local'
 ```
 2. Execute the file.
 
 ```
 user@host:~$ sudo /rw/config/rc.local
-```
-### B. Set up `qubes-rpc` for `electrum-personal-server`.
-**Note:**
-- This only creates the possibility for other VMs to communicate with `electrum-personal-server`, it does not yet give them permission.
-
-1. Create persistent directory for `qrexec` action files.
-
-```
-user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
-```
-2. Create `qubes.electrum_50002` action file.
-
-```
-user@host:~$ sudo sh -c 'echo "ocat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum_50002'
 ```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory.

@@ -23,30 +23,12 @@ This increases the privacy and security of your Electrum wallet while still main
 ```
 [user@dom0 ~]$ qvm-create --label black --prop maxmem='800' --prop netvm='' --prop vcpus='1' --template whonix-ws-15 electrum
 ```
-### B. Create rpc policy to allow comms from `electrum` to `electrs`, `electrum-personal-server`, or `electrumx` VM.
-1. Allow `electrum` to communicate with `electrs`.
+### B. Allow comms from `electrum` to the server VM.
 
-**Note:**
-- Skip this step is you did not install `electrs` as your server VM.
+**Note:** Replace `<electrum-server>` in this example with the name of the prerequisite server you installed (`electrs`, `electrum-personal-server`, or `electrumx`).
 
 ```
-[user@dom0 ~]$ echo 'electrum electrs allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum_50002
-```
-2. Allow `electrum` to communicate with `electrum-personal-server`.
-
-**Note:**
-- Skip this step if you did not install `electrum-personal-server` as your server VM.
-
-```
-[user@dom0 ~]$ echo 'electrum electrum-personal-server allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum_50002
-```
-3. Allow `electrum` to communicate with `electrumx`.
-
-**Note:**
-- Skip this step is you did not install `electrumx` as your server VM.
-
-```
-[user@dom0 ~]$ echo 'electrum electrumx allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.electrum_50002
+[user@dom0 ~]$ echo 'electrum <electrum-server> allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.ConnectTCP
 ```
 ## II. Install Electrum
 ### A. In a `bitcoind` terminal, download Electrum files.
@@ -125,30 +107,12 @@ user@host:~$ chmod +x electrum-3.3.8-x86_64.AppImage
 user@host:~$ qvm-move electrum-3.3.8-x86_64.AppImage
 ```
 ## III. Set Up Electrum
-### A. In an `electrum` terminal, open communication with `electrs`, `electrum-personal-server`, or `electrumx` VM on boot.
-1. Edit the file `/rw/config/local` for `electrs`.
+### A. In an `electrum` terminal, open communication with the server VM on boot.
 
-**Note:**
-- Skip this step is you did not install `electrs` as your server VM.
+**Note:** Replace `<electrum-server>` in this example with the name of the prerequisite server you installed (`electrs`, `electrum-personal-server`, or `electrumx`).
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrs qubes.electrum_50002\" &" >> /rw/config/rc.local'
-```
-2. Edit the file `/rw/config/local` for `electrum-personal-server`.
-
-**Note:**
-- Skip this step if you did not install `electrum-personal-server` as your server VM.
-
-```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrum-personal-server qubes.electrum_50002\" &" >> /rw/config/rc.local'
-```
-3. Edit the file `/rw/config/local` for `electrumx`.
-
-**Note:**
-- Skip this step is you did not install `electrumx` as your server VM.
-
-```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:50002,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm electrumx qubes.electrum_50002\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "qvm-connect-tcp 50002:<electrum-server>:50002" >> /rw/config/rc.local'
 ```
 4. Execute the file.
 

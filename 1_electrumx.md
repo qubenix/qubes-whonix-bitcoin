@@ -49,16 +49,15 @@ In addition to preventing certain types of attacks, this setup also increases yo
 [user@dom0 ~]$ qvm-create --label red --prop maxmem='800' --prop netvm='sys-electrumx' \
 --prop vcpus='1' --template whonix-ws-15-bitcoin electrumx
 ```
-2. Increase private volume size and enable `electrumx` service.
+2. Increase private volume size.
 
 ```
 [user@dom0 ~]$ qvm-volume resize electrumx:private 60G
-[user@dom0 ~]$ qvm-service --enable electrumx electrumx
 ```
 
-### C. Create rpc policy to allow comms from `electrumx` to `bitcoind`.
+### C. Allow comms from `electrumx` to `bitcoind`.
 ```
-[user@dom0 ~]$ echo 'electrumx bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.bitcoind_8332
+[user@dom0 ~]$ echo 'electrumx bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.ConnectTCP
 ```
 ## II. Set Up TemplateVM
 ### A. In a `whonix-ws-15-bitcoin` terminal, update and install dependency.
@@ -72,47 +71,7 @@ Adding system user `electrumx' (UID 117) ...
 Adding new user `electrumx' (UID 117) with group `nogroup' ...
 Creating home directory `/home/electrumx' ...
 ```
-### C. Use `systemd` to keep `electrumx` running.
-1. Create `systemd` service file.
-
-```
-user@host:~$ lxsu mousepad /lib/systemd/system/electrumx.service
-```
-2. Paste the following.
-
-```
-[Unit]
-Description=Electrumx
-ConditionPathExists=/var/run/qubes-service/electrumx
-After=qubes-sysinit.service
-
-[Service]
-EnvironmentFile=/home/electrumx/.electrumx/electrumx.conf
-ExecStart=/home/electrumx/exvenv/bin/python /home/electrumx/exvenv/bin/electrumx_server
-
-User=electrumx
-Restart=on-failure
-LimitNOFILE=8192
-TimeoutStopSec=30min
-
-PrivateTmp=true
-ProtectSystem=full
-NoNewPrivileges=true
-PrivateDevices=true
-MemoryDenyWriteExecute=true
-
-[Install]
-WantedBy=multi-user.target
-```
-3. Save the file: `Ctrl-S`.
-4. Switch back to the terminal: `Ctrl-Q`.
-5. Enable the service.
-
-```
-user@host:~$ sudo systemctl enable electrumx.service
-Created symlink /etc/systemd/system/multi-user.target.wants/electrumx.service → /lib/systemd/system/electrumx.service.
-```
-### D. Shutdown TemplateVM.
+### C. Shutdown TemplateVM.
 ```
 user@host:~$ sudo poweroff
 ```
@@ -175,30 +134,30 @@ electrumx@host:/home/user$ cd
 2. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
 
 **Note:**
-- The current version of Electrumx is `1.12.0`, modify the following steps accordingly if the version has changed.
+- The current version of Electrumx is `1.13.0`, modify the following steps accordingly if the version has changed.
 
 ```
-electrumx@host:~$ scurl-download https://github.com/kyuupichan/electrumx/archive/1.12.0.tar.gz
+electrumx@host:~$ scurl-download https://github.com/kyuupichan/electrumx/archive/1.13.0.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   128    0   128    0     0     41      0 --:--:--  0:00:03 --:--:--    41
-100  311k    0  311k    0     0  50022      0 --:--:--  0:00:06 --:--:--  133k
-curl: Saved to filename 'electrumx-1.12.0.tar.gz'
+100   128    0   128    0     0     46      0 --:--:--  0:00:02 --:--:--    46
+100  339k    0  339k    0     0  33692      0 --:--:--  0:00:10 --:--:-- 73462
+curl: Saved to filename 'electrumx-1.13.0.tar.gz'
 ```
 3. Verify download.
 
 **Note:**
 - The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
-- While it doesn't offer the same security, I have included the SHA256 sum of my `electrumx-1.12.0.tar.gz` download for your verification.
+- While it doesn't offer the same security, I have included the SHA256 sum of my `electrumx-1.13.0.tar.gz` download for your verification.
 
 ```
-electrumx@host:~$ echo 'a27e8f503feaaad17f8ce7ab13bb33428a468b6beb13e041706a069f541364f8  electrumx-1.12.0.tar.gz' | shasum -c
-electrumx-1.12.0.tar.gz: OK
+electrumx@host:~$ echo '8dc7cf5b15fe48c5abbadc5c12b5bf25ca8bd5d10f4d781ca9613004fe8d4b50  electrumx-1.13.0.tar.gz' | shasum -c
+electrumx-1.13.0.tar.gz: OK
 ```
 4. Extract.
 
 ```
-electrumx@host:~$ tar -C ~ -xf electrumx-1.12.0.tar.gz
+electrumx@host:~$ tar -C ~ -xf electrumx-1.13.0.tar.gz
 ```
 ### B. Create virtual environment, link installed packages.
 1. Create virtual environment.
@@ -225,7 +184,7 @@ electrumx@host:~$ source ~/exvenv/bin/activate
 2. Change directory.
 
 ```
-(exvenv) electrumx@host:~$ cd ~/electrumx-1.12.0/
+(exvenv) electrumx@host:~$ cd ~/electrumx-1.13.0/
 ```
 3. Install Electrumx.
 
@@ -233,12 +192,12 @@ electrumx@host:~$ source ~/exvenv/bin/activate
 - This step will take some time and produce a lot of output. This is normal, be patient.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.12.0$ python setup.py install
+(exvenv) electrumx@host:~/electrumx-1.13.0$ python setup.py install
 ```
 4. Deactivate virtual environment and return to home dir.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.12.0$ deactivate; cd
+(exvenv) electrumx@host:~/electrumx-1.13.0$ deactivate; cd
 ```
 ## V. Set Up Electrumx
 ### A. Remain in an `electrumx` terminal, configure Electrumx data directory.
@@ -302,33 +261,76 @@ writing new private key to '/home/electrumx/.electrumx/certs/server.key'
 ```
 electrumx@host:~$ exit
 ```
-## VI. Set Up Communication Channels
+### D. Use `systemd` to keep `electrumx` running.
+1. Create a persistent directory.
+
+```
+user@host:~$ sudo mkdir -m 0700 /rw/config/systemd
+```
+2. Create the service file.
+
+```
+user@host:~$ lxsu mousepad /rw/config/systemd/electrumx.service
+```
+3. Paste the following.
+
+```
+[Unit]
+Description=Electrumx daemon
+
+[Service]
+EnvironmentFile=/home/electrumx/.electrumx/electrumx.conf
+ExecStart=/home/electrumx/exvenv/bin/python /home/electrumx/exvenv/bin/electrumx_server
+
+User=electrumx
+Restart=on-failure
+LimitNOFILE=8192
+TimeoutStopSec=30min
+
+PrivateTmp=true
+ProtectSystem=full
+NoNewPrivileges=true
+PrivateDevices=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target
+```
+4. Save the file: `Ctrl-S`.
+5. Switch back to the terminal: `Ctrl-Q`.
+6. Fix permissions.
+
+```
+user@host:~$ chmod 0600 /rw/config/systemd/electrumx.service
+```
+### E. Enable the service on boot.
+1. Edit the file `/rw/config/rc.local`.
+
+```
+user@host:~$ lxsu mousepad /rw/config/rc.local
+```
+2. Paste the following at the bottom of the file.
+
+```
+cp /rw/config/systemd/electrumx.service /lib/systemd/system/
+systemctl daemon-reload
+systemctl start electrumx.service
+```
+3. Save the file: `Ctrl-S`.
+4. Switch back to the terminal: `Ctrl-Q`.
+## VI. Fix Networking
 ### A. Remain in an `electrumx` terminal, open communication with `bitcoind` on boot.
 1. Edit the file `/rw/config/rc.local`.
 
 ```
-user@host:~$ sudo sh -c 'echo "socat TCP-LISTEN:8332,fork,bind=127.0.0.1 EXEC:\"qrexec-client-vm bitcoind qubes.bitcoind_8332\" &" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "qvm-connect-tcp 8332:bitcoind:8332" >> /rw/config/rc.local'
 ```
 2. Execute the file.
 
 ```
 user@host:~$ sudo /rw/config/rc.local
 ```
-### B. Set up `qubes-rpc` for `electrumx`.
-**Note:**
-- This only creates the possibility for other VMs to communicate with `electrumx`, it does not yet give them permission.
-
-1. Create persistent directory for `qrexec` action files.
-
-```
-user@host:~$ sudo mkdir -m 0755 /rw/usrlocal/etc/qubes-rpc
-```
-2. Create `qubes.electrum_50002` action file.
-
-```
-user@host:~$ sudo sh -c 'echo "socat STDIO TCP:127.0.0.1:50002" > /rw/usrlocal/etc/qubes-rpc/qubes.electrum_50002'
-```
-### C. Open firewall for Tor onion service.
+### B. Open firewall for Tor onion service.
 1. Make persistent directory for new firewall rules.
 
 ```

@@ -314,13 +314,18 @@ writing new private key to '/home/electrum-personal-server/.eps/certs/server.key
 ```
 electrumx@host:~$ exit
 ```
-### D. Use `systemd` to keep `bitcoind` running.
-1. Create the service file.
+### D. Use `systemd` to keep `electrum-personal-server` running.
+1. Create a persistent directory.
+
+```
+user@host:~$ sudo mkdir -m 0700 /rw/config/systemd
+```
+2. Create the service file.
 
 ```
 user@host:~$ lxsu mousepad /rw/config/systemd/electrum-personal-server.service
 ```
-2. Paste the following.
+3. Paste the following.
 
 ```
 [Unit]
@@ -342,9 +347,9 @@ MemoryDenyWriteExecute=true
 [Install]
 WantedBy=multi-user.target
 ```
-3. Save the file: `Ctrl-S`.
-4. Switch back to the terminal: `Ctrl-Q`.
-5. Fix permissions.
+4. Save the file: `Ctrl-S`.
+5. Switch back to the terminal: `Ctrl-Q`.
+6. Fix permissions.
 
 ```
 user@host:~$ chmod 0600 /rw/config/systemd/electrum-personal-server.service

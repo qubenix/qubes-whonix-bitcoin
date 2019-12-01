@@ -223,7 +223,7 @@ wallet=joinmarket
 ```
 user@host:~$ sudo systemctl restart bitcoind.service
 ```
-### D. Use `systemd` to keep `bitcoind` running.
+### D. Use `systemd` to keep `joinmarketd` running.
 1. Create the service file.
 
 ```

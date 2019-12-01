@@ -126,7 +126,7 @@ rpcauth=<rpc-user>:<hashed-pass>
 user@host:~$ sudo systemctl restart bitcoind.service
 ```
 ## IV. Install Electrs
-### A. Download and verify Electrs.
+### A. In an `electrs` VM, download and verify Electrs.
 1. Switch to user `electrs` and change to home directory.
 
 ```
@@ -136,10 +136,10 @@ electrs@host:/home/user$ cd
 2. Clone the Electrs [repository](https://github.com/romanz/electrs).
 
 **Note:**
-- The current version of Electrs is `v0.7.1`, modify the following steps accordingly if the version has changed.
+- The current version of Electrs is `v0.8.1`, modify the following steps accordingly if the version has changed.
 
 ```
-electrs@host:~$ git clone -b v0.7.1 https://github.com/romanz/electrs ~/electrs
+electrs@host:~$ git clone --branch v0.8.1 https://github.com/romanz/electrs ~/electrs
 Cloning into 'electrs'...
 remote: Enumerating objects: 26, done.
 remote: Counting objects: 100% (26/26), done.
@@ -173,8 +173,8 @@ electrs@host:~$ cd ~/electrs
 - Your output may not match the example. Just check that it says `Good signature`.
 
 ```
-electrs@host:~/electrs$ git verify-tag v0.7.1
-gpg: Signature made Sat 27 Jul 2019 02:43:19 PM UTC
+electrs@host:~/electrs$ git verify-tag v0.8.1
+gpg: Signature made Wed 20 Nov 2019 08:22:49 PM UTC
 gpg:                using ECDSA key 15C8C3574AE4F1E25F3F35C587CAE5FA46917CBB
 gpg:                issuer "me@romanzey.de"
 gpg: Good signature from "Roman Zeyde <me@romanzey.de>" [unknown]
@@ -290,12 +290,14 @@ user@host:~$ lxsu mousepad /rw/config/systemd/electrs.service
 Description=Electrum Rust Server
 
 [Service]
-User=electrs
-
-Type=simple
 ExecStart=/home/electrs/electrs/target/release/electrs -vvvv \
   --db-dir /home/electrs/.electrs/electrs-db \
   --index-batch-size=10 --jsonrpc-import
+
+User=electrs
+Type=simple
+KillMode=process
+TimeoutSec=60
 Restart=on-failure
 RestartSec=60
 Environment="RUST_BACKTRACE=1"
@@ -313,7 +315,7 @@ WantedBy=multi-user.target
 6. Fix permissions.
 
 ```
-user@host:~$ chmod 0600 /rw/config/systemd/electrs.service
+user@host:~$ sudo chmod 0600 /rw/config/systemd/electrs.service
 ```
 ### F. Enable the service on boot.
 1. Edit the file `/rw/config/rc.local`.
@@ -335,7 +337,7 @@ systemctl start electrs.service
 1. Edit the file `/rw/config/rc.local`.
 
 ```
-user@host:~$ echo "qvm-connect-tcp 8332:bitcoind:8332" | sudo tee -a /rw/config/rc.local
+user@host:~$ sudo sh -c 'echo "qvm-connect-tcp 8332:bitcoind:8332" >> /rw/config/rc.local'
 ```
 2. Execute the file.
 

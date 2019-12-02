@@ -50,8 +50,7 @@ user@host:~$ sudo poweroff
 ### A. In a `bitcoind` terminal, download and verify JoinMarket source code.
 1. Clone the JoinMarket [repository](https://github.com/JoinMarket-Org/joinmarket-clientserver).
 
-**Note:**
-- At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.6.0`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.6.0`, modify the following steps accordingly if the version has changed.
 
 ```
 user@host:~$ git clone --branch v0.6.0 \
@@ -67,8 +66,7 @@ Note: checking out 'df3712f662c03db4b353e4c1c92d901153c5b8f0'.
 ```
 2. Receive signing key.
 
-**Note:**
-- You can verify the key fingerprint in the [release notes](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases).
+**Note:** You can verify the key fingerprint in the [release notes](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases).
 
 ```
 user@host:~$ gpg --recv-keys "2B6F C204 D9BF 332D 062B 461A 1410 01A1 AF77 F20B"
@@ -80,8 +78,7 @@ gpg:               imported: 1
 ```
 3. Enter directory and verify.
 
-**Note:**
-- Your output may not match the example. Just check that it says `Good signature`.
+**Note:** Your output may not match the example. Just check that it says `Good signature`.
 
 ```
 user@host:~$ cd ~/joinmarket-clientserver/
@@ -114,7 +111,7 @@ user@host:~/joinmarket-clientserver$ ln -s /usr/lib/python3/dist-packages/* ~/jo
 ```
 3. Install dependencies to virtual environment.
 
-**Note:**
+**Notes:**
 - This step, and the next optional step, will produce a lot of output and take some time. This is normal, be patient.
 - If you have errors re-run the `setupall.py` step a second time.
 
@@ -128,8 +125,7 @@ user@host:~/joinmarket-clientserver$ source ~/joinmarket-clientserver/jmvenv/bin
 (jmvenv) user@host:~/joinmarket-clientserver$ pip install service-identity --upgrade
 ```
 #### Optional Step: Install QT dependencies for JoinMarket GUI.
-**Note:**
-- You can safely skip this step if you do not intend to use the JoinMarket GUI.
+**Note:** You can safely skip this step if you do not intend to use the JoinMarket GUI.
 
 ```
 (jmvenv) user@host:~/joinmarket-clientserver$ pip install PySide2 \
@@ -155,8 +151,7 @@ user@host:~$ sudo chown -R joinmarket:nogroup /home/joinmarket/
 ```
 2. Copy `joinmarket-clientserver/` directory to the `joinmarket` VM.
 
-**Note:**
-- Select `joinmarket` from the `dom0` pop-up.
+**Note:** Select `joinmarket` from the `dom0` pop-up.
 
 ```
 user@host:~$ qvm-copy ~/joinmarket-clientserver/
@@ -167,8 +162,7 @@ user@host:~$ sudo systemctl start joinmarketd.service
 ```
 ## IV. Configure `bitcoind` and `joinmarketd`
 ### A. In a `sys-bitcoin` terminal, find out the gateway IP.
-**Note:**
-- Save your gateway IP (`10.137.0.50` in this example) to replace `<gateway-ip>` in later examples.
+**Note:** Save your gateway IP (`10.137.0.50` in this example) to replace `<gateway-ip>` in later examples.
 
 ```
 user@host:~$ qubesdb-read /qubes-ip
@@ -177,8 +171,7 @@ user@host:~$ qubesdb-read /qubes-ip
 ### B. In a `bitcoind` terminal, create RPC credentials for JoinMarket to communicate with `bitcoind`.
 1. Create a random RPC username. Do not use the one shown.
 
-**Note:**
-- Save your username (`uJDzc07zxn5riJDx7N5m` in this example) to replace `<rpc-user>` in later examples.
+**Note:** Save your username (`uJDzc07zxn5riJDx7N5m` in this example) to replace `<rpc-user>` in later examples.
 
 ```
 user@host:~$ head -c 15 /dev/urandom | base64

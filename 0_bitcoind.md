@@ -43,8 +43,7 @@ Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM
 ### C. Create an AppVM, use newly created gateway and template.
 1. Create AppVM.
 
-**Note:**
-- You must choose a label color, but it does not have to match this example.
+**Note:** You must choose a label color, but it does not have to match this example.
 
 ```
 [user@dom0 ~]$ qvm-create --label red --prop netvm='sys-bitcoin' \
@@ -76,8 +75,7 @@ user@host:~$ sudo poweroff
 ```
 ## III. Set Up Gateway.
 ### A. In a `sys-bitcoin` terminal, find out the gateway IP.
-**Note:**
-- Save your gateway IP (`10.137.0.50` in this example) to replace `<gateway-ip>` in later examples.
+**Note:** Save your gateway IP (`10.137.0.50` in this example) to replace `<gateway-ip>` in later examples.
 
 ```
 user@host:~$ qubesdb-read /qubes-ip
@@ -110,8 +108,7 @@ bitcoin@host:/home/user$ cd
 ### B. Download and verify the Bitcoin source code.
 1. Clone the repository.
 
-**Note:**
-- At the time of writing the current release branch is `0.19`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the current [release](https://github.com/bitcoin/bitcoin/releases) branch is `0.19`, modify the following steps accordingly if the version has changed.
 
 ```
 bitcoin@host:~$ git clone --branch 0.19 \
@@ -144,8 +141,7 @@ gpg:               imported: 6
 ```
 3. Verify source code.
 
-**Note:**
-- Your output may not match the example. Just check that it says `Good signature`.
+**Note:** Your output may not match the example. Just check that it says `Good signature`.
 
 ```
 bitcoin@host:~/bitcoin$ git verify-commit HEAD
@@ -160,8 +156,7 @@ Primary key fingerprint: 71A3 B167 3540 5025 D447  E8F2 7481 0B01 2346 C9A6
      Subkey fingerprint: 9DEA E0DC 7063 249F B054  7468 1E4A ED62 986C D25D
 ```
 ### C. Build Berkeley DB and Bitcoin.
-**Note:**
-- This step will take some time and produce a lot of output. This is normal, be patient.
+**Note:** This step will take some time and produce a lot of output. This is normal, be patient.
 
 1. Build Berkeley DB using the provided script.
 
@@ -174,8 +169,7 @@ bitcoin@host:~/bitcoin$ ./contrib/install_db4.sh `pwd`
 bitcoin@host:~/bitcoin$ export BDB_PREFIX='/home/bitcoin/bitcoin/db4'; ./autogen.sh
 ```
 
-**Note:**
-- The next two steps will take some time and produce a lot of output. This is normal, be patient.
+**Note:** The next two steps will take some time and produce a lot of output. This is normal, be patient.
 
 3. Configure.
 
@@ -203,8 +197,7 @@ bitcoin@host:~$ mousepad ~/.bitcoin/bitcoin.conf
 ```
 2. Paste the following.
 
-**Note:**
-- Be sure to replace `<gateway-ip>` with the information noted earlier.
+**Note:** Be sure to replace `<gateway-ip>` with the information noted earlier.
 
 ```
 listen=1
@@ -321,8 +314,7 @@ user@host:~$ echo 'alias bitcoin-cli="sudo -u bitcoin /home/bitcoin/bin/bitcoin-
 user@host:~$ source ~/.bashrc
 ```
 ## VII. Initial Blockchain Download
-**Note:**
-- Initial block download can take anywhere from a day to a week (or even more) depending on a number of factors including your hardware and internet connection.
+**Note:** Initial block download can take anywhere from a day to a week (or even more) depending on a number of factors including your hardware and internet connection.
 
 ### A. In a `bitcoind` terminal, start the `bitcoind` service.
 ```

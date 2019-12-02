@@ -50,8 +50,7 @@ In addition to preventing certain types of attacks, this setup also increases yo
 ```
 2. Increase the private volume size.
 
-**Note:**
-- The disk usage will settle at somewhere under 60G, but during initial download and compaction the disk usage can get to under 140G.
+**Note:** The disk usage will settle at somewhere under 60G, but during initial download and compaction the disk usage can get to under 140G.
 
 ```
 [user@dom0 ~]$ qvm-volume resize electrs:private 140G
@@ -81,8 +80,7 @@ user@host:~$ sudo poweroff
 ### A. In a `bitcoind` terminal, create RPC credentials for `electrs` to communicate with `bitcoind`.
 1. Create a random RPC username. Do not use the one shown.
 
-**Note:**
-- Save your username (`7PXaFZ5DLG2alSeiGxnM` in this example) to replace `<rpc-user>` in later examples.
+**Note:** Save your username (`7PXaFZ5DLG2alSeiGxnM` in this example) to replace `<rpc-user>` in later examples.
 
 ```
 user@host:~$ head -c 15 /dev/urandom | base64
@@ -135,8 +133,7 @@ electrs@host:/home/user$ cd
 ```
 2. Clone the Electrs [repository](https://github.com/romanz/electrs).
 
-**Note:**
-- The current version of Electrs is `v0.8.1`, modify the following steps accordingly if the version has changed.
+**Note:** The current [release](https://github.com/romanz/electrs/releases) of Electrs is `v0.8.1`, modify the following steps accordingly if the version has changed.
 
 ```
 electrs@host:~$ git clone --branch v0.8.1 https://github.com/romanz/electrs ~/electrs
@@ -151,8 +148,7 @@ Note: checking out 'fcbf16b9f1932ca7fe91d1a172301cb64dc4cfe0'.
 ```
 3. Receive signing key.
 
-**Note:**
-- You can verify Roman Zeyde's key fingerprint [here](https://gist.github.com/romanz/bae9a2ef48693830a805ca56940baebd).
+**Note:** You can verify Roman Zeyde's key fingerprint [here](https://gist.github.com/romanz/bae9a2ef48693830a805ca56940baebd).
 
 ```
 electrs@host:~$ gpg --recv-keys 15C8C3574AE4F1E25F3F35C587CAE5FA46917CBB
@@ -169,8 +165,7 @@ electrs@host:~$ cd ~/electrs
 ```
 5. Verify the latest version tag.
 
-**Note:**
-- Your output may not match the example. Just check that it says `Good signature`.
+**Note:** Your output may not match the example. Just check that it says `Good signature`.
 
 ```
 electrs@host:~/electrs$ git verify-tag v0.8.1
@@ -184,8 +179,7 @@ gpg:          There is no indication that the signature belongs to the owner.
 Primary key fingerprint: 15C8 C357 4AE4 F1E2 5F3F  35C5 87CA E5FA 4691 7CBB
 ```
 ### B. Build `electrs`.
-**Note:**
-- This step will take some time and produce a lot of output. This is normal, be patient.
+**Note:** This step will take some time and produce a lot of output. This is normal, be patient.
 
 ```
 electrs@host:~/electrs$ cargo build --release
@@ -217,8 +211,7 @@ electrs@host:~/electrs$ mousepad ~/.bitcoin/.cookie
 ```
 2. Paste the following.
 
-**Notes:**
-- Replace `<rpc-user>` and `<rpc-pass>` with the information noted earlier.
+**Notes:** Replace `<rpc-user>` and `<rpc-pass>` with the information noted earlier.
 
 ```
 <rpc-user>:<rpc-pass>
@@ -361,8 +354,7 @@ user@host:~$ echo 'EXTERNAL_OPEN_PORTS+=" 50002 "' | sudo tee -a /rw/config/whon
 user@host:~$ sudo systemctl restart whonix-firewall.service
 ```
 ### D. Find out the IP address of the `electrs` VM.
-**Note:**
-- Save the `electrs` IP (`10.137.0.50` in this example) to replace `<electrs-ip>` in later examples.
+**Note:** Save the `electrs` IP (`10.137.0.50` in this example) to replace `<electrs-ip>` in later examples.
 
 ```
 user@host:~$ qubesdb-read /qubes-ip
@@ -382,8 +374,7 @@ user@host:~$ lxsu mousepad /rw/usrlocal/etc/torrc.d/50_user.conf
 ```
 2. Paste the following.
 
-**Note:**
-- Be sure to replace `<electrs-ip>` with the information noted earlier.
+**Note:** Be sure to replace `<electrs-ip>` with the information noted earlier.
 
 ```
 HiddenServiceDir /var/lib/tor/electrs/
@@ -398,8 +389,7 @@ user@host:~$ sudo systemctl reload tor.service
 ```
 6. Find out your onion hostname.
 
-**Note:**
-- Make a note of your server hostname for use with your remote Electrum wallet.
+**Note:** Make a note of your server hostname for use with your remote Electrum wallet.
 
 ```
 user@host:~$ sudo cat /var/lib/tor/electrs/hostname

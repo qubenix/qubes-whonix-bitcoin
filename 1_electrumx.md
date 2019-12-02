@@ -79,8 +79,7 @@ user@host:~$ sudo poweroff
 ### A. In a `bitcoind` terminal, create RPC credentials for `electrumx` to communicate with `bitcoind`.
 1. Create a random RPC username. Do not use the one shown.
 
-**Note:**
-- Save your username (`7PXaFZ5DLG2alSeiGxnM` in this example) to replace `<rpc-user>` in later examples.
+**Note:** Save your username (`7PXaFZ5DLG2alSeiGxnM` in this example) to replace `<rpc-user>` in later examples.
 
 ```
 user@host:~$ head -c 15 /dev/urandom | base64
@@ -133,8 +132,7 @@ electrumx@host:/home/user$ cd
 ```
 2. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
 
-**Note:**
-- The current version of Electrumx is `1.13.0`, modify the following steps accordingly if the version has changed.
+**Note:** The current version of Electrumx is `1.13.0`, modify the following steps accordingly if the version has changed.
 
 ```
 electrumx@host:~$ scurl-download https://github.com/kyuupichan/electrumx/archive/1.13.0.tar.gz
@@ -146,8 +144,7 @@ curl: Saved to filename 'electrumx-1.13.0.tar.gz'
 ```
 3. Verify download.
 
-**Note:**
-- The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
+**Note:** The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
 - While it doesn't offer the same security, I have included the SHA256 sum of my `electrumx-1.13.0.tar.gz` download for your verification.
 
 ```
@@ -188,8 +185,7 @@ electrumx@host:~$ source ~/exvenv/bin/activate
 ```
 3. Install Electrumx.
 
-**Note:**
-- This step will take some time and produce a lot of output. This is normal, be patient.
+**Note:** This step will take some time and produce a lot of output. This is normal, be patient.
 
 ```
 (exvenv) electrumx@host:~/electrumx-1.13.0$ python setup.py install
@@ -347,8 +343,7 @@ user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50002 \"" >> /rw/config/w
 user@host:~$ sudo systemctl restart whonix-firewall.service
 ```
 ### D. Find out the IP address of the `electrumx` VM.
-**Note:**
-- Save the `electrumx` IP (`10.137.0.50` in this example) to replace `<electrumx-ip>` in later examples.
+**Note:** Save the `electrumx` IP (`10.137.0.50` in this example) to replace `<electrumx-ip>` in later examples.
 
 ```
 user@host:~$ qubesdb-read /qubes-ip
@@ -368,8 +363,7 @@ user@host:~$ lxsu mousepad /rw/usrlocal/etc/torrc.d/50_user.conf
 ```
 2. Paste the following.
 
-**Note:**
-- Be sure to replace `<electrumx-ip>` with the information noted earlier.
+**Note:** Be sure to replace `<electrumx-ip>` with the information noted earlier.
 
 ```
 HiddenServiceDir /var/lib/tor/electrumx/
@@ -384,8 +378,7 @@ user@host:~$ sudo systemctl reload tor.service
 ```
 6. Find out your onion hostname.
 
-**Note:**
-- Make a note of your server hostname for use with your remote Electrum wallet.
+**Note:** Make a note of your server hostname for use with your remote Electrum wallet.
 
 ```
 user@host:~$ sudo cat /var/lib/tor/electrumx/hostname

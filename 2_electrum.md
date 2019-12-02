@@ -34,8 +34,7 @@ This increases the privacy and security of your Electrum wallet while still main
 ### A. In a `bitcoind` terminal, download Electrum files.
 1. Download the latest Electrum [appimage](https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage) and [signature](https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage.asc).
 
-**Note:**
-- At the time of writing the most recent version of Electrum is `3.3.8`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the most recent version of Electrum is `3.3.8`, modify the following steps accordingly if the version has changed.
 
 ```
 user@host:~$ scurl-download https://download.electrum.org/3.3.8/electrum-3.3.8-x86_64.AppImage \
@@ -56,8 +55,7 @@ user@host:~$ scurl-download https://raw.githubusercontent.com/spesmilo/electrum/
 ```
 2. Verify the key fingerprint.
 
-**Note:**
-- You can verify Thomas Voegtlin's key fingerprint on the Electrum [about page](https://electrum.org/#about).
+**Note:** You can verify Thomas Voegtlin's key fingerprint on the Electrum [about page](https://electrum.org/#about).
 
 ```
 user@host:~$ gpg --with-fingerprint ThomasV.asc
@@ -79,8 +77,7 @@ gpg:               imported: 1
 ```
 4. Verify the appimage.
 
-**Note:**
-- Your output may not match the example. Just check that it says `Good signature`.
+**Note:** Your output may not match the example. Just check that it says `Good signature`.
 
 ```
 user@host:~$ gpg --verify electrum-3.3.8-x86_64.AppImage.asc
@@ -100,8 +97,7 @@ Primary key fingerprint: 6694 D8DE 7BE8 EE56 31BE  D950 2BD5 824B 7F94 70E6
 user@host:~$ chmod +x electrum-3.3.8-x86_64.AppImage
 ```
 ### C. Move appimage to the `electrum` VM.
-**Note:**
-- Select `electrum` from the `dom0` pop-up.
+**Note:** Select `electrum` from the `dom0` pop-up.
 
 ```
 user@host:~$ qvm-move electrum-3.3.8-x86_64.AppImage

@@ -94,8 +94,7 @@ user@host:~$ head -c 15 /dev/urandom | base64
 ```
 2. Use Bitcoin's tool to create a random RPC password and config entry. Do not use the one shown.
 
-**Notes:**
-- Save the hased password (`9ffa7d78e1ddcb25ace4597bc31a1c8d$541c44f5d34044d532db47b74e9755ca4f0d87f805dd5895f0b36ea3a8d8c84c` in this example) to replace `<hashed-pass>` in later examples.
+**Notes:** Save the hased password (`9ffa7d78e1ddcb25ace4597bc31a1c8d$541c44f5d34044d532db47b74e9755ca4f0d87f805dd5895f0b36ea3a8d8c84c` in this example) to replace `<hashed-pass>` in later examples.
 - Save your password (`GKkkKy-GAEDUw_6dp32O7Rh3DhHAnYhBUwNwNWUZPrI=` in this example) to replace `<rpc-pass>` in later examples.
 - Replace `<rpc-user>` with the information noted earlier.
 
@@ -142,8 +141,7 @@ electrum-personal-server@host:/home/user$ cd
 ### B. Download and verify the Electrum Personal Server source code.
 1. Download the latest Electrum Personal Server [release and signature](https://github.com/chris-belcher/electrum-personal-server/releases).
 
-**Note:**
-- At the time of writing the most recent version of Electrum Personal Server is `v0.1.7`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the most recent version of Electrum Personal Server is `v0.1.7`, modify the following steps accordingly if the version has changed.
 
 ```
 electrum-personal-server@host:~$ scurl-download \
@@ -160,8 +158,7 @@ curl: Saved to filename 'electrum-personal-server-v0.1.7.tar.gz.asc'
 ```
 2. Receive signing key.
 
-**Note:**
-- You can verify the key fingerprint in the [release notes](https://github.com/chris-belcher/electrum-personal-server/releases).
+**Note:** You can verify the key fingerprint in the [release notes](https://github.com/chris-belcher/electrum-personal-server/releases).
 
 ```
 electrum-personal-server@host:~$ gpg --recv-keys "0A8B 038F 5E10 CC27 89BF CFFF EF73 4EA6 77F3 1129"
@@ -175,8 +172,7 @@ gpg:               imported: 1
 ```
 3. Verify source code.
 
-**Note:**
-- Your output may not match the example. Just check that it says `Good signature`.
+**Note:** Your output may not match the example. Just check that it says `Good signature`.
 
 ```
 electrum-personal-server@host:~$ gpg --verify electrum-personal-server-v0.1.7.tar.gz.asc
@@ -398,8 +394,7 @@ user@host:~$ sudo sh -c 'echo "EXTERNAL_OPEN_PORTS+=\" 50002 \"" >> /rw/config/w
 user@host:~$ sudo systemctl restart whonix-firewall.service
 ```
 ### D. Find out the IP address of the `electrum-personal-server` VM.
-**Note:**
-- Save the `electrum-personal-server` IP (`10.137.0.51` in this example) to replace `<eps-ip>` in later examples.
+**Note:** Save the `electrum-personal-server` IP (`10.137.0.51` in this example) to replace `<eps-ip>` in later examples.
 
 ```
 user@host:~$ qubesdb-read /qubes-ip
@@ -419,8 +414,7 @@ user@host:~$ lxsu mousepad /rw/usrlocal/etc/torrc.d/50_user.conf
 ```
 2. Paste the following.
 
-**Note:**
-- Be sure to replace `<eps-ip>` with the information noted earlier.
+**Note:** Be sure to replace `<eps-ip>` with the information noted earlier.
 
 ```
 HiddenServiceDir /var/lib/tor/electrum-personal-server/
@@ -435,8 +429,7 @@ user@host:~$ sudo systemctl reload tor.service
 ```
 6. Find out your onion hostname.
 
-**Note:**
-- Make a note of your server hostname for use with your remote Electrum wallet.
+**Note:** Make a note of your server hostname for use with your remote Electrum wallet.
 
 ```
 user@host:~$ sudo cat /var/lib/tor/electrum-personal-server/hostname

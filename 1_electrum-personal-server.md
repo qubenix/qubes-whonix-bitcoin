@@ -141,20 +141,20 @@ electrum-personal-server@host:/home/user$ cd
 ### B. Download and verify the Electrum Personal Server source code.
 1. Download the latest Electrum Personal Server [release and signature](https://github.com/chris-belcher/electrum-personal-server/releases).
 
-**Note:** At the time of writing the most recent version of Electrum Personal Server is `v0.1.7`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the most recent version of Electrum Personal Server is `v0.2.0`, modify the following steps accordingly if the version has changed.
 
 ```
 electrum-personal-server@host:~$ scurl-download \
-https://github.com/chris-belcher/electrum-personal-server/archive/electrum-personal-server-v0.1.7.tar.gz \
-https://github.com/chris-belcher/electrum-personal-server/releases/download/electrum-personal-server-v0.1.7/electrum-personal-server-v0.1.7.tar.gz.asc
+https://github.com/chris-belcher/electrum-personal-server/releases/download/eps-v0.2.0/eps-v0.2.0.tar.gz.asc \
+https://github.com/chris-belcher/electrum-personal-server/archive/eps-v0.2.0.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   171    0   171    0     0     25      0 --:--:--  0:00:06 --:--:--    35
-100 68723    0 68723    0     0   6561      0 --:--:--  0:00:10 --:--:-- 18776
-curl: Saved to filename 'electrum-personal-server-electrum-personal-server-v0.1.7.tar.gz'
-100   633    0   633    0     0    756      0 --:--:-- --:--:-- --:--:--  618k
-100   819  100   819    0     0    141      0  0:00:05  0:00:05 --:--:--   190
-curl: Saved to filename 'electrum-personal-server-v0.1.7.tar.gz.asc'
+100   612    0   612    0     0    194      0 --:--:--  0:00:03 --:--:--   194
+100   819  100   819    0     0    154      0  0:00:05  0:00:05 --:--:--   390
+curl: Saved to filename 'eps-v0.2.0.tar.gz.asc'
+100   150    0   150    0     0    374      0 --:--:-- --:--:-- --:--:--   374
+100 80371    0 80371    0     0  23666      0 --:--:--  0:00:03 --:--:-- 36935
+curl: Saved to filename 'electrum-personal-server-eps-v0.2.0.tar.gz'
 ```
 2. Receive signing key.
 
@@ -175,9 +175,9 @@ gpg:               imported: 1
 **Note:** Your output may not match the example. Just check that it says `Good signature`.
 
 ```
-electrum-personal-server@host:~$ gpg --verify electrum-personal-server-v0.1.7.tar.gz.asc
-gpg: assuming signed data in 'electrum-personal-server-v0.1.7.tar.gz'
-gpg: Signature made Fri 26 Apr 2019 04:08:13 PM UTC
+electrum-personal-server@host:~$ gpg --verify eps-v0.2.0.tar.gz.asc \
+electrum-personal-server-eps-v0.2.0.tar.gz
+gpg: Signature made Thu 05 Dec 2019 09:51:58 AM UTC
 gpg:                using RSA key 0xEF734EA677F31129
 gpg: Good signature from "Chris Belcher <false@email.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!
@@ -194,8 +194,8 @@ electrum-personal-server@host:~$ mkdir ~/eps
 
 ```
 electrum-personal-server@host:~$ tar -C ~/eps/ \
--xf electrum-personal-server-electrum-personal-server-v0.1.7.tar.gz \
---strip-components=1
+-xf electrum-personal-server-electrum-personal-server-v0.2.0.tar.gz \
+strip-components=1
 ```
 3. Create virtual environment.
 
@@ -241,7 +241,7 @@ electrum-personal-server@host:~$ mousepad ~/.eps/config.cfg
 
 **Notes:**
 - Be sure to replace `<rpc-user>` and `<rpc-pass>` with the information noted earlier.
-- For a verbose desciption of these settings, look to the file: [`~/electrum-personal-server-eps-v0.1.7/config.cfg_sample`](https://github.com/chris-belcher/electrum-personal-server/blob/master/config.cfg_sample).
+- For a verbose desciption of these settings, look to the file: [`~/electrum-personal-server-eps-v0.2.0/config.ini_sample`](https://github.com/chris-belcher/electrum-personal-server/blob/master/config.cfg_sample).
 - At this point you may add your Electrum wallet master public keys (MPK) or individual addresses to the config file.
 
 ```

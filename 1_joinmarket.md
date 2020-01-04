@@ -50,19 +50,19 @@ user@host:~$ sudo poweroff
 ### A. In a `bitcoind` terminal, download and verify JoinMarket source code.
 1. Clone the JoinMarket [repository](https://github.com/JoinMarket-Org/joinmarket-clientserver).
 
-**Note:** At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.6.0`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.6.1`, modify the following steps accordingly if the version has changed.
 
 ```
-user@host:~$ git clone --branch v0.6.0 \
+user@host:~$ git clone --branch v0.6.1 \
 https://github.com/JoinMarket-Org/joinmarket-clientserver ~/joinmarket-clientserver
 Cloning into '/home/user/joinmarket-clientserver'...
-remote: Enumerating objects: 32, done.
-remote: Counting objects: 100% (32/32), done.
-remote: Compressing objects: 100% (29/29), done.
-remote: Total 5238 (delta 9), reused 14 (delta 3), pack-reused 5206
-Receiving objects: 100% (5238/5238), 3.85 MiB | 156.00 KiB/s, done.
-Resolving deltas: 100% (3434/3434), done.
-Note: checking out 'df3712f662c03db4b353e4c1c92d901153c5b8f0'.
+remote: Enumerating objects: 1, done.
+remote: Counting objects: 100% (1/1), done.
+remote: Total 5476 (delta 0), reused 1 (delta 0), pack-reused 5475
+Receiving objects: 100% (5476/5476), 3.92 MiB | 228.00 KiB/s, done.
+Resolving deltas: 100% (3610/3610), done.
+Note: checking out '8fd8e10f772f204170430879f7f3b11b26ba26c5'.
+...
 ```
 2. Receive signing key.
 
@@ -82,8 +82,8 @@ gpg:               imported: 1
 
 ```
 user@host:~$ cd ~/joinmarket-clientserver/
-user@host:~/joinmarket-clientserver$ git verify-tag v0.6.0
-gpg: Signature made Sat 30 Nov 2019 04:41:03 PM UTC
+user@host:~/joinmarket-clientserver$ git verify-tag v0.6.1
+gpg: Signature made Tue 10 Dec 2019 11:54:42 AM UTC
 gpg:                using RSA key 2B6FC204D9BF332D062B461A141001A1AF77F20B
 gpg: Good signature from "Adam Gibson (CODE SIGNING KEY) <ekaggata@gmail.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!

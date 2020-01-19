@@ -132,29 +132,29 @@ electrumx@host:/home/user$ cd
 ```
 2. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
 
-**Note:** The current version of Electrumx is `1.13.0`, modify the following steps accordingly if the version has changed.
+**Note:** The current version of Electrumx is `1.14.0`, modify the following steps accordingly if the version has changed.
 
 ```
-electrumx@host:~$ scurl-download https://github.com/kyuupichan/electrumx/archive/1.13.0.tar.gz
+electrumx@host:~$ scurl-download https://github.com/kyuupichan/electrumx/archive/1.14.0.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100   128    0   128    0     0     46      0 --:--:--  0:00:02 --:--:--    46
-100  339k    0  339k    0     0  33692      0 --:--:--  0:00:10 --:--:-- 73462
-curl: Saved to filename 'electrumx-1.13.0.tar.gz'
+100  346k    0  346k    0     0  24085      0 --:--:--  0:00:14 --:--:-- 78974
+curl: Saved to filename 'electrumx-1.14.0.tar.gz'
 ```
 3. Verify download.
 
 **Note:** The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
-- While it doesn't offer the same security, I have included the SHA256 sum of my `electrumx-1.13.0.tar.gz` download for your verification.
+- While it doesn't offer the same security, I have included the SHA256 sum of my `electrumx-1.14.0.tar.gz` download for your verification.
 
 ```
-electrumx@host:~$ echo '8dc7cf5b15fe48c5abbadc5c12b5bf25ca8bd5d10f4d781ca9613004fe8d4b50  electrumx-1.13.0.tar.gz' | shasum -c
-electrumx-1.13.0.tar.gz: OK
+electrumx@host:~$ echo '1f4a6692042826ccfe01f0e40b4b161b473ca064a9e245b7a05b7fbce51cd411  electrumx-1.14.0.tar.gz' | shasum -c
+electrumx-1.14.0.tar.gz: OK
 ```
 4. Extract.
 
 ```
-electrumx@host:~$ tar -C ~ -xf electrumx-1.13.0.tar.gz
+electrumx@host:~$ tar -C ~ -xf electrumx-1.14.0.tar.gz
 ```
 ### B. Create virtual environment, link installed packages.
 1. Create virtual environment.
@@ -181,19 +181,19 @@ electrumx@host:~$ source ~/exvenv/bin/activate
 2. Change directory.
 
 ```
-(exvenv) electrumx@host:~$ cd ~/electrumx-1.13.0/
+(exvenv) electrumx@host:~$ cd ~/electrumx-1.14.0/
 ```
 3. Install Electrumx.
 
 **Note:** This step will take some time and produce a lot of output. This is normal, be patient.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.13.0$ python setup.py install
+(exvenv) electrumx@host:~/electrumx-1.14.0$ python setup.py install
 ```
 4. Deactivate virtual environment and return to home dir.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.13.0$ deactivate; cd
+(exvenv) electrumx@host:~/electrumx-1.14.0$ deactivate; cd
 ```
 ## V. Set Up Electrumx
 ### A. Remain in an `electrumx` terminal, configure Electrumx data directory.

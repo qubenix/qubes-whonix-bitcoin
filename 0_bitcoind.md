@@ -108,10 +108,10 @@ bitcoin@host:/home/user$ cd
 ### B. Download and verify the Bitcoin source code.
 1. Clone the repository.
 
-**Note:** At the time of writing the current [release](https://github.com/bitcoin/bitcoin/releases) branch is `0.19`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the current [release](https://github.com/bitcoin/bitcoin/releases) branch is `0.19.0.1`, modify the following steps accordingly if the version has changed.
 
 ```
-bitcoin@host:~$ git clone --branch 0.19 \
+bitcoin@host:~$ git clone --branch v0.19.0.1 \
 https://github.com/bitcoin/bitcoin ~/bitcoin
 Cloning into '/home/bitcoin/bitcoin'...
 remote: Enumerating objects: 6, done.

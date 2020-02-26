@@ -334,15 +334,6 @@ rpc_user = <rpc-user>
 rpc_password = <rpc-pass>
 rpc_wallet_file = joinmarket
 
-[MESSAGING:CyberguerrillaIRC]
-channel = joinmarket-pit
-host = epynixtbonxn4odv34z4eqnlamnpuwfz6uwmsamcqd62si7cbix5hqad.onion
-port = 6697
-socks5 = true
-socks5_host = <gateway-ip>
-socks5_port = 9180
-usessl = true
-
 [MESSAGING:AgoraAnarplexIRC]
 channel = joinmarket-pit
 host = agora.anarplex.net

@@ -50,6 +50,9 @@ The last shortcoming that should be made obvious is the fact that there is no up
     - Connect to the [`1_electrs.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrs.md), [`1_electrum-personal-server.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md), or [`1_electrumx.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrumx.md) VM.
     - Provide full functionality from an offline VM.
 
+## Support
+Personal support is available at a rate of 1,000,000 sats per hour. Email me (you may encrypt to [this key](https://raw.githubusercontent.com/qubenix/gpg-keys/master/96096E4CA0870F1C5BAF7DD909D159E1241F9C54.pub)): qubenix+support at riseup dot net.
+
 ## Guides To Come
 - [BTCPay Server](https://github.com/btcpayserver/btcpayserver)
 - [c-Lightning](https://github.com/ElementsProject/lightning)

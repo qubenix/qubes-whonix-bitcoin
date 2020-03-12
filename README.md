@@ -51,7 +51,8 @@ The last shortcoming that should be made obvious is the fact that there is no up
     - Provide full functionality from an offline VM.
 
 ## Support
-Personal support is available at a rate of 1,000,000 sats per hour. Email me (you may encrypt to [this key](https://raw.githubusercontent.com/qubenix/gpg-keys/master/96096E4CA0870F1C5BAF7DD909D159E1241F9C54.pub)): qubenix+support at riseup dot net.
+- Paid/dedicated support: 1,000,000 sats per hour. Email me (you may encrypt to [this key](https://raw.githubusercontent.com/qubenix/gpg-keys/master/96096E4CA0870F1C5BAF7DD909D159E1241F9C54.pub)): qubenix+support at riseup dot net.
+- Free support is available if you catch me when I have time on Freenode IRC (OTR: DFD1DA35 D74E775B 3E3DADB1 226282EE FB711).
 
 ## Guides To Come
 - [BTCPay Server](https://github.com/btcpayserver/btcpayserver)

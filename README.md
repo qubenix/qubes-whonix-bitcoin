@@ -61,4 +61,5 @@ The last shortcoming that should be made obvious is the fact that there is no up
 
 ## Git Mirrors
 - https://github.com/qubenix/qubes-whonix-bitcoin
-- http://qubenixibxoyldm3l3a5fobreaydmvdweqqojllutyyi4vgtbmugvhad.onion/qubenix/qubes-whonix-bitcoin
+
+~~http://qubenixibxoyldm3l3a5fobreaydmvdweqqojllutyyi4vgtbmugvhad.onion/qubenix/qubes-whonix-bitcoin~~ (down at the moment)

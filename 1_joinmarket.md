@@ -29,20 +29,14 @@ This increases the privacy and security of your JoinMarket wallet while still ma
 [user@dom0 ~]$ echo 'joinmarket bitcoind allow' | sudo tee -a /etc/qubes-rpc/policy/qubes.ConnectTCP
 ```
 ## II. Set Up TemplateVM
-### A. In a `whonix-ws-15-bitcoin` terminal, update and install dependencies.
-```
-user@host:~$ sudo apt update && sudo apt install -y libffi-dev libgmp-dev libsecp256k1-dev \
-python-configparser python-virtualenv python3-argon2 python3-cffi python3-dev python3-future \
-python3-libnacl python3-matplotlib python3-mnemonic python3-pip python3-pyaes python3-qrcode
-```
-### B. Create system user.
+### A. Create system user.
 ```
 user@host:~$ sudo adduser --system joinmarket
 Adding system user `joinmarket' (UID 117) ...
 Adding new user `joinmarket' (UID 117) with group `nogroup' ...
 Creating home directory `/home/joinmarket' ...
 ```
-### C. Shutdown TemplateVM.
+### B. Shutdown TemplateVM.
 ```
 user@host:~$ sudo poweroff
 ```
@@ -50,18 +44,19 @@ user@host:~$ sudo poweroff
 ### A. In a `bitcoind` terminal, download and verify JoinMarket source code.
 1. Clone the JoinMarket [repository](https://github.com/JoinMarket-Org/joinmarket-clientserver).
 
-**Note:** At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.6.1`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the current JoinMarket [release](https://github.com/JoinMarket-Org/joinmarket-clientserver/releases) is `v0.6.3.1`, modify the following steps accordingly if the version has changed.
 
 ```
-user@host:~$ git clone --branch v0.6.1 \
+user@host:~$ git clone --branch v0.6.3.1 \
 https://github.com/JoinMarket-Org/joinmarket-clientserver ~/joinmarket-clientserver
 Cloning into '/home/user/joinmarket-clientserver'...
-remote: Enumerating objects: 1, done.
-remote: Counting objects: 100% (1/1), done.
-remote: Total 5476 (delta 0), reused 1 (delta 0), pack-reused 5475
-Receiving objects: 100% (5476/5476), 3.92 MiB | 228.00 KiB/s, done.
-Resolving deltas: 100% (3610/3610), done.
-Note: checking out '8fd8e10f772f204170430879f7f3b11b26ba26c5'.
+remote: Enumerating objects: 249, done.
+remote: Counting objects: 100% (249/249), done.
+remote: Compressing objects: 100% (144/144), done.
+remote: Total 6824 (delta 132), reused 195 (delta 105), pack-reused 6575
+Receiving objects: 100% (6824/6824), 5.89 MiB | 227.00 KiB/s, done.
+Resolving deltas: 100% (4526/4526), done.
+Note: checking out '88b460a0ee459a1333f2a7baab4279a765471cb6'.
 ...
 ```
 2. Receive signing key.
@@ -70,27 +65,35 @@ Note: checking out '8fd8e10f772f204170430879f7f3b11b26ba26c5'.
 
 ```
 user@host:~$ gpg --recv-keys "2B6F C204 D9BF 332D 062B 461A 1410 01A1 AF77 F20B"
-gpg: key 0x141001A1AF77F20B: 2 signatures not checked due to missing keys
 gpg: key 0x141001A1AF77F20B: public key "Adam Gibson (CODE SIGNING KEY) <ekaggata@gmail.com>" imported
-gpg: no ultimately trusted keys found
 gpg: Total number processed: 1
 gpg:               imported: 1
 ```
-3. Enter directory and verify.
+3. Change directory and verify.
 
 **Note:** Your output may not match the example. Just check that it says `Good signature`.
 
 ```
 user@host:~$ cd ~/joinmarket-clientserver/
-user@host:~/joinmarket-clientserver$ git verify-tag v0.6.1
-gpg: Signature made Tue 10 Dec 2019 11:54:42 AM UTC
+user@host:~/joinmarket-clientserver$ git verify-tag v0.6.3.1
+gpg: Signature made Mon 29 Jun 2020 03:56:54 PM UTC
 gpg:                using RSA key 2B6FC204D9BF332D062B461A141001A1AF77F20B
 gpg: Good signature from "Adam Gibson (CODE SIGNING KEY) <ekaggata@gmail.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
 Primary key fingerprint: 2B6F C204 D9BF 332D 062B  461A 1410 01A1 AF77 F20B
 ```
-### B. Install JoinMarket dependencies.
+4. Copy `~/joinmarket-clientserver/` directory to user `joinmarket`.
+
+```
+user@host:~/joinmarket-clientserver$ sudo cp -r ~/joinmarket-clientserver/ /home/joinmarket/
+```
+5. Fix ownership.
+
+```
+user@host:~/joinmarket-clientserver$ sudo chown -R joinmarket:nogroup /home/joinmarket/joinmarket-clientserver/
+```
+### B. Install JoinMarket for main user.
 1. Create Python virtual environment.
 
 ```
@@ -102,63 +105,71 @@ Also creating executable in /home/user/joinmarket-clientserver/jmvenv/bin/python
 Installing setuptools, pkg_resources, pip, wheel...done.
 ```
 
-2. Link installed packages to virtual environment.
-
-**Note:** Ignore the `File exists` errors.
-
-```
-user@host:~/joinmarket-clientserver$ ln -s /usr/lib/python3/dist-packages/* ~/joinmarket-clientserver/jmvenv/lib/python3.7/site-packages/
-```
-3. Install dependencies to virtual environment.
-
-**Notes:**
-- This step, and the next optional step, will produce a lot of output and take some time. This is normal, be patient.
-- If you have errors re-run the `setupall.py` step a second time.
+2. Activate the virtual environment.
 
 ```
 user@host:~/joinmarket-clientserver$ source ~/joinmarket-clientserver/jmvenv/bin/activate
-(jmvenv) user@host:~/joinmarket-clientserver$ python ~/joinmarket-clientserver/setupall.py --all
 ```
-4. Upgrade `service-identity` to avoid an annoying warning.
+3. Install to virtual environment.
+
+**Note:**
+- This step, and the next optional step, will produce a lot of output and take some time. This is normal, be patient.
 
 ```
-(jmvenv) user@host:~/joinmarket-clientserver$ pip install service-identity --upgrade
+(jmvenv) user@host:~/joinmarket-clientserver$ python ~/joinmarket-clientserver/setupall.py --all
 ```
-#### Optional Step: Install QT dependencies for JoinMarket GUI.
+3.1. Optional Step: Install QT dependencies for JoinMarket GUI.
 **Note:** You can safely skip this step if you do not intend to use the JoinMarket GUI.
 
 ```
 (jmvenv) user@host:~/joinmarket-clientserver$ pip install PySide2 \
 https://github.com/sunu/qt5reactor/archive/58410aaead2185e9917ae9cac9c50fe7b70e4a60.zip
 ```
-5. Deactivate virtual environment and make relocatable.
+4. Copy the `pip` cache to user `joinmarket`.
 
 ```
-(jmvenv) user@host:~/joinmarket-clientserver$ deactivate
-user@host:~/joinmarket-clientserver$ virtualenv -p python3 --relocatable ~/joinmarket-clientserver/jmvenv
+(jmvenv) user@host:~/joinmarket-clientserver$ sudo cp -r ~/.cache/pip/ /home/joinmarket/.cache/
 ```
-6. Return to home directory.
+5. Fix permissions.
 
 ```
-user@host:~/joinmarket-clientserver$ cd
+(jmvenv) user@host:~/joinmarket-clientserver$ sudo chown -R joinmarket:nogroup /home/joinmarket/.cache/pip/
 ```
-### C. Relocate `joinmarket-clientserver/` directory.
-1. Copy `joinmarket-clientserver/` directory to the `joinmarket` user's home directory, change ownership.
-
-```
-user@host:~$ sudo cp -r ~/joinmarket-clientserver/ /home/joinmarket/
-user@host:~$ sudo chown -R joinmarket:nogroup /home/joinmarket/
-```
-2. Copy `joinmarket-clientserver/` directory to the `joinmarket` VM.
-
+### C. Copy `joinmarket-clientserver/` directory to the `joinmarket` VM.
 **Note:** Select `joinmarket` from the `dom0` pop-up.
 
 ```
-user@host:~$ qvm-copy ~/joinmarket-clientserver/
+(jmvenv) user@host:~/joinmarket-clientserver$ qvm-copy ~/joinmarket-clientserver/
 ```
-### D. Start `joinmarketd` service.
+### D. Install JoinMarket for daemon user.
+1. Change to user `joinmarket`.
+
 ```
-user@host:~$ sudo systemctl start joinmarketd.service
+(jmvenv) user@host:~/joinmarket-clientserver$ sudo -H -u joinmarket bash
+```
+2. Change directory.
+
+```
+joinmarket@host:/home/user/joinmarket-clientserver$ cd ~/joinmarket-clientserver/
+```
+3. Create virtual environment.
+
+```
+joinmarket@host:~/joinmarket-clientserver$ virtualenv -p python3 jmvenv
+...
+```
+4. Activate the virtual environment.
+
+```
+joinmarket@host:~/joinmarket-clientserver$ source jmvenv/bin/activate
+```
+5. Install to virtual environment.
+
+**Note:**
+- This step, and the next optional step, will produce a lot of output and take some time. This is normal, be patient.
+
+```
+(jmvenv) joinmarket@host:~/joinmarket-clientserver$ python setupall.py --daemon
 ```
 ## IV. Configure `bitcoind` and `joinmarketd`
 ### A. In a `sys-bitcoin` terminal, find out the gateway IP.
@@ -267,6 +278,11 @@ systemctl start joinmarketd.service
 ```
 3. Save the file: `Ctrl-S`.
 4. Switch back to the terminal: `Ctrl-Q`.
+5. Execute the file.
+
+```
+user@host:~$ sudo /rw/config/rc.local
+```
 ## VI. Configure `joinmarket` VM
 ### A. In a `joinmarket` terminal, open communication ports on boot.
 1. Edit the file `/rw/config/rc.local`.
@@ -292,25 +308,31 @@ user@host:~$ sudo /rw/config/rc.local
 ```
 user@host:~$ mv ~/QubesIncoming/bitcoind/joinmarket-clientserver/ ~
 ```
-### C. In a `joinmarket` terminal, configure JoinMarket.
-1. Source the virtual environment and change to the JoinMarket `scripts/` directory.
+### C. Configure JoinMarket.
+1. Create data directory.
+
+```
+user@host:~$ mkdir -m 0700 ~/.joinmarket
+```
+2. Source the virtual environment and change to the JoinMarket `scripts/` directory.
 
 ```
 user@host:~$ source ~/joinmarket-clientserver/jmvenv/bin/activate
 (jmvenv) user@host:~$ cd ~/joinmarket-clientserver/scripts/
 ```
-2. Generate a configuration file.
+3. Generate a configuration file.
 
 ```
 (jmvenv) user@host:~/joinmarket-clientserver/scripts$ python wallet-tool.py
+User data location: /home/user/.joinmarket/
 Created a new `joinmarket.cfg`. Please review and adopt the settings and restart joinmarket.
 ```
-3. Make a backup and edit the file `joinmarket.cfg`.
+4. Make a backup and edit the file `joinmarket.cfg`.
 
 ```
-(jmvenv) user@host:~/joinmarket-clientserver/scripts$ cp joinmarket.cfg joinmarket.cfg.orig
-(jmvenv) user@host:~/joinmarket-clientserver/scripts$ echo > joinmarket.cfg
-(jmvenv) user@host:~/joinmarket-clientserver/scripts$ mousepad joinmarket.cfg
+(jmvenv) user@host:~/joinmarket-clientserver/scripts$ cp ~/.joinmarket/joinmarket.cfg ~/.joinmarket/joinmarket.cfg.orig
+(jmvenv) user@host:~/joinmarket-clientserver/scripts$ echo > ~/.joinmarket/joinmarket.cfg
+(jmvenv) user@host:~/joinmarket-clientserver/scripts$ mousepad ~/.joinmarket/joinmarket.cfg
 ```
 4. Paste the following.
 

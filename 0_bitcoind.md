@@ -25,6 +25,8 @@ An indexed node can be used as a backend for other software which needs access t
 - [LND](https://github.com/LightningNetwork/lnd)
 
 Using `qrexec` we can connect any of these tools to `bitcoind` from their own VM, making use of the Qubes security by isolation model.
+## Prerequisites
+- Read the [README](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/README.md).
 ## I. Set Up Dom0
 ### A. In a `dom0` terminal, clone a Whonix workstation TemplateVM.
 ```
@@ -108,26 +110,23 @@ bitcoin@host:/home/user$ cd
 ### B. Download and verify the Bitcoin source code.
 1. Clone the repository.
 
-**Note:** At the time of writing the current [release](https://github.com/bitcoin/bitcoin/releases) branch is `0.19`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the current [release](https://github.com/bitcoin/bitcoin/releases) branch is `0.20`, modify the following steps accordingly if the version has changed.
 
 ```
-bitcoin@host:~$ git clone --branch 0.19 \
+bitcoin@host:~$ git clone --branch 0.20 \
 https://github.com/bitcoin/bitcoin ~/bitcoin
-Cloning into '/home/bitcoin/bitcoin'...
-remote: Enumerating objects: 6, done.
-remote: Counting objects: 100% (6/6), done.
-remote: Compressing objects: 100% (5/5), done.
-remote: Total 150618 (delta 1), reused 2 (delta 1), pack-reused 150612
-Receiving objects: 100% (150618/150618), 134.39 MiB | 465.00 KiB/s, done.
-Resolving deltas: 100% (105128/105128), done.
+Cloning into '/home/user/bitcoin'...
+remote: Enumerating objects: 2, done.
+remote: Counting objects: 100% (2/2), done.
+remote: Total 168496 (delta 1), reused 1 (delta 1), pack-reused 168494
+Receiving objects: 100% (168496/168496), 145.29 MiB | 338.00 KiB/s, done.
+Resolving deltas: 100% (118758/118758), done.
 ```
 2. Enter the `~/bitcoin` directory and receive signing keys.
 
 ```
 bitcoin@host:~$ cd ~/bitcoin/
 bitcoin@host:~/bitcoin$ gpg --recv-keys $(<contrib/verify-commits/trusted-keys)
-gpg: keybox '/home/user/.gnupg/pubring.kbx' created
-gpg: /home/user/.gnupg/trustdb.gpg: trustdb created
 gpg: key 0x944D35F9AC3DB76A: public key "Michael Ford (bitcoin-otc) <fanquake@gmail.com>" imported
 gpg: key 0xD300116E1C875A3D: public key "MeshCollider <dobsonsa68@gmail.com>" imported
 gpg: key 0x3648A882F4316B9B: public key "Marco Falke <marco.falke@tum.de>" imported
@@ -145,15 +144,13 @@ gpg:               imported: 6
 
 ```
 bitcoin@host:~/bitcoin$ git verify-commit HEAD
-gpg: Signature made Mon 25 Nov 2019 09:13:25 AM UTC
-gpg:                using RSA key 9DEAE0DC7063249FB05474681E4AED62986CD25D
-gpg: Good signature from "Wladimir J. van der Laan <laanwj@visucore.com>" [unknown]
-gpg:                 aka "Wladimir J. van der Laan <laanwj@gmail.com>" [unknown]
-gpg:                 aka "Wladimir J. van der Laan <laanwj@protonmail.com>" [unknown]
+gpg: Signature made Fri 10 Jul 2020 04:45:48 AM UTC
+gpg:                using RSA key CFB16E21C950F67FA95E558F2EEB9F5CC09526C1
+gpg: Good signature from "Michael Ford (bitcoin-otc) <fanquake@gmail.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
-Primary key fingerprint: 71A3 B167 3540 5025 D447  E8F2 7481 0B01 2346 C9A6
-     Subkey fingerprint: 9DEA E0DC 7063 249F B054  7468 1E4A ED62 986C D25D
+Primary key fingerprint: E777 299F C265 DD04 7930  70EB 944D 35F9 AC3D B76A
+     Subkey fingerprint: CFB1 6E21 C950 F67F A95E  558F 2EEB 9F5C C095 26C1
 ```
 ### C. Build Berkeley DB and Bitcoin.
 **Note:** This step will take some time and produce a lot of output. This is normal, be patient.

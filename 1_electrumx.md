@@ -1,5 +1,5 @@
 # Qubes 4 & Whonix 15: Electrumx
-Create a VM for running an [Electrumx](https://github.com/kyuupichan/electrumx) server which will connect to your `bitcoind` VM. The `electrumx` VM will be accessible from an Electrum Bitcoin wallet in an offline VM on the same host or remotely via a Tor onion service.
+Create a VM for running an [Electrumx](https://github.com/spesmilo/electrumx) server which will connect to your `bitcoind` VM. The `electrumx` VM will be accessible from an Electrum Bitcoin wallet in an offline VM on the same host or remotely via a Tor onion service.
 ## What is Electrumx?
 Electrumx is one of the possible server backends for the Electrum Bitcoin wallet. The other implementations covered in these guides are [Electrs](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrs.md), and [Electrum Personal Server](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/1_electrum-personal-server.md) (EPS).
 
@@ -8,7 +8,7 @@ Here are some of the differences between the different implementations:
   - Electrs and Electrumx can serve any wallet once fully synchronized.
   - EPS requires that each wallet's [MPK](https://bitcoin.stackexchange.com/a/50031) is in its config file.
 - Different disk space requirements.
-  - Electrs and Electrumx VM disk space: under 60G.
+  - Electrs and Electrumx VM disk space: under 80G.
   - EPS VM disk space: 1G.
 - Different initial sync times.
   - Initial Electrs Sync: 1-12 hours.
@@ -22,8 +22,9 @@ This will protect you from having to trust nodes ran by volunteers to provide yo
 
 There have already been multiple waves of attacks on Electrum users perpetrated by malicious Electrumx servers. These bad servers prevent users from sending transactions, instead sending back to them a bogus update requirement which actually leads to coin stealing malware.
 
-In addition to preventing certain types of attacks, this setup also increases your privacy by not leaking information about your wallet to server operators. There are servers on the network which are using this information to build profiles on addresses and their interactions (eg. [blockchain analytic companies](https://duckduckgo.com/html?q=blockchain%20analytics)).
+In addition to preventing certain types of attacks, this setup also increases your privacy by not leaking information about your wallet to server operators. There are servers on the network which are using this information to build profiles on addresses and their interactions (eg. [transaction surveillance companies](https://en.bitcoin.it/wiki/Transaction_surveillance_company)).
 ## Prerequisites
+- Read the [README](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/README.md).
 - To complete this guide you must have first completed:
   - [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md)
 
@@ -52,7 +53,7 @@ In addition to preventing certain types of attacks, this setup also increases yo
 2. Increase private volume size.
 
 ```
-[user@dom0 ~]$ qvm-volume resize electrumx:private 60G
+[user@dom0 ~]$ qvm-volume resize electrumx:private 100G
 ```
 
 ### C. Allow comms from `electrumx` to `bitcoind`.
@@ -130,31 +131,32 @@ user@host:~$ sudo systemctl restart bitcoind.service
 user@host:~$ sudo -H -u electrumx bash
 electrumx@host:/home/user$ cd
 ```
-2. Download the latest Electrumx [release](https://github.com/kyuupichan/electrumx/releases).
+2. Download the latest Electrumx [release](https://github.com/spesmilo/electrumx/releases).
 
-**Note:** The current version of Electrumx is `1.14.0`, modify the following steps accordingly if the version has changed.
+**Note:** The current version of Electrumx is `1.15.0`, modify the following steps accordingly if the version has changed.
 
 ```
-electrumx@host:~$ scurl-download https://github.com/kyuupichan/electrumx/archive/1.14.0.tar.gz
+electrumx@host:~$ scurl-download https://github.com/spesmilo/electrumx/archive/1.15.0.tar.gz
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   128    0   128    0     0     46      0 --:--:--  0:00:02 --:--:--    46
-100  346k    0  346k    0     0  24085      0 --:--:--  0:00:14 --:--:-- 78974
-curl: Saved to filename 'electrumx-1.14.0.tar.gz'
+100   126  100   126    0     0     60      0  0:00:02  0:00:02 --:--:--    60
+100  418k    0  418k    0     0  80980      0 --:--:--  0:00:05 --:--:--  142k
+curl: Saved to filename 'electrumx-1.15.0.tar.gz'
 ```
 3. Verify download.
 
-**Note:** The developer of Electrumx doesn't understand the importance of software verification and therefore does not sign or provide hash sums for his releases.
-- While it doesn't offer the same security, I have included the SHA256 sum of my `electrumx-1.14.0.tar.gz` download for your verification.
+**Notes:**
+- The developers of Electrumx do not currently sign or provide hash sums for releases.
+- While it doesn't offer the same security, I have included the SHA256 sum of my `electrumx-1.15.0.tar.gz` download for your verification.
 
 ```
-electrumx@host:~$ echo '1f4a6692042826ccfe01f0e40b4b161b473ca064a9e245b7a05b7fbce51cd411  electrumx-1.14.0.tar.gz' | shasum -c
-electrumx-1.14.0.tar.gz: OK
+electrumx@host:~$ echo '2ff5efa9be1fbf8898e00ea2d9a31c38dd636d495fc222c29caa0cc36850185a  electrumx-1.15.0.tar.gz' | shasum -c
+electrumx-1.15.0.tar.gz: OK
 ```
 4. Extract.
 
 ```
-electrumx@host:~$ tar -C ~ -xf electrumx-1.14.0.tar.gz
+electrumx@host:~$ tar -C ~ -xf electrumx-1.15.0.tar.gz
 ```
 ### B. Create virtual environment, link installed packages.
 1. Create virtual environment.
@@ -181,19 +183,19 @@ electrumx@host:~$ source ~/exvenv/bin/activate
 2. Change directory.
 
 ```
-(exvenv) electrumx@host:~$ cd ~/electrumx-1.14.0/
+(exvenv) electrumx@host:~$ cd ~/electrumx-1.15.0/
 ```
 3. Install Electrumx.
 
 **Note:** This step will take some time and produce a lot of output. This is normal, be patient.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.14.0$ python setup.py install
+(exvenv) electrumx@host:~/electrumx-1.15.0$ python setup.py install
 ```
 4. Deactivate virtual environment and return to home dir.
 
 ```
-(exvenv) electrumx@host:~/electrumx-1.14.0$ deactivate; cd
+(exvenv) electrumx@host:~/electrumx-1.15.0$ deactivate; cd
 ```
 ## V. Set Up Electrumx
 ### A. Remain in an `electrumx` terminal, configure Electrumx data directory.
@@ -212,11 +214,11 @@ electrumx@host:~$ mousepad ~/.electrumx/electrumx.conf
 
 **Notes:**
 - Be sure to replace `<rpc-user>` and `<rpc-pass>` with the information noted earlier.
-- For a verbose desciption of these settings, look to the file: [`~/electrumx/docs/environment.rst`](https://electrumx.readthedocs.io/en/latest/environment.html).
+- For a verbose desciption of these settings, look to the file: [`~/electrumx-1.15.0/docs/environment.rst`](https://electrumx-spesmilo.readthedocs.io/en/latest/environment.html).
 
 ```
 ## Required
-COIN = BitcoinSegwit
+COIN = Bitcoin
 DB_DIRECTORY = /home/electrumx/.electrumx/electrumx-db
 DAEMON_URL = http://<rpc-user>:<rpc-pass>@127.0.0.1:8332/
 USERNAME = electrumx

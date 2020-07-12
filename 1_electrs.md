@@ -8,7 +8,7 @@ Here are some of the differences between the different implementations:
   - Electrs and Electrumx can serve any wallet once fully synchronized.
   - EPS requires that each wallet's [MPK](https://bitcoin.stackexchange.com/a/50031) is in its config file.
 - Different disk space requirements.
-  - Electrs and Electrumx VM disk space: under 60G.
+  - Electrs and Electrumx VM disk space: under 80G.
   - EPS VM disk space: 1G.
 - Different initial sync times.
   - Initial Electrs Sync: 1-12 hours.
@@ -23,6 +23,7 @@ There have already been multiple waves of attacks on Electrum users perpetrated 
 
 In addition to preventing certain types of attacks, this setup also increases your privacy by not leaking information about your wallet to server operators. There are servers on the network which are using this information to build profiles on addresses and their interactions (eg. [blockchain analytic companies](https://duckduckgo.com/html?q=blockchain%20analytics)).
 ## Prerequisites
+- Read the [README](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/README.md).
 - To complete this guide you must have first completed:
   - [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md)
 
@@ -133,18 +134,17 @@ electrs@host:/home/user$ cd
 ```
 2. Clone the Electrs [repository](https://github.com/romanz/electrs).
 
-**Note:** The current [release](https://github.com/romanz/electrs/releases) of Electrs is `v0.8.1`, modify the following steps accordingly if the version has changed.
+**Note:** The current [release](https://github.com/romanz/electrs/releases) of Electrs is `v0.8.5`, modify the following steps accordingly if the version has changed.
 
 ```
-electrs@host:~$ git clone --branch v0.8.1 https://github.com/romanz/electrs ~/electrs
-Cloning into 'electrs'...
-remote: Enumerating objects: 26, done.
-remote: Counting objects: 100% (26/26), done.
-remote: Compressing objects: 100% (21/21), done.
-remote: Total 5649 (delta 5), reused 16 (delta 4), pack-reused 5623
-Receiving objects: 100% (5649/5649), 1.44 MiB | 138.00 KiB/s, done.
-Resolving deltas: 100% (3946/3946), done.
-Note: checking out 'fcbf16b9f1932ca7fe91d1a172301cb64dc4cfe0'.
+electrs@host:~$ git clone --branch v0.8.5 https://github.com/romanz/electrs ~/electrs
+Cloning into '/home/electrs/electrs'...
+remote: Enumerating objects: 6077, done.
+remote: Total 6077 (delta 0), reused 0 (delta 0), pack-reused 6077
+Receiving objects: 100% (6077/6077), 1.63 MiB | 283.00 KiB/s, done.
+Resolving deltas: 100% (4248/4248), done.
+Note: checking out '840da895ce1d60748fea917264d10e896626c413'.
+...
 ```
 3. Receive signing key.
 
@@ -168,8 +168,8 @@ electrs@host:~$ cd ~/electrs
 **Note:** Your output may not match the example. Just check that it says `Good signature`.
 
 ```
-electrs@host:~/electrs$ git verify-tag v0.8.1
-gpg: Signature made Wed 20 Nov 2019 08:22:49 PM UTC
+electrs@host:~/electrs$ git verify-tag v0.8.5
+gpg: Signature made Wed 01 Jul 2020 07:51:29 PM UTC
 gpg:                using ECDSA key 15C8C3574AE4F1E25F3F35C587CAE5FA46917CBB
 gpg:                issuer "me@romanzey.de"
 gpg: Good signature from "Roman Zeyde <me@romanzey.de>" [unknown]

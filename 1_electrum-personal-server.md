@@ -8,7 +8,7 @@ Here are some of the differences between the different implementations:
   - Electrs and Electrumx can serve any wallet once fully synchronized.
   - EPS requires that each wallet's [MPK](https://bitcoin.stackexchange.com/a/50031) is in its config file.
 - Different disk space requirements.
-  - Electrs and Electrumx VM disk space: under 60G.
+  - Electrs and Electrumx VM disk space: under 80G.
   - EPS VM disk space: 1G.
 - Different initial sync times.
   - Initial Electrs Sync: 1-12 hours.
@@ -26,6 +26,7 @@ There have already been multiple waves of attacks on Electrum users perpetrated 
 
 This setup also preserves your privacy. When connecting to any server your wallet will leak information which can be used to tie your addresses together. There are definitely servers on the network which are using this information to build profiles on addresses and their interactions.
 ## Prerequisites
+- Read the [README](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/README.md).
 - To complete this guide you must have first completed:
   - [`0_bitcoind.md`](https://github.com/qubenix/qubes-whonix-bitcoin/blob/master/0_bitcoind.md)
 
@@ -141,12 +142,12 @@ electrum-personal-server@host:/home/user$ cd
 ### B. Download and verify the Electrum Personal Server source code.
 1. Download the latest Electrum Personal Server [release and signature](https://github.com/chris-belcher/electrum-personal-server/releases).
 
-**Note:** At the time of writing the most recent version of Electrum Personal Server is `v0.2.0`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the most recent version of Electrum Personal Server is `v0.2.1.1`, modify the following steps accordingly if the version has changed.
 
 ```
 electrum-personal-server@host:~$ scurl-download \
-https://github.com/chris-belcher/electrum-personal-server/releases/download/eps-v0.2.0/eps-v0.2.0.tar.gz.asc \
-https://github.com/chris-belcher/electrum-personal-server/archive/eps-v0.2.0.tar.gz
+https://github.com/chris-belcher/electrum-personal-server/archive/eps-v0.2.1.1.tar.gz \
+https://github.com/chris-belcher/electrum-personal-server/releases/download/eps-v0.2.1.1/eps-v0.2.1.1.tar.gz.asc
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100   612    0   612    0     0    194      0 --:--:--  0:00:03 --:--:--   194
@@ -175,9 +176,9 @@ gpg:               imported: 1
 **Note:** Your output may not match the example. Just check that it says `Good signature`.
 
 ```
-electrum-personal-server@host:~$ gpg --verify eps-v0.2.0.tar.gz.asc \
-electrum-personal-server-eps-v0.2.0.tar.gz
-gpg: Signature made Thu 05 Dec 2019 09:51:58 AM UTC
+electrum-personal-server@host:~$ gpg --verify eps-v0.2.1.1.tar.gz.asc \
+electrum-personal-server-eps-v0.2.1.1.tar.gz
+gpg: Signature made Tue 09 Jun 2020 01:32:21 PM UTC
 gpg:                using RSA key 0xEF734EA677F31129
 gpg: Good signature from "Chris Belcher <false@email.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!

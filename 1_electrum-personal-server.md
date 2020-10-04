@@ -371,7 +371,7 @@ systemctl start electrum-personal-server.service
 1. Edit the file `/rw/config/rc.local`.
 
 ```
-user@host:~$ sudo sh -c 'echo -e "\nqvm-connect-tcp 8332:bitcoind:8332" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "\nqvm-connect-tcp 8332:bitcoind:8332" >> /rw/config/rc.local'
 ```
 2. Execute the file.
 

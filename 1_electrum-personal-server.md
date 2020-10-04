@@ -100,7 +100,7 @@ user@host:~$ head -c 15 /dev/urandom | base64
 - Replace `<rpc-user>` with the information noted earlier.
 
 ```
-user@host:~$ ~/bitcoin/share/rpcauth/rpcauth.py <rpc-user>
+user@host:~$ sudo -u bitcoin /home/bitcoin/bitcoin/share/rpcauth/rpcauth.py <rpc-user>
 String to be appended to bitcoin.conf:
 rpcauth=7PXaFZ5DLG2alSeiGxnM:9ffa7d78e1ddcb25ace4597bc31a1c8d$541c44f5d34044d532db47b74e9755ca4f0d87f805dd5895f0b36ea3a8d8c84c
 Your password:

@@ -241,9 +241,8 @@ electrum-personal-server@host:~$ mousepad ~/.eps/config.cfg
 3. Paste the following.
 
 **Notes:**
-- Be sure to replace `<rpc-user>` and `<rpc-pass>` with the information noted earlier.
+- Be sure to replace `<rpc-user>` and `<rpc-pass>` with the information noted earlier, and to add your Electrum wallet master public keys (MPK) or individual addresses to the config file.
 - For a verbose desciption of these settings, look to the file: [`~/eps/config.ini_sample`](https://github.com/chris-belcher/electrum-personal-server/blob/master/config.ini_sample).
-- At this point you may add your Electrum wallet master public keys (MPK) or individual addresses to the config file.
 
 ```
 ## Electrum Personal Server configuration file

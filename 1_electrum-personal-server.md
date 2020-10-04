@@ -270,6 +270,7 @@ host = 127.0.0.1
 port = 8332
 rpc_user = <rpc-user>
 rpc_password = <rpc-pass>
+wallet_filename =
 poll_interval_listening = 30
 poll_interval_connected = 5
 initial_import_count = 1000

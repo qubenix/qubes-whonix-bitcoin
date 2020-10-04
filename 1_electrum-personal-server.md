@@ -195,8 +195,8 @@ electrum-personal-server@host:~$ mkdir ~/eps
 
 ```
 electrum-personal-server@host:~$ tar -C ~/eps/ \
--xf electrum-personal-server-electrum-personal-server-v0.2.0.tar.gz \
-strip-components=1
+-xf electrum-personal-server-eps-v0.2.1.1.tar.gz \
+--strip-components=1
 ```
 3. Create virtual environment.
 

@@ -377,6 +377,7 @@ user@host:~$ sudo sh -c 'echo "\nqvm-connect-tcp 8332:bitcoind:8332" >> /rw/conf
 
 ```
 user@host:~$ sudo /rw/config/rc.local
+Binding TCP 'bitcoind:8332' to 'localhost:8332'...
 ```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory.

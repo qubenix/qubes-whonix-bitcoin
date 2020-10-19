@@ -33,12 +33,12 @@ This increases the privacy and security of your Electrum wallet while still main
 ```
 ## II. Install Electrum
 ### A. In a `bitcoind` terminal, download Electrum files.
-1. Download the latest Electrum [appimage](https://download.electrum.org/4.0.2/electrum-4.0.2-x86_64.AppImage) and [signature](https://download.electrum.org/4.0.2/electrum-4.0.2-x86_64.AppImage.asc).
+1. Download the latest Electrum [appimage](https://download.electrum.org/4.0.4/electrum-4.0.4-x86_64.AppImage) and [signature](https://download.electrum.org/4.0.4/electrum-4.0.4-x86_64.AppImage.asc).
 
-**Note:** At the time of writing the most recent version of Electrum is `4.0.2`, modify the following steps accordingly if the version has changed.
+**Note:** At the time of writing the most recent version of Electrum is `4.0.4`, modify the following steps accordingly if the version has changed.
 
 ```
-user@host:~$ scurl-download https://download.electrum.org/4.0.2/electrum-4.0.2-x86_64.AppImage https://download.electrum.org/4.0.2/electrum-4.0.2-x86_64.AppImage.asc
+user@host:~$ scurl-download https://download.electrum.org/4.0.4/electrum-4.0.4-x86_64.AppImage https://download.electrum.org/4.0.4/electrum-4.0.4-x86_64.AppImage.asc
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100 49.4M  100 49.4M    0     0   539k      0  0:01:33  0:01:33 --:--:--  398k
@@ -80,9 +80,9 @@ gpg:               imported: 1
 **Note:** Your output may not match the example. Just check that it says `Good signature`.
 
 ```
-user@host:~$ gpg --verify electrum-4.0.2-x86_64.AppImage.asc
-gpg: assuming signed data in 'electrum-4.0.2-x86_64.AppImage'
-gpg: Signature made Wed 08 Jul 2020 07:48:04 AM UTC
+user@host:~$ gpg --verify electrum-4.0.4-x86_64.AppImage.asc
+gpg: assuming signed data in 'electrum-4.0.4-x86_64.AppImage'
+gpg: Signature made Thu 15 Oct 2020 06:21:40 PM UTC
 gpg:                using RSA key 6694D8DE7BE8EE5631BED9502BD5824B7F9470E6
 gpg: Good signature from "Thomas Voegtlin (https://electrum.org) <thomasv@electrum.org>" [unknown]
 gpg:                 aka "ThomasV <thomasv1@gmx.de>" [unknown]
@@ -94,13 +94,13 @@ Primary key fingerprint: 6694 D8DE 7BE8 EE56 31BE  D950 2BD5 824B 7F94 70E6
 5. Make the appimage executable.
 
 ```
-user@host:~$ chmod +x electrum-4.0.2-x86_64.AppImage
+user@host:~$ chmod +x electrum-4.0.4-x86_64.AppImage
 ```
 ### C. Move appimage to the `electrum` VM.
 **Note:** Select `electrum` from the `dom0` pop-up.
 
 ```
-user@host:~$ qvm-move electrum-4.0.2-x86_64.AppImage
+user@host:~$ qvm-move electrum-4.0.4-x86_64.AppImage
 ```
 ## III. Set Up Electrum
 ### A. In an `electrum` terminal, open communication with the server VM on boot.
@@ -151,7 +151,7 @@ user@host:~$ mkdir -m 0700 ~/bin
 2. Move executable to `bin/` directory.
 
 ```
-user@host:~$ mv ~/QubesIncoming/bitcoin/electrum-4.0.2-x86_64.AppImage ~/bin/electrum
+user@host:~$ mv ~/QubesIncoming/bitcoind/electrum-4.0.4-x86_64.AppImage ~/bin/electrum
 ```
 3. Source profile to fix `$PATH`.
 

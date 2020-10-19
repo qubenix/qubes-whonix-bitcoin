@@ -100,7 +100,7 @@ user@host:~$ head -c 15 /dev/urandom | base64
 - Replace `<rpc-user>` with the information noted earlier.
 
 ```
-user@host:~$ ~/bitcoin/share/rpcauth/rpcauth.py <rpc-user>
+user@host:~$ sudo -u bitcoin /home/bitcoin/bitcoin/share/rpcauth/rpcauth.py <rpc-user>
 String to be appended to bitcoin.conf:
 rpcauth=7PXaFZ5DLG2alSeiGxnM:9ffa7d78e1ddcb25ace4597bc31a1c8d$541c44f5d34044d532db47b74e9755ca4f0d87f805dd5895f0b36ea3a8d8c84c
 Your password:
@@ -195,8 +195,8 @@ electrum-personal-server@host:~$ mkdir ~/eps
 
 ```
 electrum-personal-server@host:~$ tar -C ~/eps/ \
--xf electrum-personal-server-electrum-personal-server-v0.2.0.tar.gz \
-strip-components=1
+-xf electrum-personal-server-eps-v0.2.1.1.tar.gz \
+--strip-components=1
 ```
 3. Create virtual environment.
 
@@ -241,9 +241,8 @@ electrum-personal-server@host:~$ mousepad ~/.eps/config.cfg
 3. Paste the following.
 
 **Notes:**
-- Be sure to replace `<rpc-user>` and `<rpc-pass>` with the information noted earlier.
-- For a verbose desciption of these settings, look to the file: [`~/electrum-personal-server-eps-v0.2.0/config.ini_sample`](https://github.com/chris-belcher/electrum-personal-server/blob/master/config.cfg_sample).
-- At this point you may add your Electrum wallet master public keys (MPK) or individual addresses to the config file.
+- Be sure to replace `<rpc-user>` and `<rpc-pass>` with the information noted earlier, and to add your Electrum wallet master public keys (MPK) or individual addresses to the config file.
+- For a verbose desciption of these settings, look to the file: [`~/eps/config.ini_sample`](https://github.com/chris-belcher/electrum-personal-server/blob/master/config.ini_sample).
 
 ```
 ## Electrum Personal Server configuration file
@@ -270,6 +269,7 @@ host = 127.0.0.1
 port = 8332
 rpc_user = <rpc-user>
 rpc_password = <rpc-pass>
+wallet_filename =
 poll_interval_listening = 30
 poll_interval_connected = 5
 initial_import_count = 1000
@@ -349,7 +349,7 @@ WantedBy=multi-user.target
 6. Fix permissions.
 
 ```
-user@host:~$ chmod 0600 /rw/config/systemd/electrum-personal-server.service
+user@host:~$ sudo chmod 0600 /rw/config/systemd/electrum-personal-server.service
 ```
 ### E. Enable the service on boot.
 1. Edit the file `/rw/config/rc.local`.
@@ -371,12 +371,13 @@ systemctl start electrum-personal-server.service
 1. Edit the file `/rw/config/rc.local`.
 
 ```
-user@host:~$ sudo sh -c 'echo "qvm-connect-tcp 8332:bitcoind:8332" >> /rw/config/rc.local'
+user@host:~$ sudo sh -c 'echo "\nqvm-connect-tcp 8332:bitcoind:8332" >> /rw/config/rc.local'
 ```
 2. Execute the file.
 
 ```
 user@host:~$ sudo /rw/config/rc.local
+Binding TCP 'bitcoind:8332' to 'localhost:8332'...
 ```
 ### C. Open firewall for Tor onion service.
 1. Make persistent directory.

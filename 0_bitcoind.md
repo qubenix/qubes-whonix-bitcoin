@@ -277,7 +277,7 @@ WantedBy=multi-user.target
 6. Fix permissions.
 
 ```
-user@host:~$ chmod 0600 /rw/config/systemd/bitcoind.service
+user@host:~$ sudo chmod 0600 /rw/config/systemd/bitcoind.service
 ```
 ### E. Enable the service on boot.
 1. Edit the file `/rw/config/rc.local`.

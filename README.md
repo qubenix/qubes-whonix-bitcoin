@@ -1,3 +1,9 @@
+# THESE GUIDES ARE COMPLETELY OUTDATED, AND INCLUDE SOME [LESS THAN PERFECT VERIFICATION TECHNIQUES](https://github.com/qubenix/qubes-whonix-bitcoin/issues/5#issue-1392574773). DON'T USE THEM.
+
+# I CAN STILL BE REACHED AT THE SAME [CONTACT INFO](#support) FOR PERSONAL ASSISTANCE, BUT IT WILL COST YOU.
+
+---
+
 # Qubes 4 & Whonix 15: Bitcoin Isolation Guides
 A series of guides that use the Qubes [security by isolation](https://www.qubes-os.org/security/goals/) model, combined with [Whonix](https://www.whonix.org) for additional hardening and anonymity features, to give users a safer environment to use Bitcoin in multiple ways.
 
@@ -51,7 +57,7 @@ The last shortcoming that should be made obvious is the fact that there is no up
     - Provide full functionality from an offline VM.
 
 ## Support
-- Paid/dedicated support: 1,000,000 sats per hour. Email me (you may encrypt to [this key](https://raw.githubusercontent.com/qubenix/gpg-keys/master/96096E4CA0870F1C5BAF7DD909D159E1241F9C54.pub)): qubenix+support at riseup dot net.
+- Paid/dedicated support: 100,000 sats per hour. Email me (you may encrypt to [this key](https://raw.githubusercontent.com/qubenix/gpg-keys/master/96096E4CA0870F1C5BAF7DD909D159E1241F9C54.pub)): qubenix+support at riseup dot net.
 - Free support is available if you catch me when I have time on Freenode IRC (OTR: DFD1DA35 D74E775B 3E3DADB1 226282EE FB711).
 
 ## Guides To Come
